@@ -76,7 +76,7 @@ public class DriveBase extends SubsystemBase {
   private PowerDistribution pdp;
   private PowerManagement powerManagement;
   Collection<CANSparkMax> drivebaseMotors;
-  
+  CANSparkMax armMotor;
   private double overCurrentTime;
   private boolean overCurrentFlag;
 
@@ -84,7 +84,7 @@ public class DriveBase extends SubsystemBase {
   public DriveBase() {
 
     //Instantating the physical parts on the drivebase
-    compressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
+    //compressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
     pdp = new PowerDistribution();
     navxGyro = new AHRS(SPI.Port.kMXP);
     leftDrive1 = new CANSparkMax(Constants.DriveConstants.DRIVE_MOTOR_LEFT_1, MotorType.kBrushless);
@@ -93,6 +93,7 @@ public class DriveBase extends SubsystemBase {
     rightDrive1 = new CANSparkMax(Constants.DriveConstants.DRIVE_MOTOR_RIGHT_1, MotorType.kBrushless);
     rightDrive2 = new CANSparkMax(Constants.DriveConstants.DRIVE_MOTOR_RIGHT_2, MotorType.kBrushless);
     rightDrive3 = new CANSparkMax(Constants.DriveConstants.DRIVE_MOTOR_RIGHT_3, MotorType.kBrushless);
+    armMotor = new CANSparkMax(Constants.DriveConstants.ARM_MOTOR, MotorType.kBrushless);
     powerManagement = new PowerManagement();
     
     drivebaseMotors = new ArrayList<CANSparkMax>();
@@ -232,8 +233,8 @@ public class DriveBase extends SubsystemBase {
   } 
 
   //Separate method to call the generic tank drive method
-  public void drive(double left, double right) {
-    ourDrive.tankDrive(left, right);
+  public void drive(double leftSpeed, double rigthSpeed) {
+    ourDrive.tankDrive(leftSpeed, rigthSpeed);
   }
   /** 
   public void overCurrentLimit() {
@@ -479,11 +480,12 @@ public class DriveBase extends SubsystemBase {
       shifterComp = competitionTab.add("High Gear", getGear()).withWidget(BuiltInWidgets.kBooleanBox).getEntry();
 
     //Competition Tab*/
-
+      /** 
     }
     else{
       shifterComp = competitionTab.add("High Gear", getGear()).withWidget(BuiltInWidgets.kBooleanBox).getEntry();
 
     }
+    */
   }
 }

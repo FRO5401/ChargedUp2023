@@ -30,6 +30,8 @@ public class Constants {
     public static final double kP = 34.199;
     public static final double kI = 0;
     public static final double KD = 1.5784;
+    
+    public static final int ARM_MOTOR = 7;
   }
 
   public class ControlConstants {
@@ -107,6 +109,7 @@ public class Constants {
     public static final int INFEED_GATE = 1;
     public static final int INFEED_SPARK_2 = 5; //right
     public static final int INFEED_SPARK_1 = 6; //left
+     
     
 
     //Internal Mechanism

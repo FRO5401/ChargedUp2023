@@ -11,8 +11,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Autonomous.*;
-import frc.robot.Commands.drivebase.*;
+import frc.robot.Autonomous.DoNothing;
+import frc.robot.Commands.XboxMove;
 import frc.robot.Subsystems.*;
 import frc.robot.Utilities.controllers.MultipleInputGroup;
 
@@ -36,8 +36,7 @@ public class RobotContainer {
         configureInputGroups();
         configureButtonBindings();
         chooser.setDefaultOption("Do Nothing", new DoNothing(drivebase));
-        chooser.addOption("Drive Straight", new DriveStraight(200, 0.3, drivebase));
-        chooser.addOption("Ball Center Test", new BallCenterTest(0.3, drivebase, networktables));
+
         //chooser.addOption("Trajectory Test", new SetTrajectoryPath(drivebase, "paths/DriveStraight.wpilib.json")); //REPLACE LATER
         SmartDashboard.putData("Auto choices", chooser);
     }
@@ -51,11 +50,6 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-
-        //Drivebase Controls      
-        Controls.xboxButton(Controls.operator, "Back").whenPressed(new ResetSensors(drivebase));
-        Controls.xboxButton(Controls.driver, "Start").whenPressed(new GearShiftHigh(drivebase));
-        Controls.xboxButton(Controls.driver, "Back").whenPressed(new GearShiftLow(drivebase));
         drivetrain.whenAnyActive(new XboxMove(drivebase));
     }
 

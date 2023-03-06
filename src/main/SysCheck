@@ -1,0 +1,54 @@
+SYSTEM CHECKKKKKK
+
+Drivebase:
+    Drive forward
+        High Gear/Low Gear/Percision
+        Encoder Check
+    Drive backward
+        High Gear/Low Gear/Percision
+        Encoder Check
+    Turn L in place
+        Encoder Check
+    Turn R in place
+        Encoder Check
+    Gyro testing
+        X and Y 
+    Percision Check
+Arm Manual:
+    up check
+        Encoder Check
+    down check 
+        Encoder Check
+    out check
+        Encoder Check
+    In check
+        Encoder Check
+Arm Auto:
+    Reset encoder value
+    Pickup
+        ground 
+        station
+    Place
+        low
+        mid
+        high
+    Auto retract
+Claw
+    Open
+    Close
+        Cube 
+        Cone
+Vision
+    Dumb cam test
+        Server side processing
+        Photon Camera
+    Photon Vision
+        Connecting to photon
+        Reflective tape 
+    Server side Processing
+        Cube
+        Cone
+        
+        
+        
+    

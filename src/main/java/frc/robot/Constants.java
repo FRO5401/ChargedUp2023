@@ -123,10 +123,11 @@ public class Constants {
     public static final double kaVoltSecondsSquaredPerMeter = 0.16689;
     public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
     public static final double kMaxSpeedMetersPerSecond = 1.5;
+    public static final double kPDriveVel = 0.0040178;
     public static final double kMaxAccelerationMetersPerSecondSquared = 1;
     public static final double kRamseteB = 2;
     public static final double kRamseteZeta = 0.7;
-    public static final double kPDriveVel = 1.05;
+    //public static final double kPDriveVel = 1.05;
     public static final double SCUFFED_CORRECTION_CONSTANT = 0.26;
   }
 

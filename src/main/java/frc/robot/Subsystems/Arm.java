@@ -212,14 +212,14 @@ public class Arm extends SubsystemBase {
 
   }
   public void groundPickup(){
-      pidRotateArm(15.5);
-      pidTranslateArm(20.5);
+      pidRotateArm(4.99);
+      pidTranslateArm(55.01);
 
   }
 
   public void lowerNodePlace(){
-      pidRotateArm(15.5);
-      pidTranslateArm(20.5);
+      pidRotateArm(35.99);
+      pidTranslateArm(64.01);
 
 
   }

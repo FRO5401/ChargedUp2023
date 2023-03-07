@@ -231,6 +231,11 @@ public class DriveBase extends SubsystemBase {
     ourDrive.feed();
   }
 
+  public void setInverted(){
+    leftDrives.setInverted(true);
+
+  }
+
   public void stopMotors(){
     leftDrives.set(0);
     rightDrives.set(0);

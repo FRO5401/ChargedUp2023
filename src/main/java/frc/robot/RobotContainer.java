@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -21,8 +22,8 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Commands.OperatorControl;
-import frc.robot.Commands.XboxMove;
+import frc.robot.Commands.MiscCommands.OperatorControl;
+import frc.robot.Commands.MiscCommands.XboxMove;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Subsystems.*;
@@ -102,6 +103,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand(){
+        drivebase.setInverted();
     // Create a voltage constraint to ensure we don't accelerate too fast
         var autoVoltageConstraint =
         new DifferentialDriveVoltageConstraint(
@@ -123,8 +125,9 @@ public class RobotContainer {
           .addConstraint(autoVoltageConstraint);
 
     // An example trajectory to follow.  All units in meters.
-    Trajectory exampleTrajectory =
-      TrajectoryGenerator.generateTrajectory(
+
+  /*var exampleTrajectory = 
+  TrajectoryGenerator.generateTrajectory(
           // Start at the origin facing the +X direction
           new Pose2d(0, 0, new Rotation2d(0)),
           // Pass through these two interior waypoints, making an 's' curve path
@@ -132,11 +135,26 @@ public class RobotContainer {
           // End 3 meters straight ahead of where we started, facing forward
           new Pose2d(3, 0, new Rotation2d(0)),
           // Pass config
-          config);
-          
+          config); */
+
+
+        String trajectoryJSON = "paths/Curve.wpilib.json";
+        Trajectory exampleTrajectory = new Trajectory(); 
+
+          try {
+            Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+            exampleTrajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+         } catch (IOException ex) {
+            DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+         }
+      
+         var transform = drivebase.getPose().minus(exampleTrajectory.getInitialPose());
+         Trajectory newTrajectory = exampleTrajectory.transformBy(transform);
+ 
+
           RamseteCommand ramseteCommand =
           new RamseteCommand(
-              exampleTrajectory,
+              newTrajectory,
               drivebase::getPose,
               new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
               new SimpleMotorFeedforward(
@@ -154,10 +172,11 @@ public class RobotContainer {
 
     // Run path following command, then stop at the end.
     drivebase.resetOdometry(exampleTrajectory.getInitialPose());
+    drivebase.setInverted();
 
     // Run path following command, then stop at the end.
     return ramseteCommand.andThen(() -> drivebase.tankDriveVolts(0, 0));
     //return chooser.getSelected();
-    }
-
+        }
 }
+

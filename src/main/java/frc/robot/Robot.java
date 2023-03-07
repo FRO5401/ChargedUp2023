@@ -22,7 +22,7 @@ import com.revrobotics.jni.*;
 import frc.robot.Subsystems.Arm;
 import frc.robot.Subsystems.DriveBase;
 import frc.robot.Controls;
-import frc.robot.Commands.XboxMove;
+import frc.robot.Commands.MiscCommands.XboxMove;
 public class Robot extends TimedRobot {
 
 private Command autoSelected;

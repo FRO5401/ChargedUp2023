@@ -1,6 +1,12 @@
 {
+<<<<<<< Updated upstream
     "currentLanguage": "none",
     "enableCppIntellisense": false,
     "projectYear": "none",
+=======
+    "enableCppIntellisense": false,
+    "currentLanguage": "java",
+    "projectYear": "2023",
+>>>>>>> Stashed changes
     "teamNumber": 5401
 }

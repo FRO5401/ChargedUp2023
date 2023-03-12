@@ -135,41 +135,7 @@ public class Constants {
     public static boolean[] shuffleboardCompMode = {true, true, true, true, true, true};
     //public static boolean[] shuffleboardCompMode = {false, false, false, false, false, true};
 
-    public static final double INFEED_MOTOR_SPEED = 0.3;
-    public static final int INFEED_GATE = 1;
-    public static final int INFEED_SPARK_2 = 5; //right
-    public static final int INFEED_SPARK_1 = 6; //left
-     
-    
 
-    //Internal Mechanism
-    public static final int INTERNAL_MECH_MOTOR = 7; //Right
-    public static final int INTERNAL_MECH_MOTOR2 = 15; //Left
-    public static final double MECH_SPEED = 0.95; //regular 0.95
-
-    //Shooter
-    public static final int SHOOTER_MOTOR_1 = 9; //Left
-    public static final int SHOOTER_MOTOR_2 = 10; //Right
-    public static final double SHOOTER_SPEED = 0.95; //0.95 REGULAR 0.75 for blue from the line radially*** 
-    public static double LOADER_SPEED = 0.9; // 0.55 REGULAR DECREASE BY 0.05
-	  public static final int BALL_LOADER = 8;
-    public static final double SHOOTER_WAIT_TIME = 1.75;
-
-    //Shooter PID Constants 
-     
-    public static final double kP = 0.1461*2;
-    public static final double kI = 0;
-    public static final double kD = 0;
-    public static final double kF = 0;
-    public static final int slotIdx = 0;
-    public static final double kS = 0.66618;
-    public static final double kV = 0.10109; 
-    public static final double kA = 0.0052574;
-    public static double shootLowSpeed = 0.60;
-    public static double shootHighSpeed = 0.825;
-    public static double shootLowVelocity = 3500;
-    public static double shootHighVelocity = 14000; //9250; //+-250 //was 10250
-    public static final double feedFordwardConstant = 0.9;
 
     //Climber
     public static final int TRANS_MOTOR_1 = 13;
@@ -183,20 +149,7 @@ public class Constants {
      
     //29.5in 60in
     //climber angle calculations
-    public static int measuredHorizontalPosition = 2550;
-    public static int maximumVerticalPosition = 0;
-    public static double ticksPerDegree = 312.2676579925651; 
-    public static double gravityFF = 0.07; //predetermined gravity feedforward constant
-    public static double climberArmLength = 60;
-    public static double minClimberArmLength = 29.5;
-    public static int climberArmMaxPos = 3600;
-    public static double climberConversion = climberArmLength/climberArmMaxPos;
-    public static double climberArmMaxRotPos = 53.8;
-    public static double nativeUnitsRatio = (16800 / 68);
-    public static int physicalMaxArmExtension = 6000;
-    public static double robotFrontOffset = 25;
-    public static double robotBackOffset = 1;
-    public static int extensionLimit = 16;
+
 
     
   }

@@ -1,8 +1,4 @@
 {
-<<<<<<< Updated upstream
-    "java.configuration.updateBuildConfiguration": "interactive"
-}
-=======
   "java.configuration.updateBuildConfiguration": "automatic",
   "java.server.launchMode": "Standard",
   "files.exclude": {
@@ -33,4 +29,3 @@
   "wpilib.selectDefaultSimulateExtension": true,
   "wpilib.autoStartRioLog": true
 }
->>>>>>> Stashed changes

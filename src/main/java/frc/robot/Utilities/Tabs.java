@@ -2,6 +2,7 @@ package frc.robot.Utilities;
 
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTableEntry;
 
 public class Tabs {
@@ -14,11 +15,16 @@ public class Tabs {
 
     //Entries
     //DRIVEBASE
-    public static NetworkTableEntry angleEntry, pitchEntry, yawEntry, rollEntry, rotationsEntry, turnRateEntry;
-    public static NetworkTableEntry leftSpeedEntry, rightSpeedEntry, speedEntry, leftPositionEntry, rightPositionEntry;
-    public static NetworkTableEntry shifterEntry, shifterComp;
-    public static NetworkTableEntry leftSpeedGraph, rightSpeedGraph, speedGraph, leftPositionGraph, rightPositionGraph, turnRateGraph;
-    public static NetworkTableEntry axisTester;
+    public static GenericEntry angleEntry, pitchEntry, yawEntry, rollEntry, rotationsEntry, turnRateEntry;
+    public static GenericEntry leftSpeedEntry, rightSpeedEntry, speedEntry, leftPositionEntry, rightPositionEntry;
+    public static GenericEntry shifterEntry, shifterComp;
+    public static GenericEntry leftSpeedGraph, rightSpeedGraph, speedGraph, leftPositionGraph, rightPositionGraph, turnRateGraph;
+    public static GenericEntry axisTester, pressureEntry;
+
+    public static GenericEntry rotLeftSpeedEntry, rotRightSpeedEntry, transSpeedEntry, rotLeftPositionEntry, rotRightPositionEntry, transPositionEntry;
+
+
+
 
     //INFEED
     public static NetworkTableEntry gateEntry, gateComp;

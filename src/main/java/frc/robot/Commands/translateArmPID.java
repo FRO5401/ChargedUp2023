@@ -8,15 +8,16 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Subsystems.Arm;
 import frc.robot.Subsystems.Claw;
 
-public class StationPickup1 extends CommandBase {
+public class translateArmPID extends CommandBase {
     Arm arm;
-    Claw claw;
+    double transPos;
     boolean endCommand = false;
 
-    public StationPickup1(Arm m_arm, Claw  m_claw){
+    public translateArmPID(Arm m_arm, double transPosition){
         arm = m_arm;
-        claw = m_claw;
-        addRequirements(arm, claw);
+        transPos = transPosition;
+
+        addRequirements(arm);
     }
 
     @Override
@@ -25,20 +26,18 @@ public class StationPickup1 extends CommandBase {
     
     @Override
     public void execute(){
-        //shooter.runSmart("START")
-
-        claw.toggleClaw("OFF");
-        arm.pidRotateArm(60, 18);
-        Timer.delay(0.75);
-        arm.pidTranslateArm(-40);
-        Timer.delay(1);
-       
-        //arm.pidRotateArm(60, 3);
-        endCommand = false;
+        if(!(arm.transAtSetpoint(transPos))){
+            arm.pidTranslateArm(transPos);
+        }
+        else{
+        endCommand = true;
+        }
     }
     
     @Override
     public void end(boolean interrupted){
+        //arm.rotateArm(0, endCommand);
+
     }
     @Override
     public boolean isFinished() {

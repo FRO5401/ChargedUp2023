@@ -16,15 +16,33 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Commands.AutoAlign;
+import frc.robot.Commands.ConeClaw;
+import frc.robot.Commands.CubeClaw;
+import frc.robot.Commands.GroundPickup;
 import frc.robot.Commands.LEDCommand;
+import frc.robot.Commands.LowerNodePlace1;
+import frc.robot.Commands.LowerNodePlaceA;
+import frc.robot.Commands.LowerNodePlaceB;
+import frc.robot.Commands.OffClaw;
 import frc.robot.Commands.OperatorControl;
+import frc.robot.Commands.StationPickup1;
+import frc.robot.Commands.StationPickup2;
 import frc.robot.Commands.XboxMove;
+import frc.robot.Commands.ZeroGround;
+import frc.robot.Commands.gearShiftHigh;
+import frc.robot.Commands.gearShiftLow;
+import frc.robot.Commands.rotateArmPID;
+//import frc.robot.Commands.rotateArmUp;
+import frc.robot.Commands.translateIn;
+import frc.robot.Commands.translateOut;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Subsystems.*;
@@ -44,10 +62,10 @@ public class RobotContainer {
     private final Arm arm = new Arm();
     private final Claw claw = new Claw();
     private final XboxMove xboxMove = new XboxMove(drivebase);
+
     //private final OperatorControl operator = new OperatorControl(arm, claw);
 
     //private final MultipleInputGroup drivetrain = new MultipleInputGroup();
-    private final CommandXboxController driver_Controller = new CommandXboxController(0);
     private final LEDCommand SolidLEDsCommand;
     private LEDSubsystem ledSubsystem;
 
@@ -60,6 +78,7 @@ public class RobotContainer {
         SolidLEDsCommand = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.SolidLEDs);
         configureInputGroups();
         configureButtonBindings();
+        drivebase.setDefaultCommand(xboxMove);
         /* 
         //chooser.setDefaultOption("GyroBalance", new AutoGyroBalance(drivebase, 0.1));
         chooser.setDefaultOption("DoNothing", new DoNothing(drivebase));
@@ -93,7 +112,11 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        CommandScheduler.getInstance().setDefaultCommand(ledSubsystem, SolidLEDsCommand);
+        //Controls.driver.rightTrigger(0.05).onTrue(new XboxMove(drivebase));
+        //Controls.driver.leftTrigger(0.05).onTrue(new XboxMove(drivebase));
+        //Controls.driver.leftStick().onTrue(new XboxMove(drivebase));
+
+       // CommandScheduler.getInstance().setDefaultCommand(ledSubsystem, SolidLEDsCommand);
 
         /*
         driver_Controller.a().whileTrue(new InstantCommand(()-> arm.resetArm()));
@@ -108,13 +131,34 @@ public class RobotContainer {
         driver_Controller.pov(180).whileTrue(new InstantCommand(()->arm.lowerNodePlace()));
         driver_Controller.pov(270).whileTrue(new InstantCommand(()->arm.upperNodePlace()));
         */
-        
+        Controls.operator.a().onTrue(Commands.parallel(new ZeroGround(arm, claw)));
+        Controls.operator.povDown().onTrue(new GroundPickup(arm, claw));
+        Controls.operator.povLeft().whileTrue(Commands.parallel(new LowerNodePlaceA(arm, claw), new XboxMove(drivebase))).onFalse(Commands.parallel(new LowerNodePlaceB(arm, claw), new XboxMove(drivebase)));
+        //Controls.operator.povLeft().whileTrue(new LowerNodePlace1(arm, claw).raceWith(new XboxMove(drivebase))).onFalse(new LowerNodePlace2(arm, claw));
+        //Controls.operator.povDown().onTrue(new StationPickup1(arm, claw));
+        Controls.operator.povUp().whileTrue(Commands.parallel(new StationPickup1(arm, claw), new XboxMove(drivebase))).onFalse(Commands.parallel(new StationPickup2(arm, claw), new XboxMove(drivebase)));
+
+        //Command repeats = (new XboxMove(drivebase)).repeatedly();
+
+        //Claw mapping
+        Controls.operator.back().onTrue(new OffClaw(claw));
+        Controls.operator.rightTrigger().onTrue(new ConeClaw(claw));
+        Controls.operator.leftTrigger().onTrue(new CubeClaw(claw));
+
+        // /Controls.driver.y().onTrue(new AutoAlign(left, drivebase, networkTables));
+
+        //Controls.operator.rightBumper().onTrue(new rotateArmUp(arm));
+        //Controls.operator.rightBumper().onTrue(new rotateArmPID(arm));
+
+        Controls.operator.x().onTrue(new translateIn(arm));
+        Controls.operator.b().onTrue(new translateOut(arm));
+
+
+        Controls.driver.back().onTrue(new gearShiftLow(drivebase));
+        Controls.driver.back().onTrue(new gearShiftHigh(drivebase));
     }
 
     private void configureInputGroups(){
-        
-
-        
     }
 
     public Command getAutonomousCommand(){

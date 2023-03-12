@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import frc.robot.Constants;
+import static frc.robot.Utilities.Tabs.*;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -114,7 +115,7 @@ public class Arm extends SubsystemBase {
   public void pidRotateArm(double positionLeft, double positionRight){
     //pidRotateMotorLeft.setReference(-43.99, ControlType.kPosition);
     //pidRotateMotorRight.setReference(-43.99, ControlType.kPosition);
-
+    
     setPIDPosition(pidRotateMotorLeft, rotate_encoder_left, ControlType.kPosition,  positionLeft );
     setPIDPosition(pidRotateMotorRight, rotate_encoder_right, ControlType.kPosition,  -positionRight);
 
@@ -125,6 +126,32 @@ public class Arm extends SubsystemBase {
       
     
   }
+
+  public boolean rotateLeftAtSetpoint(double setpoint){
+    if(rotate_encoder_left.getPosition() < setpoint + 0.1  && rotate_encoder_left.getPosition() > setpoint - 0.1  ){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+  public boolean rotateRightAtSetpoint(double setpoint){
+    if(rotate_encoder_right.getPosition() < setpoint + 0.1  && rotate_encoder_right.getPosition() > setpoint - 0.1  ){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+  public boolean transAtSetpoint(double setpoint){
+    if(trans_encoder.getPosition() < setpoint + 0.1  && trans_encoder.getPosition() > setpoint - 0.1  ){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
   public void continuousPIDRotateArm( String direction){
     //pidRotateMotorLeft.setReference(-43.99, ControlType.kPosition);
     //pidRotateMotorRight.setReference(-43.99, ControlType.kPosition);
@@ -210,6 +237,14 @@ public class Arm extends SubsystemBase {
 
     setPIDPosition(pidTransMotor, trans_encoder, ControlType.kPosition, position );
   }
+
+  public void updatePID(){
+    pidTranslateArm(trans_encoder.getPosition());
+    pidRotateArm(rotate_encoder_left.getPosition(), rotate_encoder_right.getPosition());
+  }
+
+
+
   public void continuousPIDTranslateArm(String direction){
     //setPIDPosition(pidTransMotor, trans_encoder, ControlType.kPosition, 67.01, armMotorLeft );
     //setPIDPosition(pidTransMotor, trans_encoder, ControlType.kPosition,  167, transMotor );
@@ -318,6 +353,14 @@ public void resetArm(){
   }
   */
 
+  public void armShuffleboard(){
+    rotLeftSpeedEntry = testingTab.add("Left Motor Speed",armMotorLeft.get()).getEntry();
+    rotRightSpeedEntry = testingTab.add("Right Motor Speed",armMotorRight.get()).getEntry(); 
+    rotLeftPositionEntry = testingTab.add("Left Motor Position",armMotorLeft.getEncoder().getPosition()).getEntry();     
+    rotRightPositionEntry = testingTab.add("Right Motor Position",armMotorRight.getEncoder().getPosition()).getEntry();  
+    transSpeedEntry = testingTab.add("Trans Motor Speed",transMotor.get()).getEntry();
+    transPositionEntry = testingTab.add("Trans Motor Position",transMotor.getEncoder().getPosition()).getEntry();  
 
+  }
  
 }

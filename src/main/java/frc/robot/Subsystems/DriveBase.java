@@ -1,4 +1,6 @@
 package frc.robot.Subsystems;
+import static frc.robot.Utilities.Tabs.*;
+
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
@@ -9,6 +11,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Controls;
+import frc.robot.Commands.gearShiftHigh;
 import frc.robot.Utilities.PowerManagement;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
@@ -31,6 +34,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
@@ -166,7 +170,8 @@ public class DriveBase extends SubsystemBase {
 
     gearShifter = new Solenoid(PneumaticsModuleType.CTREPCM, 0);
 
-   
+    drivebaseShuffleboard();
+
 
     //transMotor = new CANSparkMax(Constants.DriveConstants.TRANS_MOTOR, MotorType.kBrushless);
 
@@ -315,9 +320,10 @@ public class DriveBase extends SubsystemBase {
 
   }
 
-  public void compressorToggle(){
-    compressor.disable();
-  }
+    public boolean getGear(){
+      return gearShifter.get();
+    }
+
   /* 
   public CommandBase tankDriveCommand(double left, double right) {
 
@@ -340,4 +346,53 @@ public class DriveBase extends SubsystemBase {
         .finallyDo(interrupted -> stopMotors());
   }
   */
+  public double getPressure() { return compressor.getPressure();}
+
+  public boolean getPressureStatus(){
+    if(compressor.getPressure() <= 100.0){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
+    public void compressorToggle(){
+      compressorState = !compressorState;
+      setCompressor(compressorState);
+    }
+  
+    //Set the Compressor
+    public void setCompressor(boolean state){
+      if (state == false)
+        compressor.disable();
+      else
+        compressor.enableDigital();  
+    }
+
+  public double getAverageMotorVelocity(){ return (Math.abs(leftEncoders[0].getVelocity())+Math.abs(rightEncoders[0].getVelocity()))/2; }
+  public double getLeftVelocity() { return leftEncoders[0].getVelocity(); }
+  public double getRightVelocity() { return rightEncoders[0].getVelocity(); }
+
+    public void drivebaseShuffleboard(){
+      //Graph conf
+        
+        //Testing Tab
+        
+        speedEntry = testingTab.add("Robot Speed",getAverageMotorVelocity()).getEntry();
+        leftSpeedEntry = testingTab.add("Left Motor Speed",getLeftVelocity()).getEntry();
+        rightSpeedEntry = testingTab.add("Right Motor Speed",getRightVelocity()).getEntry(); 
+        leftPositionEntry = testingTab.add("Left Motor Position",leftEncoders[0].getPosition()).getEntry();     
+        rightPositionEntry = testingTab.add("Right Motor Position",rightEncoders[0].getPosition()).getEntry();  
+        rotationsEntry = testingTab.add("Gyro Rotations", getGyro()/360).getEntry();
+        angleEntry = testingTab.add("Gyro Angle", getGyro()).getEntry();
+        shifterEntry = testingTab.add("Solenoid Gear", getGear()).getEntry();
+        pressureEntry = testingTab.add("Pressure ", getPressureStatus()).getEntry();
+    
+  }
+
+
+
+    
+
 }

@@ -11,7 +11,6 @@ public class XboxMove extends CommandBase {
   /*** Variables ***/
     //Input Axes
     
-    public static final XboxController driver = new XboxController(Constants.ControlConstants.XBOX_CONTROLLER_DRIVER);
   
   double turn;
   double throttle;
@@ -34,7 +33,7 @@ public class XboxMove extends CommandBase {
     //Instance Vars
   double left;
   double right; 
-  double sensitivity;
+  double sensitivity = 0.8;
 
   DriveBase drivebase;
 
@@ -63,11 +62,14 @@ public class XboxMove extends CommandBase {
     brake = Controls.xboxButton(driver, "LB").getAsBoolean();
     rotate = Controls.xboxButton(driver, "LS").getAsBoolean();
     */
-
-    throttle = Controls.driver.getRightTriggerAxis();
-    reverse = Controls.driver.getLeftTriggerAxis();
-    turn = Controls.driver.getLeftX();
+    precision = Controls.xbox_driver.getRightBumper();
+    brake = Controls.xbox_driver.getLeftBumper();
+    rotate = Controls.xbox_driver.getLeftStickButton();
+    throttle = Controls.xbox_driver.getRightTriggerAxis();
+    reverse = Controls.xbox_driver.getLeftTriggerAxis();
+    turn = Controls.xbox_driver.getLeftX();
   
+   
 
 
       //Braking
@@ -116,14 +118,14 @@ public class XboxMove extends CommandBase {
           right = (throttle - reverse) * sensitivity;
         }
       }
-    
+      System.out.println("Throttle: " + left);
+      System.out.println("Reverse: "+right );
       //After speed manipulation, send to drivebase. 
     drivebase.drive(left, right);
   }
 
   @Override
   public void end(boolean interrupted) {
-    drivebase.drive(0,0);
   }
 
   // Make this return true when this Command no longer needs to run execute()

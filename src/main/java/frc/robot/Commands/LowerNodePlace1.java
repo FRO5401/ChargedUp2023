@@ -27,9 +27,10 @@ public class LowerNodePlace1 extends CommandBase {
     public void execute(){
         //shooter.runSmart("START");
         //claw.toggleClaw("CONE");
-        arm.pidRotateArm(60, 20);
-        Timer.delay(0.5);
+        arm.pidRotateArm(60, 18);
+        //Timer.delay(0.75);
         arm.pidTranslateArm(-40);
+        Timer.delay(1);
         
         /*
         Timer.delay(1);
@@ -41,7 +42,7 @@ public class LowerNodePlace1 extends CommandBase {
 
    
         //arm.pidRotateArm(60, 3);
-        endCommand = true;
+        endCommand = false;
     }
     
     @Override

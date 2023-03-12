@@ -10,17 +10,19 @@ import frc.robot.Subsystems.Arm;
 import frc.robot.Subsystems.Claw;
 
 
-public class ZeroGround extends SequentialCommandGroup {
+public class LowerNodePlaceB extends SequentialCommandGroup {
     Arm arm;
     Claw claw;
 
-    public ZeroGround(Arm m_arm, Claw m_claw){
+    public LowerNodePlaceB(Arm arm, Claw claw){
         addCommands(
-        //shooter.runSmart("START");
-
-        new OffClaw(claw),
-        new translateArmPID(m_arm, 0), 
-        new rotateArmPID(m_arm, 0, 0)
+            new OffClaw(claw),
+            new rotateArmPID(arm, 60, 19),
+            new translateArmPID(arm, 0),
+            new ConeClaw(claw),
+            new rotateArmPID(arm, 0, 0)
+        
+        
         );
     }
 }

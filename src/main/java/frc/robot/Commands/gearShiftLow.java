@@ -7,16 +7,14 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Subsystems.Arm;
 import frc.robot.Subsystems.Claw;
+import frc.robot.Subsystems.DriveBase;
 
-public class StationPickup1 extends CommandBase {
-    Arm arm;
-    Claw claw;
+public class gearShiftLow extends CommandBase {
     boolean endCommand = false;
-
-    public StationPickup1(Arm m_arm, Claw  m_claw){
-        arm = m_arm;
-        claw = m_claw;
-        addRequirements(arm, claw);
+    DriveBase drivebase;
+    public gearShiftLow(DriveBase m_drivebase){
+        drivebase = m_drivebase;
+        addRequirements(drivebase);
     }
 
     @Override
@@ -27,14 +25,9 @@ public class StationPickup1 extends CommandBase {
     public void execute(){
         //shooter.runSmart("START")
 
-        claw.toggleClaw("OFF");
-        arm.pidRotateArm(60, 18);
-        Timer.delay(0.75);
-        arm.pidTranslateArm(-40);
-        Timer.delay(1);
-       
+        drivebase.gearShift("LOW");
         //arm.pidRotateArm(60, 3);
-        endCommand = false;
+        endCommand = true;
     }
     
     @Override
@@ -45,3 +38,4 @@ public class StationPickup1 extends CommandBase {
       return endCommand;
     }
 }
+

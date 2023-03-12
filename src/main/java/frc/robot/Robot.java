@@ -39,7 +39,7 @@ import frc.robot.Commands.ConeClaw;
 import frc.robot.Commands.CubeClaw;
 import frc.robot.Commands.GroundPickup;
 import frc.robot.Commands.LowerNodePlace1;
-import frc.robot.Commands.LowerNodePlace2;
+import frc.robot.Commands.LowerNodePlaceB;
 import frc.robot.Commands.OffClaw;
 import frc.robot.Commands.StationPickup1;
 import frc.robot.Commands.StationPickup2;
@@ -48,6 +48,12 @@ import frc.robot.Commands.UpperNodePlace;
 import frc.robot.Commands.XboxMove;
 import frc.robot.Commands.ZeroGeneral;
 import frc.robot.Commands.ZeroGround;
+import frc.robot.Commands.gearShiftHigh;
+import frc.robot.Commands.gearShiftLow;
+import frc.robot.Commands.rotateArmPID;
+//import frc.robot.Commands.rotateArmUp;
+import frc.robot.Commands.translateIn;
+import frc.robot.Commands.translateOut;
 public class Robot extends TimedRobot {
 
 private Command autoSelected;
@@ -60,7 +66,6 @@ private NetworkTables networkTables;
 private Arm arm;
 private Claw claw;
 private Command xboxmove;
-private Lidar lidar;
 //private Command operator;
 
 
@@ -86,14 +91,13 @@ double rotationLeft, rotationRight, tranLength;
 private int dpad;
 AddressableLED m_led;
 AddressableLEDBuffer m_ledBuffer;
-private I2C.Port i2cPort;;
 
   /**
    * A Rev Color Sensor V3 object is constructed with an I2C port as a 
    * parameter. The device will be automatically initialized with default 
    * parameters.
    */
-  private ColorSensorV3 m_colorSensor;
+  //private ColorSensorV3 m_colorSensor;
 
 PhotonPipelineResult result;
 Robot() {
@@ -108,7 +112,6 @@ Robot() {
 public void robotInit() {
   
   robotContainer = new RobotContainer();
-  lidar = new Lidar(I2C.Port.kMXP);
   //xboxmove = robotContainer.getXboxMove();
   //operator = robotContainer.getOperator();
 
@@ -175,6 +178,9 @@ public void teleopPeriodic() {
   claw = robotContainer.getClaw();
   networkTables = robotContainer.getNetworkTables();
 
+
+ 
+
   throttle = Controls.driver.getRightTriggerAxis();
   reverse = Controls.driver.getLeftTriggerAxis();
   turn = Controls.driver.getLeftX();
@@ -183,8 +189,8 @@ public void teleopPeriodic() {
   rotate = Controls.xbox_driver.getLeftStickButton();
   result = drivebase.getCamera().getLatestResult();
 
-  i2cPort = I2C.Port.kOnboard;
-  m_colorSensor = new ColorSensorV3(i2cPort);
+  //m_colorSensor = new ColorSensorV3(i2cPort);
+
 /*
 
    System.out.println(throttle);
@@ -202,6 +208,7 @@ public void teleopPeriodic() {
 
    /*** Driving ***/
      //Braking
+  
    if(brake){
      //robotContainer.drivebase.stopMotors();
      left = 0;
@@ -242,6 +249,7 @@ public void teleopPeriodic() {
          right = (throttle - reverse) * sensitivity;
        }
      }
+     drivebase.drive(left, right);
    
      //After speed manipulation, send to drivebase
     /*
@@ -287,7 +295,7 @@ public void teleopPeriodic() {
   //result = drivebase.getCamera().getLatestResult();
   //System.out.println(result);
 
-  arm.printEncoderDistances();
+  //arm.printEncoderDistances();
     //robotContainer.drivebase.getSwitches();
 
    //throttle = Controls.xboxAxis(Controls.driver, "RT").getAxis();
@@ -328,6 +336,7 @@ else{
 }
 */
 
+
 if(Controls.xbox_operator.getRightBumper()){
   //arm.continuousPIDRotateArm("up");//arm.continuousPIDRotateArm("CW");//;translateArm(0.3*-1, Controls.operator.getXButton());
   arm.rotateArm(0.2*-1, true);
@@ -363,6 +372,10 @@ if (Controls.xbox_operator.getStartButton()){
   //System.out.println("Reset");
   //robotContainer.drivebase.gearShift();
 }
+
+arm.updatePID();
+
+
 /* 
 if (Controls.operator.getBackButton()){
   arm.activateFrictionBrake();
@@ -370,16 +383,7 @@ if (Controls.operator.getBackButton()){
   //robotContainer.drivebase.gearShift();
 }
 */
-if (Controls.xbox_driver.getStartButton()){
-  //arm.resetArmEncoderDistance();
-  //System.out.println("Reset");
-  drivebase.gearShift("HIGH");
-}
-else if (Controls.xbox_driver.getBackButton()){
-  //arm.resetArmEncoderDistance();
-  //System.out.println("Reset");
-  drivebase.gearShift("LOW");
-}
+
 /* 
 if(Controls.driver.getAButton()){
   System.out.println("Gyro Angle: " + drivebase.getGyro());
@@ -390,6 +394,7 @@ if(Controls.driver.getAButton()){
 
 */
 /* 
+
 dpad = Controls.xbox_driver.getPOV();
 switch (dpad){
       //pickup charge station
@@ -433,18 +438,10 @@ switch (dpad){
 
 
 //Autonomous setpoints
-Controls.operator.a().onTrue(new ZeroGround(arm, claw));
-Controls.operator.povDown().onTrue(new GroundPickup(arm, claw));
-Controls.operator.povLeft().whileTrue(new LowerNodePlace1(arm, claw)).onFalse(new LowerNodePlace2(arm, claw));
-//Controls.operator.povDown().onTrue(new StationPickup1(arm, claw));
-Controls.operator.povUp().whileTrue(new StationPickup1(arm, claw)).onFalse(new StationPickup2(arm, claw));
 
-//Claw mapping
-Controls.operator.back().onTrue(new OffClaw(claw));
-Controls.operator.rightTrigger().onTrue(new ConeClaw(claw));
-Controls.operator.leftTrigger().onTrue(new CubeClaw(claw));
-
-Controls.driver.y().onTrue(new AutoAlign(left, drivebase, networkTables));
+//Controls.driver.rightTrigger(0.05).onTrue(new XboxMove(drivebase));
+//Controls.driver.leftTrigger(0.05).onTrue(new XboxMove(drivebase));
+//Controls.driver.leftStick().onTrue(new XboxMove(drivebase));
 
 //Controls.operator.getRightBumper().
 //Controls.operator.povLeft().onTrue(new (arm));
@@ -464,9 +461,9 @@ Controls.driver.y().onTrue(new AutoAlign(left, drivebase, networkTables));
   //two motor station pickup 15.5 inches away from station
   //arm.pidRotateArm(0, 0);
   //arm.pidTranslateArm(0);
+  drivebase.setCompressor(drivebase.getPressureStatus());
 
-
-
+  claw.reportLidarDistance();
 }
 @Override
 public void disabledPeriodic() {}

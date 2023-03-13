@@ -1,79 +1,51 @@
-package frc.robot.Subsystems;
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
 
-import edu.wpi.first.wpilibj.I2C;
+//commented for everybot testing
+/* 
+package frc.robot.subsystems;
+
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
-public class Claw extends SubsystemBase {
+public class claw extends SubsystemBase {
+  /** Creates a new claw. 
 
-    private static final String String = null;
-
-    private Arm arm;
-    private Solenoid firstStage;
-    private Solenoid secondStage;
-    private Lidar lidar;
-    private I2C.Port i2cPort;
+  //creating new solenoid device
+  private Solenoid leftSolenoid;
+  private Solenoid rightSolenoid;
+  //boolean for toggling the solenoid
+  private boolean toggle;
 
 
-    public Claw(){
-        firstStage = new Solenoid(PneumaticsModuleType.CTREPCM, 1);
-        secondStage = new Solenoid(PneumaticsModuleType.CTREPCM, 2);
-        lidar = new Lidar(i2cPort);
-        
+  public claw() {
+    leftSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.solenoidConstants.LEFT_CLAW_SOLENOID);
+    rightSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.solenoidConstants.LEFT_CLAW_SOLENOID);
+    toggle = false;
+  }
+
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+  }
+  public void toggleClaw(String mode){
+    if(mode.equalsIgnoreCase("CONE")){
+      toggle = !toggle;
+      leftSolenoid.set(toggle);
+      rightSolenoid.set(toggle);
     }
-
-    public void toggleClaw(String mode){
-        switch(mode){
-            case "CUBE":
-                firstStage.set(true);
-                firstStage.set(false);
-
-            break;
-            case "CONE":
-                firstStage.set(false); //FALSE CLOSES CLAW
-                secondStage.set(false);
-            break;
-            case "OFF":
-                firstStage.set(true); //TRUE MEANS OPEN CLAW
-                secondStage.set(true);
-            break;
-
-        }
-        
+    else if(mode.equalsIgnoreCase("CUBE")){
+      toggle =!toggle;
+      leftSolenoid.set(toggle);
     }
-
-    public void autoToggleClaw(String mode){
-        if(lidar.getDistance() < 25){
-        switch(mode){
-            case "CUBE":
-                firstStage.set(true);
-                firstStage.set(false);
-
-            break;
-            case "CONE":
-                firstStage.set(false); //FALSE CLOSES CLAW
-                secondStage.set(false);
-            break;
-            case "OFF":
-                firstStage.set(true); //TRUE MEANS OPEN CLAW
-                secondStage.set(true);
-            break;
-
-        }
+    else{
+      toggle = false;
+      leftSolenoid.set(toggle);
+      rightSolenoid.set(toggle);
     }
-    
-        
-    }
-
-
-
-    public void reportLidarDistance(){
-        System.out.println(lidar.getDistance());
-    }
-
-
-
-
+  }
 }
+*/

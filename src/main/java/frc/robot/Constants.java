@@ -4,8 +4,9 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.geometry.Translation2d;
 public class Constants {
+    
 
-  public class DriveConstants {
+  public static class DriveConstants {
     //True Constants
     public static final double TELEOP_SPEED_ADJUSTMENT_RIGHT = 0.99;
     public static final double TELEOP_SPEED_ADJUSTMENT_LEFT = 1;
@@ -28,14 +29,26 @@ public class Constants {
 
     public static final int GEAR_SHIFTER = 0;
 
-    public static final double kP = 34.199;
+    public static final double kP = 1.199;
     public static final double kI = 0;
-    public static final double KD = 1.5784;
+    public static final double KD = 0;
+
+
     
     public static final int ARM_MOTOR_LEFT = 8;
     public static final int ARM_MOTOR_RIGHT = 9;
 
     public static final int TRANS_MOTOR = 7;
+    public static final double ksVolts = 0.10663;
+    public static final double kvVoltSecondsPerMeter = 0.5;//2.2348;
+    public static final double kaVoltSecondsSquaredPerMeter = 0.16689;
+    public static final double kTrackwidthMeters = 0.69;
+    public final static DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
+    public static final double kMaxSpeedMetersPerSecond = 1;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 1;
+    public static final double kPDriveVel = 1;
+    public static final double kRamseteB = 1;
+    public static final double kRamseteZeta = 0.7;
     
   }
 
@@ -68,7 +81,7 @@ public class Constants {
     //Drive Sensitivities
     public static final double DRIVE_SENSITIVITY_PRECISION = 0.5;
     public static final double DRIVE_SENSITIVITY_DEFAULT = 1;
-    public static final double SPIN_SENSITIVITY = 1.0;
+    public static final double SPIN_SENSITIVITY = 0.7;
 
     //public static final int PCM_ID = 0;
 
@@ -111,7 +124,7 @@ public class Constants {
   public static class AutoConstants {
     //True Constants
     public static final double ANGLE_THRESHOLD = 6;
-    public static final double AUTO_SPEED_ADJUSTMENT = 1.05;
+    public static final double AUTO_SPEED_ADJUSTMENT = 1.01;
     public static final double AUTO_TURN_SPEED = 0.8;
     public static final double AUTO_TURN_PRECISION = 0.5;
     public static final double ANGULAR_THRESHOLD = 2;

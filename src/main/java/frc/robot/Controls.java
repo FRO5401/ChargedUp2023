@@ -9,7 +9,8 @@ import frc.robot.Utilities.controllers.JoystickAxis;
 
 
 public class Controls {
-  // The driver's controller
+  public static final String DriveConstants = null;
+// The driver's controller
   public static XboxController xbox_driver = new XboxController(Constants.ControlConstants.XBOX_CONTROLLER_DRIVER);
   public static XboxController xbox_operator = new XboxController(Constants.ControlConstants.XBOX_CONTROLLER_OPERATOR);
   public static CommandXboxController driver = new CommandXboxController(0); // Creates a CommandXboxController on port 1.

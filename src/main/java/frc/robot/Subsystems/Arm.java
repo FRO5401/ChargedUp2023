@@ -267,12 +267,12 @@ public class Arm extends SubsystemBase {
     trans_encoder.setPosition(0);
     rotate_encoder_left.setPosition(0);
     rotate_encoder_right.setPosition(0);
-    System.out.println("I RUNNING");
+    //System.out.println("I RUNNING");
   }
 
   public void getSwitches(){
-    System.out.println("Min switch value: " + minSwitch.get());
-    System.out.println("Max switch value: " + maxSwitch.get());
+    //System.out.println("Min switch value: " + minSwitch.get());
+    //System.out.println("Max switch value: " + maxSwitch.get());
 
   }
   
@@ -301,10 +301,10 @@ public class Arm extends SubsystemBase {
     pidTransMotor2.setReference(setPoint, ControlType.kPosition);
   }
   public void printEncoderDistances(){
-    System.out.println("Rotational Encoder Left " + rotate_encoder_left.getPosition());
-    System.out.println("Rotational Encoder Right " + rotate_encoder_right.getPosition());
+    //System.out.println("Rotational Encoder Left " + rotate_encoder_left.getPosition());
+    //System.out.println("Rotational Encoder Right " + rotate_encoder_right.getPosition());
 
-    System.out.println("Translational Encoder" + trans_encoder.getPosition());
+    //System.out.println("Translational Encoder" + trans_encoder.getPosition());
   }
   /*
   public void stationPickup(){

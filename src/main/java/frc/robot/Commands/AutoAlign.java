@@ -66,24 +66,24 @@ public class AutoAlign extends CommandBase {
 		if (result.hasTargets()) {
    
 	 
-		 if(result.getBestTarget().getYaw() > 4){
+		 if(result.getBestTarget().getYaw() > 1){
 		   left = 0.4;
 		   right = -0.4;
-		   System.out.println("Turning right");
+		   //System.out.println("Turning right");
    
 		 }
 		   //Turning left
-		 else if(result.getBestTarget().getYaw() < (-4)){
+		 else if(result.getBestTarget().getYaw() < (-1)){
 		   left = -0.4;
 		   right = 0.4;
-		   System.out.println("Turning left");
+		   //System.out.println("Turning left");
 		 }
 		   //Driving straight 
 		 else{
 			 //No joystick manipulation. 
 		   left = 0.5;
 		   right = 0.5;
-		   System.out.println("Moving straight");
+		   //System.out.println("Moving straight");
    
 		 }
    
@@ -105,9 +105,6 @@ public class AutoAlign extends CommandBase {
 	// Called once after isFinished returns true
 	@Override
 	public void end(boolean interrupted) {
-		drivebase.drive(0,0);
-		// System.out.println("Angle when EXITING DriveShift:" +
-		// drivebase.getGyroAngle());
 	}
 
 	@Override

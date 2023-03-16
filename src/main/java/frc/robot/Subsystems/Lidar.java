@@ -1,60 +1,37 @@
 package frc.robot.Subsystems;
+import edu.wpi.first.wpilibj.Counter;
+import edu.wpi.first.wpilibj.DigitalSource;
 
-import java.util.TimerTask;
-import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.I2C.Port;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+public class Lidar {
+/*
+ * Adjust the Calibration Offset to compensate for differences in each unit.
+ * We've found this is a reasonably constant value for readings in the 25 cm to 600 cm range.
+ * You can also use the offset to zero out the distance between the sensor and edge of the robot.
+ */
+private static final int CALIBRATION_OFFSET = 0;
 
-public class Lidar extends SubsystemBase {
-	private I2C i2c;
-	private byte[] distanceArray;
-	private boolean started;
-	
-	private final int LIDAR_ADDR = 0x62;
-	private final int LIDAR_CONFIG_REGISTER = 0x00;
-	private final int LIDAR_DISTANCE_REGISTER = 0x8f;
-	
-	public Lidar(Port i) {
-		i2c = new I2C(i, LIDAR_ADDR);
-		
-		distanceArray = new byte[2];
-		
-    }
-	
-	// Distance in cm
-	public int convertDistance() {
-		return (int)Integer.toUnsignedLong(distanceArray[0] << 8) + Byte.toUnsignedInt(distanceArray[1]);
+private Counter counter;
+private int printedWarningCount = 5;
+
+
+public Lidar(int i) {
+	counter = new Counter(i);
+    counter.setMaxPeriod(1.0);
+    counter.setSemiPeriodMode(true);
+    counter.reset();
+}
+public double getDistance() {
+	double cm;
+
+	if (counter.get() < 1) {
+		if (printedWarningCount-- > 0) {
+			//System.out.println("Lidar: waiting for distance measurement");
+		}
+		return 0;
 	}
 
-	public double getDistance() {
-		return (((double)convertDistance())/100);
-	}
-    
-    public void start()
-    {
-        started = true;
-    }
-	
-	public void stop() {
-		started = false;
-	}
-	
-	// Update distance variable
-	public void update() {
-        if (started == true) {
-			i2c.write(0x04, 0x08 | 32);
-			i2c.write(0x11, 0xff);
-            i2c.write(LIDAR_CONFIG_REGISTER, 0x04); 
-            Timer.delay(0.04);
-            i2c.read(LIDAR_DISTANCE_REGISTER, 2, distanceArray); 
-			Timer.delay(0.02); 
-        }    
-    }
-    public void reportLidarDistance()
-    {
-        System.out.println(getDistance());
-    }
-	
-}    
+	cm = (counter.getPeriod() * 1000000.0 / 10.0) + CALIBRATION_OFFSET;
+	return cm;
+}
+
+}

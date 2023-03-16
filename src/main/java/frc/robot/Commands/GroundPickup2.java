@@ -10,19 +10,26 @@ import frc.robot.Subsystems.Arm;
 import frc.robot.Subsystems.Claw;
 
 
-public class ZeroGround extends SequentialCommandGroup {
+public class GroundPickup2 extends SequentialCommandGroup {
     Arm arm;
     Claw claw;
 
-    public ZeroGround(Arm m_arm, Claw m_claw){
+    public GroundPickup2(Arm m_arm, Claw m_claw){
         arm = m_arm;
         claw = m_claw;
         addCommands(
         //shooter.runSmart("START");
 
-        //new OffClaw(claw),
+        new OffClaw(claw),
         new translateArmPID(m_arm, 0), 
-        new rotateArmPID(m_arm, 0, 0)
+        new rotateArmPID(m_arm, 4, 4), 
+        new translateArmPID(m_arm, 10)
+        //new rotateArmPID(m_arm, 3, 3)
+
+
+
+
+
         );
     }
 }

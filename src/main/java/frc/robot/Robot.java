@@ -42,6 +42,11 @@ import frc.robot.Subsystems.NetworkTables;
 import frc.robot.Controls;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.I2C.Port;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Commands.AutoAlign;
 import frc.robot.Commands.ConeClaw;
 import frc.robot.Commands.CubeClaw;
@@ -186,6 +191,7 @@ public void teleopInit() {
   drivebase.resetEncoders();
   drivebase.resetGyroAngle();
   lidar = robotContainer.getLidar();
+  ShuffleboardTab camera = Shuffleboard.getTab("Camera");
 
 }
 
@@ -195,12 +201,13 @@ public void teleopInit() {
 @Override
 public void teleopPeriodic() {
   //System.out.println(lidar.getDistance());
- 
   feedWatchdogs();
   //lidar.reportLidarDistance();
   //lidar.update();
   //drivebase.updateOdometry();
- 
+  SmartDashboard.putNumber("Lidar Distance", lidar.getDistance());
+  SmartDashboard.putBoolean("GearShifter", drivebase.getGearShifterState());
+  
   
   throttle = Controls.driver.getRightTriggerAxis();
   reverse = Controls.driver.getLeftTriggerAxis();

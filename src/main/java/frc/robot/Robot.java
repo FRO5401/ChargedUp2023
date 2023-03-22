@@ -207,7 +207,8 @@ public void teleopPeriodic() {
   //drivebase.updateOdometry();
   SmartDashboard.putNumber("Lidar Distance", lidar.getDistance());
   SmartDashboard.putBoolean("GearShifter", drivebase.getGearShifterState());
-  
+  SmartDashboard.putNumber("Pressure level", drivebase.getPressure());
+
   
   throttle = Controls.driver.getRightTriggerAxis();
   reverse = Controls.driver.getLeftTriggerAxis();

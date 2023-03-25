@@ -33,7 +33,7 @@ public class LEDCommand extends CommandBase {
             m_LEDSubsystem = subsystem;
             m_buffer = m_LEDSubsystem.getBuffer();
             allianceColor = DriverStation.getAlliance();
-            addRequirements(m_LEDSubsystem);
+            //addRequirements(m_LEDSubsystem);
       }
 
       @Override
@@ -268,11 +268,11 @@ public class LEDCommand extends CommandBase {
       }
 
       public void idlePatternInit() {
-            System.out.println("IdlePatternInit:" + counter);
+            //System.out.println("IdlePatternInit:" + counter);
       }
 
       public void idlePattern() {
-            System.out.println("IdlePattern:" + counter);
+            //System.out.println("IdlePattern:" + counter);
 
             counter++;
 
@@ -309,11 +309,11 @@ public class LEDCommand extends CommandBase {
       }
 
       public void intakePatternInit() {
-            System.out.println("IntakeInit:" + counter);
+            //System.out.println("IntakeInit:" + counter);
       }
 
       public void intakePattern() {
-            System.out.println("Intake:" + counter);
+            //System.out.println("Intake:" + counter);
             counter++;
 
             // If counter is equal or greater to 2 (basically acting as a delay)
@@ -334,13 +334,13 @@ public class LEDCommand extends CommandBase {
       }
 
       public void shooterPatternInit() {
-            System.out.println("ShootPatternInit:" + counter);
+            //System.out.println("ShootPatternInit:" + counter);
             blueIndex = 0;
             greenIndex = 19;
       }
 
       public void shooterPattern() {
-            System.out.println("ShootPattern:" + counter);
+            //System.out.println("ShootPattern:" + counter);
             counter++;
             // Keeping track of animation speed.
             if (counter >= LIGHT_DELAY_NUM_OF_ITERATIONS) {

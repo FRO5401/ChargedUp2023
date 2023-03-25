@@ -15,12 +15,15 @@ import frc.robot.Commands.gearShiftHigh;
 import frc.robot.Utilities.PowerManagement;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.CounterBase.EncodingType;
+
 import com.kauailabs.navx.*;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.EncoderType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
@@ -45,6 +48,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.DoubleSupplier;
 
+import javax.lang.model.util.ElementKindVisitor14;
+
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -65,12 +70,19 @@ public class DriveBase extends SubsystemBase {
   private CANSparkMax rightDrive2;
   private CANSparkMax rightDrive3;
 
-  private CANSparkMax armMotorLeft, armMotorRight;
-  private CANSparkMax transMotor;
+
+  private SparkMaxPIDController leftDrive1PidController;
+  private SparkMaxPIDController leftDrive2PidController;
+  private SparkMaxPIDController leftDrive3PidController;
+
+
+  private SparkMaxPIDController rightDrive1PidController;
+  private SparkMaxPIDController rightDrive2PidController;
+  private SparkMaxPIDController rightDrive3PidController;
+
 
   DigitalInput minSwitch, maxSwitch;
 
-  private CANPIDController pidTransMotor;
 
   SparkMaxPIDController pidRotateMotor;
 
@@ -86,12 +98,11 @@ public class DriveBase extends SubsystemBase {
 
   //PID stuff
   //private int loopIndex, slotIndex;
-  private double kFF = 1;
-  private double kP = 23.183;
+  private double kP = 1.92;
   private double kI = 0;//1;
-  private double kD = 0.69334;//1.5784;
+  private double kD = 1;//1.5784;
   private double kMinOutput;
-  private double maxVel = 36.211; 
+  private double maxVel = 3; 
   private double minVel;
   private double maxAcc;
   private double allowedErr = 0.125;
@@ -125,7 +136,7 @@ public class DriveBase extends SubsystemBase {
     //compressor.disable();
     compressor.enableDigital();
     //camera = new PhotonCamera("vision");
-    camera = new PhotonCamera("NexiGo_N930AF_FHD_Webcam");
+    camera = new PhotonCamera("camera");
 
 
     pdp = new PowerDistribution();
@@ -133,26 +144,28 @@ public class DriveBase extends SubsystemBase {
     //camera = new PhotonCamera("vision");
 
   
-  leftDrive1 = new CANSparkMax(Constants.DriveConstants.DRIVE_MOTOR_LEFT_1, MotorType.kBrushless);
+    leftDrive1 = new CANSparkMax(Constants.DriveConstants.DRIVE_MOTOR_LEFT_1, MotorType.kBrushless);
     leftDrive2 = new CANSparkMax(Constants.DriveConstants.DRIVE_MOTOR_LEFT_2, MotorType.kBrushless);
    leftDrive3 = new CANSparkMax(Constants.DriveConstants.DRIVE_MOTOR_LEFT_3, MotorType.kBrushless);
     rightDrive1 = new CANSparkMax(Constants.DriveConstants.DRIVE_MOTOR_RIGHT_1, MotorType.kBrushless);
     rightDrive2 = new CANSparkMax(Constants.DriveConstants.DRIVE_MOTOR_RIGHT_2, MotorType.kBrushless);
    rightDrive3 = new CANSparkMax(Constants.DriveConstants.DRIVE_MOTOR_RIGHT_3, MotorType.kBrushless);
-   odometry = new DifferentialDriveOdometry(navxGyro.getRotation2d(), 0, 0);
 
     //armMotorLeft = new CANSparkMax(Constants.DriveConstants.ARM_MOTOR_LEFT, MotorType.kBrushless);
     //armMotorRight = new CANSparkMax(Constants.DriveConstants.ARM_MOTOR_RIGHT, MotorType.kBrushless);
 
     leftEncoders = new RelativeEncoder[3];
     rightEncoders = new RelativeEncoder[3];
-    leftEncoders[0] = leftDrive2.getAlternateEncoder(4096);
-    leftEncoders[1] = leftDrive3.getAlternateEncoder(4096);
-    leftEncoders[2] = leftDrive3.getAlternateEncoder(4096);
 
-    rightEncoders[0] = rightDrive2.getAlternateEncoder( 4096);
-    rightEncoders[1] = rightDrive3.getAlternateEncoder( 4096);
-    rightEncoders[2] = rightDrive2.getAlternateEncoder( 4096);
+    leftEncoders[0] = leftDrive1.getEncoder();
+    leftEncoders[1] = leftDrive2.getEncoder();
+    leftEncoders[2] = leftDrive3.getEncoder();
+
+    rightEncoders[0] = rightDrive1.getEncoder();
+    rightEncoders[1] = rightDrive2.getEncoder();
+    rightEncoders[2] = rightDrive3.getEncoder();
+
+
 
     rightDrive1.setSmartCurrentLimit(35, 15);
     rightDrive2.setSmartCurrentLimit(35, 15);
@@ -173,57 +186,66 @@ public class DriveBase extends SubsystemBase {
     drivebaseShuffleboard();
 
 
-    //transMotor = new CANSparkMax(Constants.DriveConstants.TRANS_MOTOR, MotorType.kBrushless);
+    leftDrive1PidController = leftDrive1.getPIDController();
+    leftDrive2PidController = leftDrive2.getPIDController();
+    leftDrive3PidController = leftDrive2.getPIDController();
+    rightDrive1PidController = rightDrive1.getPIDController();
+    rightDrive2PidController = rightDrive2.getPIDController();
+    rightDrive3PidController = rightDrive2.getPIDController();
 
-    //pidRotateMotorLeft = armMotorLeft.getPIDController();
-    //pidRotateMotorRight = armMotorRight.getPIDController();
-
-    //pidTransMotor = transMotor.getPIDController();
-  /* 
-  pidRotateMotor = new ProfiledPIDController(
-      0.025642, 0, 0.12823,
-  new TrapezoidProfile.Constraints(52.316, 7));
-  pidTransMotor = new ProfiledPIDController(
-    0.021642, 0, 0.12823,
-  new TrapezoidProfile.Constraints(52.316, 7));
-*/
-   
-    /* 
-    trans_encoder = transMotor.getEncoder();
-
-    
-    pidRotateMotorLeft.setP(0.022642);
-    pidRotateMotorLeft.setI(0);
-    pidRotateMotorLeft.setD(0.12823);
-    //pidTransMotor.setP(0.0151642);
-    pidRotateMotorRight.setP(0.022642);
-    pidRotateMotorRight.setI(0);
-    pidRotateMotorRight.setD(0.12823);
-    //pidTransMotor.setP(0.0151642);
-   
-
-    pidTransMotor.setP(0.0855);
-    pidTransMotor.setI(0);
-    pidTransMotor.setD(0.12823);
-    
-    
-    armMotorLeft.setIdleMode(IdleMode.kBrake);
-    armMotorRight.setIdleMode(IdleMode.kBrake);
-
-    //armMotorLeft.follow(armMotorRight);
-  //armMotorLeft.setInverted(true);
-  */
 
     powerManagement = new PowerManagement();
     leftDrives = new MotorControllerGroup( leftDrive1, leftDrive2, leftDrive3);
     rightDrives = new MotorControllerGroup(rightDrive1, rightDrive2, rightDrive3);
    // drivebaseMotors.add(leftDrive3);
    // drivebaseMotors.add(rightDrive3);
+    //leftDrives.setInverted(true);
+    // rightDrives.setInverted(true);
+   odometry = new DifferentialDriveOdometry(navxGyro.getRotation2d(), leftEncoders[0].getPosition(), -rightEncoders[0].getPosition());
+
    ourDrive = new DifferentialDrive(leftDrives, rightDrives);
     
-   leftDrives.setInverted(false);
+
+
    ourDrive.setExpiration(0.1);
    ourDrive.setMaxOutput(1.0);
+
+   /* 
+   leftEncoders[0].setPositionConversionFactor(100/21);
+   leftEncoders[1].setPositionConversionFactor(100/21);
+   leftEncoders[2].setPositionConversionFactor(100/21);
+
+   
+   rightEncoders[0].setPositionConversionFactor(100/21);
+   rightEncoders[1].setPositionConversionFactor(100/21);
+   rightEncoders[2].setPositionConversionFactor(100/21);
+   */
+
+   leftDrive1PidController.setP(kP);
+   leftDrive1PidController.setI(kI);
+   leftDrive1PidController.setD(kD);
+   leftDrive2PidController.setP(kP);
+   leftDrive2PidController.setI(kI);
+   leftDrive2PidController.setD(kD);
+   leftDrive3PidController.setP(kP);
+   leftDrive3PidController.setI(kI);
+   leftDrive3PidController.setD(kD);
+
+   rightDrive1PidController.setP(kP);
+   rightDrive1PidController.setI(kI);
+   rightDrive1PidController.setD(kD);
+   rightDrive2PidController.setP(kP);
+   rightDrive2PidController.setI(kI);
+   rightDrive2PidController.setD(kD);
+   rightDrive3PidController.setP(kP);
+   rightDrive3PidController.setI(kI);
+   rightDrive3PidController.setD(kD);
+    
+  
+
+
+   
+
 
 
   }
@@ -242,18 +264,29 @@ public class DriveBase extends SubsystemBase {
   }
 
   public void pidDrive(double position){
-    //setPIDPosition(pidTransMotor, trans_encoder, ControlType.kPosition, 67.01, armMotorLeft );
-    //setPIDPosition(pidTransMotor, trans_encoder, ControlType.kPosition,  167, transMotor );
-    //setPIDPosition(pidTransMotor, trans_encoder, ControlType.kPosition,  167 );
+    setPIDPosition(leftDrive1PidController, leftEncoders[0], ControlType.kPosition, position );
+    setPIDPosition(leftDrive2PidController, leftEncoders[1], ControlType.kPosition, position );
+    setPIDPosition(leftDrive3PidController, leftEncoders[2], ControlType.kPosition,  position );
 
-    //setPIDPosition(pidTransMotor, trans_encoder, ControlType.kPosition,  position );
-  }
 
-  /*
-  public PhotonCamera getCamera(){
-    return camera;
+    setPIDPosition(rightDrive1PidController, rightEncoders[0], ControlType.kPosition, position );
+    setPIDPosition(rightDrive2PidController, rightEncoders[1], ControlType.kPosition, position );
+    setPIDPosition(rightDrive3PidController,  rightEncoders[2], ControlType.kPosition,  position );
   }
-  */
+  
+
+public void switchVisionMode(int i){
+  camera.setPipelineIndex(i);
+} 
+public void activateDriverMode(){
+if(camera.getDriverMode() == true){
+  camera.setDriverMode(false);
+}
+else{
+  camera.setDriverMode(true);
+
+}
+}
 
 
 /* 
@@ -266,21 +299,13 @@ public class DriveBase extends SubsystemBase {
   public PhotonCamera getCamera(){
     return camera;
   }
-  public void initPIDController(CANPIDController m_pidController, double kP, double kI, double kD, double kIz, double kMaxOutput){
-    double p = 0, i = 0, d = 0, iz = 0, ff = 0, max = 0, min = 0, maxV = 0 , minV = 0, maxA = 0, allE = 0;
-    if((p != kP)) { m_pidController.setP(p); kP = p; }
-    if((i != kI)) { m_pidController.setI(i); kI = i; }
-    if((d != kD)) { m_pidController.setD(d); kD = d; }
-    if((iz != kIz)) { m_pidController.setIZone(iz); kIz = iz; }
-    if((ff != kFF)) { m_pidController.setFF(ff); kFF = ff; }
-    if((max != kMaxOutput) || (min != kMinOutput)) { 
-      m_pidController.setOutputRange(min, max); 
-      kMinOutput = min; kMaxOutput = max; 
-    }
-    if((maxV != maxVel)) { m_pidController.setSmartMotionMaxVelocity(maxV,0); maxVel = maxV; }
-    if((minV != minVel)) { m_pidController.setSmartMotionMinOutputVelocity(minV,0); minVel = minV; }
-    if((maxA != maxAcc)) { m_pidController.setSmartMotionMaxAccel(maxA,0); maxAcc = maxA; }
-    if((allE != allowedErr)) { m_pidController.setSmartMotionAllowedClosedLoopError(allE,0); allowedErr = allE; }
+ 
+  public float getPitch(){
+    return navxGyro.getPitch();
+  }
+
+  public float getRoll(){
+    return navxGyro.getRoll();
   }
 
   public void setPIDPosition(CANPIDController pidTransMotor2, RelativeEncoder m_encoder,  ControlType kposition, double setPoint){    
@@ -292,7 +317,7 @@ public class DriveBase extends SubsystemBase {
   }
   
   public void drive(double left, double right) {
-    ourDrive.tankDrive(left, right);
+    ourDrive.tankDrive(left * 1.011, right * 1.0);
   }
   public double getGyro(){
     return navxGyro.getAngle();
@@ -300,11 +325,7 @@ public class DriveBase extends SubsystemBase {
   public Pose2d getPose() {
     return odometry.getPoseMeters();
   }
-  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    //return new DifferentialDriveWheelSpeeds(leftDrive2.getEncoder().getVelocity(), rightDrive2.getEncoder().getVelocity());
-    return new DifferentialDriveWheelSpeeds(0,0);
-
-  }
+  
   
   public void resetOdometry(Pose2d pose) {
     odometry.resetPosition( navxGyro.getRotation2d(), 0, 0, pose);
@@ -373,7 +394,12 @@ public class DriveBase extends SubsystemBase {
   public double getAverageMotorVelocity(){ return (Math.abs(leftEncoders[0].getVelocity())+Math.abs(rightEncoders[0].getVelocity()))/2; }
   public double getLeftVelocity() { return leftEncoders[0].getVelocity(); }
   public double getRightVelocity() { return rightEncoders[0].getVelocity(); }
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+    //return new DifferentialDriveWheelSpeeds(leftDrive2.getEncoder().getVelocity(), -rightDrive2.getEncoder().getVelocity());
+    //return new DifferentialDriveWheelSpeeds(0,0);
+    return new DifferentialDriveWheelSpeeds(getLeftVelocity(), -getRightVelocity());
 
+  }
     public void drivebaseShuffleboard(){
       //Graph conf
         
@@ -390,6 +416,63 @@ public class DriveBase extends SubsystemBase {
         pressureEntry = testingTab.add("Pressure ", getPressureStatus()).getEntry();
     
   }
+
+  public double getPosition(){
+    return leftEncoders[0].getPosition();
+  }
+  public void updateOdometry(){
+    odometry.update(navxGyro.getRotation2d(), leftEncoders[0].getPosition(), rightEncoders[0].getPosition());
+}
+    public void resetEncoders() {
+        leftEncoders[0].setPosition(0);
+        leftEncoders[1].setPosition(0);
+        leftEncoders[2].setPosition(0);
+        rightEncoders[0].setPosition(0);
+        rightEncoders[1].setPosition(0);
+        rightEncoders[2].setPosition(0);
+
+      
+    }
+
+    public void autoTurn(double speed, double angle) {
+      double gyroAngle = getGyro();
+      if (gyroAngle > (angle))
+        drive(-speed, speed);
+      else if (gyroAngle < (angle))
+        drive(speed, -speed);
+      else 
+        drive(0, 0);
+    }
+
+    public void autoDrive(double left, double right, double angle) {
+     
+      if (left > 0 && right > 0){ //driving forwards
+        drive(
+          angle > 0 ? left : left * Constants.AutoConstants.AUTO_SPEED_ADJUSTMENT,
+          angle < 0 ? right : right * Constants.AutoConstants.AUTO_SPEED_ADJUSTMENT
+        );
+      }
+      else if (left < 0 && right < 0){ //driving backwards
+        drive(
+          angle < 0 ? left : left * Constants.AutoConstants.AUTO_SPEED_ADJUSTMENT,
+          angle > 0 ? right : right * Constants.AutoConstants.AUTO_SPEED_ADJUSTMENT
+        );
+      }
+      else{ //When leftDrive1 and rightDrive1 are zero
+        drive(0,0);      
+      }
+    }
+
+
+    public void printDriveBaseEncoderDistances(){
+      //System.out.println("Left Position: " + leftEncoders[0].getPosition());
+      //System.out.println("Right Position: " + rightEncoders[0].getPosition());
+
+    }
+    public void resetGyroAngle() {
+      navxGyro.reset();
+    }
+
 
 
 

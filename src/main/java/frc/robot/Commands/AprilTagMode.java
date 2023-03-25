@@ -1,24 +1,23 @@
 package frc.robot.Commands;
 
 import javax.swing.GroupLayout.Group;
+import java.lang.Thread;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Subsystems.Arm;
 import frc.robot.Subsystems.Claw;
 
+import frc.robot.Subsystems.DriveBase;
 
-
-public class GroundPickup extends CommandBase {
-    Arm arm;
-    Claw claw;
+public class AprilTagMode extends CommandBase {
+    DriveBase drivebase;
     boolean endCommand = false;
 
-    public GroundPickup(Arm m_arm, Claw m_claw){
-        arm = m_arm;
-        claw = m_claw;
-        addRequirements(arm, claw);
+    public AprilTagMode(DriveBase m_drivebase){
+        drivebase = m_drivebase;
+        addRequirements(drivebase);
+
     }
 
     @Override
@@ -27,14 +26,9 @@ public class GroundPickup extends CommandBase {
     
     @Override
     public void execute(){
-        //shooter.runSmart("START");
-        arm.pidRotateArm(60, 8);
-        Timer.delay(1);
-        arm.pidTranslateArm(-43);
-        claw.toggleClaw("OFF");
-        //claw.toggleClaw("ON");
+        //shooter.runSmart("START")
 
-   
+        drivebase.switchVisionMode(2);
         //arm.pidRotateArm(60, 3);
         endCommand = true;
     }
@@ -47,3 +41,4 @@ public class GroundPickup extends CommandBase {
       return endCommand;
     }
 }
+

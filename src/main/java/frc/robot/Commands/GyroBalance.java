@@ -32,16 +32,18 @@ public class GyroBalance extends CommandBase {
   // Called just before this Command runs the first time
   @Override
   public void initialize() {
-   
+    drivebase.resetEncoders();
+    drivebase.resetGyroAngle();
+
     //Printer.print("XboxMove");
   }
 
-  // Called repeatedly when this Command is scheduled to run
   @Override
   public void execute() {
-    if(drivebase.getGyro() <= -10 || drivebase.getGyro() >= 10){
-        drivebase.drive(speed * -1 * (drivebase.getGyro()/(Math.abs(drivebase.getGyro()))), speed * -1* (drivebase.getGyro()/(Math.abs(drivebase.getGyro()))));
+    if(drivebase.getRoll() <= -10 || drivebase.getRoll() >= 10){
+        drivebase.drive(speed *0.65 * -1 * (drivebase.getRoll()/(Math.abs(drivebase.getRoll()))), speed * 0.65 * -1* (drivebase.getRoll()/(Math.abs(drivebase.getRoll()))));
     }
+    //System.out.println(drivebase.getPitch());
     addRequirements(drivebase);
   }
 

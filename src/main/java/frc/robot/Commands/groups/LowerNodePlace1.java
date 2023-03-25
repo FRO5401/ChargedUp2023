@@ -1,21 +1,19 @@
-package frc.robot.Commands;
+package frc.robot.Commands.groups;
 
 import javax.swing.GroupLayout.Group;
+import java.lang.Thread;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Subsystems.Arm;
 import frc.robot.Subsystems.Claw;
 
-
-
-public class GroundPickup extends CommandBase {
+public class LowerNodePlace1 extends CommandBase {
     Arm arm;
     Claw claw;
     boolean endCommand = false;
 
-    public GroundPickup(Arm m_arm, Claw m_claw){
+    public LowerNodePlace1(Arm m_arm, Claw m_claw){
         arm = m_arm;
         claw = m_claw;
         addRequirements(arm, claw);
@@ -28,15 +26,23 @@ public class GroundPickup extends CommandBase {
     @Override
     public void execute(){
         //shooter.runSmart("START");
-        arm.pidRotateArm(60, 8);
+        //claw.toggleClaw("CONE");
+        arm.pidRotateArm(60, 18);
+        //Timer.delay(0.75);
+       // arm.pidTranslateArm(-40);
         Timer.delay(1);
-        arm.pidTranslateArm(-43);
-        claw.toggleClaw("OFF");
-        //claw.toggleClaw("ON");
+        
+        /*
+        Timer.delay(1);
+        claw.toggleClaw("ON");
+        arm.pidTranslateArm(0);
+        Timer.delay(0.5);
+        arm.pidRotateArm(0, 0);
+        */
 
    
         //arm.pidRotateArm(60, 3);
-        endCommand = true;
+        endCommand = false;
     }
     
     @Override

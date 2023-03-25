@@ -11,10 +11,18 @@ import javax.swing.text.DefaultStyledDocument.ElementSpec;
 
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
+
+import java.io.IOException;
 import java.lang.Thread;
+import java.nio.file.Path;
+
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
@@ -34,19 +42,20 @@ import frc.robot.Subsystems.NetworkTables;
 import frc.robot.Controls;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.I2C.Port;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Commands.AutoAlign;
 import frc.robot.Commands.ConeClaw;
 import frc.robot.Commands.CubeClaw;
 import frc.robot.Commands.GroundPickup;
-import frc.robot.Commands.LowerNodePlace1;
-import frc.robot.Commands.LowerNodePlaceB;
 import frc.robot.Commands.OffClaw;
 import frc.robot.Commands.StationPickup1;
 import frc.robot.Commands.StationPickup2;
-import frc.robot.Commands.UpperNodePlace;
 //import frc.robot.Commands.OperatorControl;
 import frc.robot.Commands.XboxMove;
-import frc.robot.Commands.ZeroGeneral;
 import frc.robot.Commands.ZeroGround;
 import frc.robot.Commands.gearShiftHigh;
 import frc.robot.Commands.gearShiftLow;
@@ -54,6 +63,8 @@ import frc.robot.Commands.rotateArmPID;
 //import frc.robot.Commands.rotateArmUp;
 import frc.robot.Commands.translateIn;
 import frc.robot.Commands.translateOut;
+import frc.robot.Commands.groups.LowerNodePlace1;
+import frc.robot.Commands.groups.UpperNodePlace;
 public class Robot extends TimedRobot {
 
 private Command autoSelected;
@@ -66,6 +77,7 @@ private NetworkTables networkTables;
 private Arm arm;
 private Claw claw;
 private Command xboxmove;
+private Lidar lidar;
 //private Command operator;
 
 
@@ -92,6 +104,11 @@ private int dpad;
 AddressableLED m_led;
 AddressableLEDBuffer m_ledBuffer;
 
+String trajectoryJSON = "paths.Unnamed.wpilib.json";
+Trajectory trajectory = new Trajectory();
+
+
+
   /**
    * A Rev Color Sensor V3 object is constructed with an I2C port as a 
    * parameter. The device will be automatically initialized with default 
@@ -114,9 +131,6 @@ public void robotInit() {
   robotContainer = new RobotContainer();
   //xboxmove = robotContainer.getXboxMove();
   //operator = robotContainer.getOperator();
-
- 
-
 }
 /**
  * This function is called every robot packet, no matter the mode. Use this for
@@ -130,7 +144,7 @@ public void robotInit() {
 @Override
 public void robotPeriodic() {
   CommandScheduler.getInstance().run();
-  
+
 }
 
 @Override
@@ -141,6 +155,13 @@ public void autonomousInit() {
     if (autoSelected != null) {
       autoSelected.schedule();
     }
+    drivebase = robotContainer.getDriveBase();
+    arm = robotContainer.getArm();
+    claw = robotContainer.getClaw();
+    lidar = robotContainer.getLidar();
+    networkTables = robotContainer.getNetworkTables();
+    drivebase.resetEncoders();
+    drivebase.resetGyroAngle();
 }
 
 /**
@@ -149,6 +170,8 @@ public void autonomousInit() {
 @Override
 public void autonomousPeriodic() {
   feedWatchdogs();
+  //drivebase.printDriveBaseEncoderDistances();
+  drivebase.updateOdometry();
 
 }
 
@@ -156,10 +179,19 @@ public void autonomousPeriodic() {
 public void teleopInit() {
   //xboxmove.schedule();
   //operator.schedule();
+
   if(autoSelected != null) {
     autoSelected.cancel();
   }
-
+ 
+  drivebase = robotContainer.getDriveBase();
+  arm = robotContainer.getArm();
+  claw = robotContainer.getClaw();
+  networkTables = robotContainer.getNetworkTables();
+  drivebase.resetEncoders();
+  drivebase.resetGyroAngle();
+  lidar = robotContainer.getLidar();
+  ShuffleboardTab camera = Shuffleboard.getTab("Camera");
 
 }
 
@@ -168,26 +200,27 @@ public void teleopInit() {
  */
 @Override
 public void teleopPeriodic() {
- 
+  //System.out.println(lidar.getDistance());
   feedWatchdogs();
   //lidar.reportLidarDistance();
   //lidar.update();
+  //drivebase.updateOdometry();
+  SmartDashboard.putNumber("Lidar Distance", lidar.getDistance());
+  SmartDashboard.putBoolean("GearShifter", drivebase.getGearShifterState());
+  SmartDashboard.putNumber("Pressure level", drivebase.getPressure());
 
-  drivebase = robotContainer.getDriveBase();
-  arm = robotContainer.getArm();
-  claw = robotContainer.getClaw();
-  networkTables = robotContainer.getNetworkTables();
-
-
- 
-
+  
   throttle = Controls.driver.getRightTriggerAxis();
   reverse = Controls.driver.getLeftTriggerAxis();
   turn = Controls.driver.getLeftX();
   precision = Controls.xbox_driver.getRightBumper();
   brake = Controls.xbox_driver.getLeftBumper();
   rotate = Controls.xbox_driver.getLeftStickButton();
-  result = drivebase.getCamera().getLatestResult();
+
+
+ 
+
+  //result = drivebase.getCamera().getLatestResult();
 
   //m_colorSensor = new ColorSensorV3(i2cPort);
 
@@ -219,8 +252,8 @@ public void teleopPeriodic() {
          //If the joystick is pushed passed the threshold. 
        if(Math.abs(turn) > Constants.ControlConstants.AXIS_THRESHOLD){
            //Sets it to spin the desired direction.
-         left = Constants.ControlConstants.SPIN_SENSITIVITY * turn;
-         right = Constants.ControlConstants.SPIN_SENSITIVITY * (turn * -1);
+         left = Constants.ControlConstants.SPIN_SENSITIVITY;
+         right = Constants.ControlConstants.SPIN_SENSITIVITY * -1;
        }
          //If its not past the threshold stop spinning
        else if(Math.abs(turn) < Constants.ControlConstants.AXIS_THRESHOLD){
@@ -249,33 +282,31 @@ public void teleopPeriodic() {
          right = (throttle - reverse) * sensitivity;
        }
      }
-     drivebase.drive(left, right);
-   
-     //After speed manipulation, send to drivebase
-    /*
-     if(Controls.xbox_driver.getYButton()){
+     //drivebase.drive(left, right);
+   /* 
+    if(Controls.xbox_driver.getAButton()){
       var result = drivebase.getCamera().getLatestResult();
 
             if (result.hasTargets()) {
 
   
       if(result.getBestTarget().getYaw() > 4){
-        left = 0.4;
-        right = -0.4;
+        left = 0.6;
+        right = -0.6;
         System.out.println("Turning right");
 
       }
         //Turning left
       else if(result.getBestTarget().getYaw() < (-4)){
-        left = -0.4;
-        right = 0.4;
+        left = -0.6;
+        right = 0.6;
         System.out.println("Turning left");
       }
         //Driving straight 
       else{
           //No joystick manipulation. 
-        left = 0.5;
-        right = 0.5;
+        left = 0.6;
+        right = 0.6;
         System.out.println("Moving straight");
 
       }
@@ -286,9 +317,9 @@ public void teleopPeriodic() {
         right = -0.6;
     }
   }
-
-  drivebase.drive(left, right);
 */
+  drivebase.drive(left, right);
+
   //new OperatorControl(arm, claw);
   //drivebase = robotContainer.getDriveBase();
   //arm = robotContainer.getArm();
@@ -296,7 +327,7 @@ public void teleopPeriodic() {
   //System.out.println(result);
 
   //arm.printEncoderDistances();
-    //robotContainer.drivebase.getSwitches();
+  //drivebase.printDriveBaseEncoderDistances();
 
    //throttle = Controls.xboxAxis(Controls.driver, "RT").getAxis();
    /*
@@ -337,13 +368,13 @@ else{
 */
 
 
-if(Controls.xbox_operator.getRightBumper()){
+if(Controls.xbox_operator.getLeftY() > 0.05){
   //arm.continuousPIDRotateArm("up");//arm.continuousPIDRotateArm("CW");//;translateArm(0.3*-1, Controls.operator.getXButton());
-  arm.rotateArm(0.2*-1, true);
+  arm.rotateArm(Controls.xbox_operator.getLeftY()*0.7, true);
 }
-else if(Controls.xbox_operator.getLeftBumper()){
+else if(Controls.xbox_operator.getLeftY() < -0.05){
   //arm.continuousPIDRotateArm("down");
-  arm.rotateArm(0.2, true);
+  arm.rotateArm(Controls.xbox_operator.getLeftY()*0.7, true);
 }
 else{
   arm.rotateArm(0, false);
@@ -352,11 +383,11 @@ else{
 
 
 
-if(Controls.xbox_operator.getXButton()){
-  arm.translateArm(0.2*-1, true);// arm.continuousPIDRotateArm("CCW");//;translateArm(0.3*-1, Controls.operator.getXButton());
+if(Controls.xbox_operator.getRightX()*0.5 > 0.05){
+  arm.translateArm(0.4, true);// arm.continuousPIDRotateArm("CCW");//;translateArm(0.3*-1, Controls.operator.getXButton());
 }
-else if(Controls.xbox_operator.getBButton()){
-  arm.translateArm(0.2,true);
+else if(Controls.xbox_operator.getRightX()*0.5 < -0.05){
+  arm.translateArm(-0.4,true);
 }
 else{
   arm.translateArm(0, false);
@@ -373,17 +404,26 @@ if (Controls.xbox_operator.getStartButton()){
   //robotContainer.drivebase.gearShift();
 }
 
-arm.updatePID();
+//arm.updatePID();
 
 
-/* 
-if (Controls.operator.getBackButton()){
-  arm.activateFrictionBrake();
+
+if (Controls.xbox_driver.getBackButton()){
+  drivebase.gearShift("LOW");
   //System.out.println("Reset");
   //robotContainer.drivebase.gearShift();
 }
-*/
+if (Controls.xbox_driver.getStartButton()){
+  drivebase.gearShift("HIGH");
+  //System.out.println("Reset");
+  //robotContainer.drivebase.gearShift();
+}
 
+if(Controls.xbox_operator.getBButton()){
+  if(lidar.getDistance() < 29 && claw.offMode() == true ){
+    claw.toggleClaw("CONE");
+  }
+}
 /* 
 if(Controls.driver.getAButton()){
   System.out.println("Gyro Angle: " + drivebase.getGyro());
@@ -393,19 +433,20 @@ if(Controls.driver.getAButton()){
 }
 
 */
-/* 
-
 dpad = Controls.xbox_driver.getPOV();
 switch (dpad){
       //pickup charge station
+      /* 
   case 0:
   //arm.pidRotateArm(60, 18);
   //arm.pidTranslateArm(10);
-    rotationLeft = 60;
+    rotationLeft = 18;
     rotationRight = 18;
     tranLength = 10;
     break;
-  case 90:
+    */
+  /* */
+  case 0:
   
     //arm.pidRotateArm(0, 0);
     //arm.pidTranslateArm(0);
@@ -418,21 +459,23 @@ switch (dpad){
     
       //arm.pidRotateArm(60, 6);
       //arm.pidTranslateArm(10); 
-    rotationLeft = 60;
+    rotationLeft = 6;
     rotationRight = 6;
     tranLength = 10;
     break;
   //place lower node
+  /* 
   case 270:
     //arm.pidRotateArm(60, 20);
     //arm.pidTranslateArm(40);
-    rotationLeft = 60;
+    rotationLeft = 20;
     rotationRight = 20;
     tranLength  = 40;
     break;
+    */
   
 }
-*/
+
 //arm.pidRotateArm(rotationLeft, rotationRight);
 //arm.pidTranslateArm(tranLength); 
 
@@ -463,7 +506,7 @@ switch (dpad){
   //arm.pidTranslateArm(0);
   drivebase.setCompressor(drivebase.getPressureStatus());
 
-  claw.reportLidarDistance();
+  //claw.reportLidarDistance();
 }
 @Override
 public void disabledPeriodic() {}

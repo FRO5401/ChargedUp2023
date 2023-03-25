@@ -118,8 +118,8 @@ public class XboxMove extends CommandBase {
           right = (throttle - reverse) * sensitivity;
         }
       }
-      System.out.println("Throttle: " + left);
-      System.out.println("Reverse: "+right );
+      //System.out.println("Throttle: " + left);
+      //System.out.println("Reverse: "+right );
       //After speed manipulation, send to drivebase. 
     drivebase.drive(left, right);
   }

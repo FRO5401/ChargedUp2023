@@ -66,6 +66,7 @@ public class Arm extends SubsystemBase {
     pidRotateMotorLeft.setP(0.032642);
     pidRotateMotorLeft.setI(0);
     pidRotateMotorLeft.setD(0.12823);
+    
   
     //pidTransMotor.setP(0.0151642);
     pidRotateMotorRight.setP(0.032823);
@@ -128,7 +129,7 @@ public class Arm extends SubsystemBase {
   }
 
   public boolean rotateLeftAtSetpoint(double setpoint){
-    if(rotate_encoder_left.getPosition() < setpoint + 0.1  && rotate_encoder_left.getPosition() > setpoint - 0.1  ){
+    if(rotate_encoder_left.getPosition() < setpoint + 1  && rotate_encoder_left.getPosition() > setpoint - 1  ){
       return true;
     }
     else{
@@ -136,7 +137,7 @@ public class Arm extends SubsystemBase {
     }
   }
   public boolean rotateRightAtSetpoint(double setpoint){
-    if(rotate_encoder_right.getPosition() < setpoint + 0.1  && rotate_encoder_right.getPosition() > setpoint - 0.1  ){
+    if(rotate_encoder_right.getPosition() < setpoint + 1  && rotate_encoder_right.getPosition() > setpoint - 1  ){
       return true;
     }
     else{
@@ -144,7 +145,7 @@ public class Arm extends SubsystemBase {
     }
   }
   public boolean transAtSetpoint(double setpoint){
-    if(trans_encoder.getPosition() < setpoint + 0.1  && trans_encoder.getPosition() > setpoint - 0.1  ){
+    if(trans_encoder.getPosition() < setpoint + 1  && trans_encoder.getPosition() > setpoint - 1  ){
       return true;
     }
     else{
@@ -175,18 +176,9 @@ public class Arm extends SubsystemBase {
       
     
   }
-  /*
+/* 
   boolean brake = false;
   public void activateFrictionBrake(){
-    /*
-    if(mode.equalsIgnoreCase("ON")){
-      frictionBrake.set(true);
-    }
-    else if(mode.equalsIgnoreCase("OFF")){
-      frictionBrake.set(false);
-    }
-  
-    //frictionBrake.toggle();
     frictionBrake.set(!brake);
   }
   */

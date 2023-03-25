@@ -20,7 +20,7 @@ import frc.robot.Subsystems.Claw;
 import frc.robot.Subsystems.DriveBase;
 
 
-public class TwoPieceAutoRedRight extends SequentialCommandGroup {
+public class SinglePieceAutoRedLeft extends SequentialCommandGroup {
   /**
    * Add your docs here.
    */
@@ -29,19 +29,65 @@ public class TwoPieceAutoRedRight extends SequentialCommandGroup {
   private Claw claw;
 
 
-  public TwoPieceAutoRedRight(double DistanceInput, double SpeedInput, DriveBase passedDrivebase, Claw passedClaw, Arm passedArm) {
+  public SinglePieceAutoRedLeft(double DistanceInput, double SpeedInput, DriveBase passedDrivebase, Claw passedClaw, Arm passedArm) {
     drivebase = passedDrivebase;
     claw = passedClaw;
     arm = passedArm;
 
     addCommands(
 
+    new ConeClaw(claw), 
+    new WaitCommand(0.25),
+
+    
+
+    new ParallelRaceGroup(
+      new WaitCommand(0.5),
+      new translateArmPID(arm, 3.5)
+    ),
+
+
+    new ParallelRaceGroup(
+      new WaitCommand(0.5),
+      new rotateArmPID(arm, 10, 10)
+    ),
+
+
+    new ParallelRaceGroup(
+      new WaitCommand(0.5),
+      new translateArmPID(arm, -5)
+
+
+
+    ),
+    new ParallelRaceGroup(
+      new WaitCommand(1),
+      new OffClaw(claw)
+
+    ),
+
+    new WaitCommand(0.5),
+
+
+  
+    new ParallelRaceGroup(
+      new translateArmPID(arm, 0),
+      new WaitCommand(0.5)
+      
+    ),
+
+    new ParallelRaceGroup(
+      new WaitCommand(0.25),
+      new rotateArmPID(arm, 0, 0)
+  ),
+
+
       /* 
       new translateArmPID(arm, 0),
       new rotateArmPID(arm, 0, SpeedInput)
       */
       
-      new AutoDrive(500,-SpeedInput, passedDrivebase),
+      new AutoDrive(500,-SpeedInput*1.1, passedDrivebase),
 
       //new AutoTurn(SpeedInput, 180, passedDrivebase),
       //new AutoGrabGround(arm, claw),
@@ -52,7 +98,7 @@ public class TwoPieceAutoRedRight extends SequentialCommandGroup {
 
 
       //new AutoDrive(193, SpeedInput, passedDrivebase), 
-      new AutoDrive(450, SpeedInput, passedDrivebase), 
+      new AutoDrive(450, SpeedInput*1.1, passedDrivebase), 
       //new translateArmPID(arm, 20),
       //new OffClaw(claw),
 
@@ -62,11 +108,11 @@ public class TwoPieceAutoRedRight extends SequentialCommandGroup {
 
       new AutoDrive(80, -SpeedInput, passedDrivebase),
 
-      new AutoTurn(SpeedInput, -90, passedDrivebase), 
+      new AutoTurn(0.9*SpeedInput, 90, passedDrivebase), 
 
       new AutoDrive(270, -SpeedInput, passedDrivebase), 
 
-      new AutoTurn(SpeedInput, 90, passedDrivebase), 
+      new AutoTurn(0.9*SpeedInput, -90, passedDrivebase), 
 
       new AutoDrive( -SpeedInput, 510, passedDrivebase), 
 

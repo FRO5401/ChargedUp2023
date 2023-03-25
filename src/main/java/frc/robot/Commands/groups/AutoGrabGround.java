@@ -8,9 +8,9 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.Commands.LidarClaw;
 import frc.robot.Commands.rotateArmPID;
-import frc.robot.Commands.translateArmPID;
+import frc.robot.Commands.actions.LidarClaw;
+import frc.robot.Commands.actions.translateArmPID;
 import frc.robot.Subsystems.Arm;
 import frc.robot.Subsystems.Claw;
 

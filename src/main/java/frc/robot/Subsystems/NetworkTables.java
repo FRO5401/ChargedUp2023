@@ -25,6 +25,7 @@ public class NetworkTables extends SubsystemBase {
 
 
   public NetworkTables() {
+    /* 
     inst = NetworkTableInstance.getDefault();
     visionTable = inst.getTable("vision");
 
@@ -47,6 +48,7 @@ public class NetworkTables extends SubsystemBase {
     inst.startDSClient();
 
     //networkTablesShuffleboard();
+    */
   }
 
   @Override
@@ -58,7 +60,7 @@ public class NetworkTables extends SubsystemBase {
 
   public void updateValue() {
      // recommended if running on DS computer; this gets the robot
-
+    /*
     conesCX = conesCXEntry.getDouble((conesCX != 0) ? conesCX : 0);
     conesCY = conesCYEntry.getDouble((conesCY != 0) ? conesCY : 0);
     cubesCX = cubesCXEntry.getDouble((cubesCX != 0) ? cubesCX : 0);
@@ -69,7 +71,7 @@ public class NetworkTables extends SubsystemBase {
     blueRobotCY = blueRobotCYEntry.getDouble((blueRobotCY != 0) ? blueRobotCY : 0);
     object_distance = objectDistanceEntry.getDouble((object_distance != 0) ? object_distance : 0);
     robot_distance = robotDistanceEntry.getDouble((object_distance != 0) ? object_distance : 0);
-
+    */
     //mode = (int)shooterVModeEntry.getDouble(mode);
     //powerPortX = powerPortXEntry.getDouble(0.0);
     //powerPortY = powerPortYEntry.getDouble(0.0);
@@ -123,8 +125,10 @@ public class NetworkTables extends SubsystemBase {
  
   
   public void resetValues(){
+    /* 
     conesCX= 0; conesCY= 0; cubesCX= 0; cubesCY= 0; 
   redRobotCX= 0; redRobotCY= 0; blueRobotCX= 0; blueRobotCY= 0; object_distance= 0; robot_distance = 0;
+  */
   }
 
   public boolean checkCentered(String type){
@@ -139,12 +143,12 @@ public class NetworkTables extends SubsystemBase {
   }
     else if (type.equalsIgnoreCase("CUBE") ){
       if(getCubesCX() >= 280 && getCubesCX() <= 320){
-        System.out.print("CENTERED");
+        //System.out.print("CENTERED");
         return true;
       }
       
       else if(((getCubesCX() < 280) & (getCubesCX() > 320)) || ((getCubesCX() > 340) & (getCubesCX() <= 640))){
-        System.out.print("NOT CENTERED");
+        //System.out.print("NOT CENTERED");
 
         return false;
       }

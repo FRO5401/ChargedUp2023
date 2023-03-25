@@ -20,7 +20,7 @@ import frc.robot.Subsystems.Claw;
 import frc.robot.Subsystems.DriveBase;
 
 
-public class TwoPieceAutoRedRight extends SequentialCommandGroup {
+public class SinglePieceAutoBlueLeftSlow extends SequentialCommandGroup {
   /**
    * Add your docs here.
    */
@@ -29,12 +29,70 @@ public class TwoPieceAutoRedRight extends SequentialCommandGroup {
   private Claw claw;
 
 
-  public TwoPieceAutoRedRight(double DistanceInput, double SpeedInput, DriveBase passedDrivebase, Claw passedClaw, Arm passedArm) {
+  public SinglePieceAutoBlueLeftSlow(double DistanceInput, double SpeedInput, DriveBase passedDrivebase, Claw passedClaw, Arm passedArm) {
     drivebase = passedDrivebase;
     claw = passedClaw;
     arm = passedArm;
 
     addCommands(
+
+    new ConeClaw(claw), 
+    new WaitCommand(0.25),
+
+    
+
+    new ParallelRaceGroup(
+      new WaitCommand(0.5),
+      new translateArmPID(arm, 3.5)
+    ),
+
+
+    new ParallelRaceGroup(
+      new WaitCommand(0.5),
+      new rotateArmPID(arm, 10, 10)
+    ),
+
+
+    new ParallelRaceGroup(
+      new WaitCommand(0.5),
+      new translateArmPID(arm, -5)
+
+
+
+    ),
+    new ParallelRaceGroup(
+      new WaitCommand(0.25),
+      new OffClaw(claw)
+
+    ),
+    new ParallelRaceGroup(
+      new WaitCommand(0.25),
+      new OffClaw(claw)
+
+    ),
+    new ParallelRaceGroup(
+      new WaitCommand(0.25),
+      new OffClaw(claw)
+
+    ),
+
+
+
+    new WaitCommand(0.5),
+
+
+  
+    new ParallelRaceGroup(
+      new translateArmPID(arm, 0),
+      new WaitCommand(0.35)
+      
+    ),
+
+    new ParallelRaceGroup(
+      new WaitCommand(0.25),
+      new rotateArmPID(arm, 0, 0)
+  ),
+
 
       /* 
       new translateArmPID(arm, 0),
@@ -62,13 +120,13 @@ public class TwoPieceAutoRedRight extends SequentialCommandGroup {
 
       new AutoDrive(80, -SpeedInput, passedDrivebase),
 
-      new AutoTurn(SpeedInput, -90, passedDrivebase), 
+      new AutoTurn(0.9*SpeedInput, 90, passedDrivebase), 
 
       new AutoDrive(270, -SpeedInput, passedDrivebase), 
 
-      new AutoTurn(SpeedInput, 90, passedDrivebase), 
+      new AutoTurn(0.9*SpeedInput, -90, passedDrivebase), 
 
-      new AutoDrive( -SpeedInput, 510, passedDrivebase), 
+      new AutoDrive( -SpeedInput, 490, passedDrivebase), 
 
       new GyroBalance(passedDrivebase, -SpeedInput*0.8)
 

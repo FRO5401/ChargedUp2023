@@ -42,6 +42,7 @@ import frc.robot.Subsystems.NetworkTables;
 import frc.robot.Controls;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.I2C.Port;
+<<<<<<< Updated upstream
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
@@ -53,17 +54,25 @@ import frc.robot.Commands.CubeClaw;
 import frc.robot.Commands.GroundPickup;
 import frc.robot.Commands.OffClaw;
 import frc.robot.Commands.StationPickup1;
+=======
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+>>>>>>> Stashed changes
 import frc.robot.Commands.StationPickup2;
 //import frc.robot.Commands.OperatorControl;
 import frc.robot.Commands.XboxMove;
 import frc.robot.Commands.ZeroGround;
-import frc.robot.Commands.gearShiftHigh;
-import frc.robot.Commands.gearShiftLow;
 import frc.robot.Commands.rotateArmPID;
-//import frc.robot.Commands.rotateArmUp;
-import frc.robot.Commands.translateIn;
-import frc.robot.Commands.translateOut;
+import frc.robot.Commands.actions.AutoAlign;
+import frc.robot.Commands.actions.ConeClaw;
+import frc.robot.Commands.actions.CubeClaw;
+import frc.robot.Commands.actions.GroundPickup;
+import frc.robot.Commands.actions.OffClaw;
+import frc.robot.Commands.actions.gearShiftHigh;
+import frc.robot.Commands.actions.gearShiftLow;
+import frc.robot.Commands.actions.translateIn;
+import frc.robot.Commands.actions.translateOut;
 import frc.robot.Commands.groups.LowerNodePlace1;
+import frc.robot.Commands.groups.StationPickup1;
 import frc.robot.Commands.groups.UpperNodePlace;
 public class Robot extends TimedRobot {
 
@@ -95,9 +104,11 @@ private double reverse = 0;
 private boolean brake;
 private double turn = 0;
 private boolean rotate;
-private double sensitivity = 0.8;
+private double sensitivity = 1.0;
 private double left = 0;
 private double right  = 0;
+
+private double distance = 0;
 
 double rotationLeft, rotationRight, tranLength;
 private int dpad;
@@ -159,7 +170,7 @@ public void autonomousInit() {
     arm = robotContainer.getArm();
     claw = robotContainer.getClaw();
     lidar = robotContainer.getLidar();
-    networkTables = robotContainer.getNetworkTables();
+    //networkTables = robotContainer.getNetworkTables();
     drivebase.resetEncoders();
     drivebase.resetGyroAngle();
 }
@@ -187,9 +198,10 @@ public void teleopInit() {
   drivebase = robotContainer.getDriveBase();
   arm = robotContainer.getArm();
   claw = robotContainer.getClaw();
-  networkTables = robotContainer.getNetworkTables();
+  //networkTables = robotContainer.getNetworkTables();
   drivebase.resetEncoders();
   drivebase.resetGyroAngle();
+
   lidar = robotContainer.getLidar();
   ShuffleboardTab camera = Shuffleboard.getTab("Camera");
 
@@ -201,15 +213,24 @@ public void teleopInit() {
 @Override
 public void teleopPeriodic() {
   //System.out.println(lidar.getDistance());
+<<<<<<< Updated upstream
+=======
+  //distance = lidar.getDistance();
+>>>>>>> Stashed changes
   feedWatchdogs();
   //lidar.reportLidarDistance();
   //lidar.update();
   //drivebase.updateOdometry();
+<<<<<<< Updated upstream
   SmartDashboard.putNumber("Lidar Distance", lidar.getDistance());
   SmartDashboard.putBoolean("GearShifter", drivebase.getGearShifterState());
   SmartDashboard.putNumber("Pressure level", drivebase.getPressure());
 
   
+=======
+ 
+  /*
+>>>>>>> Stashed changes
   throttle = Controls.driver.getRightTriggerAxis();
   reverse = Controls.driver.getLeftTriggerAxis();
   turn = Controls.driver.getLeftX();
@@ -241,6 +262,13 @@ public void teleopPeriodic() {
 
    /*** Driving ***/
      //Braking
+     /* 
+     if(precision){
+      sensitivity = 0.7;
+    }
+    else{
+      sensitivity = 1.0;
+    }
   
    if(brake){
      //robotContainer.drivebase.stopMotors();
@@ -318,7 +346,8 @@ public void teleopPeriodic() {
     }
   }
 */
-  drivebase.drive(left, right);
+  //drivebase.drive(left, right);
+
 
   //new OperatorControl(arm, claw);
   //drivebase = robotContainer.getDriveBase();
@@ -370,11 +399,11 @@ else{
 
 if(Controls.xbox_operator.getLeftY() > 0.05){
   //arm.continuousPIDRotateArm("up");//arm.continuousPIDRotateArm("CW");//;translateArm(0.3*-1, Controls.operator.getXButton());
-  arm.rotateArm(Controls.xbox_operator.getLeftY()*0.7, true);
+  arm.rotateArm(Controls.xbox_operator.getLeftY()*0.45, true);
 }
 else if(Controls.xbox_operator.getLeftY() < -0.05){
   //arm.continuousPIDRotateArm("down");
-  arm.rotateArm(Controls.xbox_operator.getLeftY()*0.7, true);
+  arm.rotateArm(Controls.xbox_operator.getLeftY()*0.45, true);
 }
 else{
   arm.rotateArm(0, false);
@@ -407,7 +436,7 @@ if (Controls.xbox_operator.getStartButton()){
 //arm.updatePID();
 
 
-
+/* 
 if (Controls.xbox_driver.getBackButton()){
   drivebase.gearShift("LOW");
   //System.out.println("Reset");
@@ -418,12 +447,15 @@ if (Controls.xbox_driver.getStartButton()){
   //System.out.println("Reset");
   //robotContainer.drivebase.gearShift();
 }
-
+*/
+/*
 if(Controls.xbox_operator.getBButton()){
-  if(lidar.getDistance() < 29 && claw.offMode() == true ){
+  if(lidar.getDistance() < 41 && claw.offMode() == true && lidar.getDistance() > 10){
     claw.toggleClaw("CONE");
   }
 }
+*/
+//SmartDashboard.putNumber("Lidar Distance", lidar.getDistance());
 /* 
 if(Controls.driver.getAButton()){
   System.out.println("Gyro Angle: " + drivebase.getGyro());
@@ -433,50 +465,56 @@ if(Controls.driver.getAButton()){
 }
 
 */
+/* 
 dpad = Controls.xbox_driver.getPOV();
 switch (dpad){
       //pickup charge station
-      /* 
-  case 0:
+    
+  case 270:
   //arm.pidRotateArm(60, 18);
   //arm.pidTranslateArm(10);
     rotationLeft = 18;
     rotationRight = 18;
-    tranLength = 10;
+    arm.pidRotateArm(rotationLeft, rotationRight);
     break;
-    */
-  /* */
-  case 0:
+
+  
+  case 90:
   
     //arm.pidRotateArm(0, 0);
     //arm.pidTranslateArm(0);
     rotationLeft = 0;
     rotationRight = 0;
-    tranLength = 0;
+    arm.pidRotateArm(rotationLeft, rotationRight);
+    //tranLength = 0;
     break;
   case 180:
   //ground pickup
     
       //arm.pidRotateArm(60, 6);
       //arm.pidTranslateArm(10); 
-    rotationLeft = 6;
-    rotationRight = 6;
-    tranLength = 10;
+    rotationLeft = 5;
+    rotationRight = 5;
+    arm.pidRotateArm(rotationLeft, rotationRight);
+    //tranLength = 10;
     break;
   //place lower node
-  /* 
-  case 270:
+  
+  case 0:
     //arm.pidRotateArm(60, 20);
     //arm.pidTranslateArm(40);
-    rotationLeft = 20;
-    rotationRight = 20;
-    tranLength  = 40;
+    rotationLeft = 19;
+    rotationRight = 19;
+    arm.pidRotateArm(rotationLeft, rotationRight);
+    //tranLength  = 40;
     break;
-    */
+    
   
 }
+*/
 
 //arm.pidRotateArm(rotationLeft, rotationRight);
+
 //arm.pidTranslateArm(tranLength); 
 
 

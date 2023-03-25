@@ -1,4 +1,4 @@
-package frc.robot.Commands;
+package frc.robot.Commands.actions;
 
 import javax.swing.GroupLayout.Group;
 import java.lang.Thread;
@@ -8,15 +8,15 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Subsystems.Arm;
 import frc.robot.Subsystems.Claw;
 
-public class rotateArmPID extends CommandBase {
+public class translateArmPID extends CommandBase {
     Arm arm;
-    double leftPosition, rightPosition;
+    double transPos;
     boolean endCommand = false;
 
-    public rotateArmPID(Arm m_arm, double m_leftPosition, double m_rightPosition){
+    public translateArmPID(Arm m_arm, double transPosition){
         arm = m_arm;
-        leftPosition = m_leftPosition;
-        rightPosition = m_rightPosition;
+        transPos = transPosition;
+
         addRequirements(arm);
     }
 
@@ -26,13 +26,12 @@ public class rotateArmPID extends CommandBase {
     
     @Override
     public void execute(){
-        if(arm.rotateLeftAtSetpoint(leftPosition) && arm.rotateLeftAtSetpoint(leftPosition)){
+        if((arm.transAtSetpoint(transPos))){
             endCommand = true;
-
 
         }
         else{
-            arm.pidRotateArm(leftPosition, rightPosition);
+        arm.pidTranslateArm(transPos);
 
         }
     }

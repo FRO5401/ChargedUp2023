@@ -56,7 +56,6 @@ public class OperatorControl extends CommandBase {
 
 
 */
-    //Printer.print("XboxMove");
   }
 
   // Called repeatedly when this Command is scheduled to run

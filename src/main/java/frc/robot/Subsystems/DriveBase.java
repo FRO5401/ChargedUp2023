@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Controls;
-import frc.robot.Commands.gearShiftHigh;
+import frc.robot.Commands.actions.gearShiftHigh;
 import frc.robot.Utilities.PowerManagement;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
@@ -60,6 +60,7 @@ public class DriveBase extends SubsystemBase {
   //true means facing front
   private boolean facingMode = true;
   PhotonCamera camera;
+  PhotonCamera camera2;
 
   // Configuring Motors
   private CANSparkMax leftDrive1;
@@ -137,7 +138,7 @@ public class DriveBase extends SubsystemBase {
     compressor.enableDigital();
     //camera = new PhotonCamera("vision");
     camera = new PhotonCamera("camera");
-
+    camera2 = new PhotonCamera("camera2");
 
     pdp = new PowerDistribution();
     navxGyro = new AHRS(SPI.Port.kMXP);
@@ -167,14 +168,13 @@ public class DriveBase extends SubsystemBase {
 
 
 
-    rightDrive1.setSmartCurrentLimit(35, 15);
-    rightDrive2.setSmartCurrentLimit(35, 15);
-    rightDrive3.setSmartCurrentLimit(35, 15);
+    rightDrive1.setSmartCurrentLimit(35, 25);
+    rightDrive2.setSmartCurrentLimit(35, 25);
+    rightDrive3.setSmartCurrentLimit(35, 25);
 
-    leftDrive1.setSmartCurrentLimit(35, 15);
-
-    leftDrive2.setSmartCurrentLimit(35, 15);
-    leftDrive3.setSmartCurrentLimit(35, 15);
+    leftDrive1.setSmartCurrentLimit(35, 25);
+    leftDrive2.setSmartCurrentLimit(35, 25);
+    leftDrive3.setSmartCurrentLimit(35, 25);
 
     //minSwitch = new DigitalInput(0);
     //maxSwitch = new DigitalInput(1);
@@ -263,15 +263,15 @@ public class DriveBase extends SubsystemBase {
     rightDrives.set(0);
   }
 
-  public void pidDrive(double position){
-    setPIDPosition(leftDrive1PidController, leftEncoders[0], ControlType.kPosition, position );
-    setPIDPosition(leftDrive2PidController, leftEncoders[1], ControlType.kPosition, position );
-    setPIDPosition(leftDrive3PidController, leftEncoders[2], ControlType.kPosition,  position );
+  public void pidDrive(double velocityLeft, double velocityRight){
+    setPIDVelocity(leftDrive1PidController, leftEncoders[0], ControlType.kSmartVelocity, velocityLeft );
+    setPIDVelocity(leftDrive2PidController, leftEncoders[1], ControlType.kSmartVelocity, velocityLeft );
+    setPIDVelocity(leftDrive3PidController, leftEncoders[2], ControlType.kSmartVelocity,  velocityLeft );
 
 
-    setPIDPosition(rightDrive1PidController, rightEncoders[0], ControlType.kPosition, position );
-    setPIDPosition(rightDrive2PidController, rightEncoders[1], ControlType.kPosition, position );
-    setPIDPosition(rightDrive3PidController,  rightEncoders[2], ControlType.kPosition,  position );
+    setPIDVelocity(rightDrive1PidController, rightEncoders[0], ControlType.kSmartVelocity, velocityRight );
+    setPIDVelocity(rightDrive2PidController, rightEncoders[1], ControlType.kSmartVelocity, velocityRight );
+    setPIDVelocity(rightDrive3PidController,  rightEncoders[2], ControlType.kSmartVelocity,  velocityRight );
   }
   
 
@@ -281,6 +281,7 @@ public void switchVisionMode(int i){
 public void activateDriverMode(){
 if(camera.getDriverMode() == true){
   camera.setDriverMode(false);
+
 }
 else{
   camera.setDriverMode(true);
@@ -299,25 +300,31 @@ else{
   public PhotonCamera getCamera(){
     return camera;
   }
+  public PhotonCamera getCamera2(){
+    return camera2;
+  }
+
  
   public float getPitch(){
     return navxGyro.getPitch();
   }
 
   public float getRoll(){
+    
     return navxGyro.getRoll();
+
   }
 
-  public void setPIDPosition(CANPIDController pidTransMotor2, RelativeEncoder m_encoder,  ControlType kposition, double setPoint){    
+  public void setPIDVelocity(CANPIDController pidTransMotor2, RelativeEncoder m_encoder,  ControlType kposition, double setPoint){    
 
       //motor.set(pidRotateMotor2.calculate(setPoint));
     
     //pidTransMotor2.setReference(setPoint, ControlType.kPosition);
-    pidTransMotor2.setReference(setPoint, ControlType.kPosition);
+    pidTransMotor2.setReference(setPoint, ControlType.kVelocity);
   }
   
   public void drive(double left, double right) {
-    ourDrive.tankDrive(left * 1.011, right * 1.0);
+    ourDrive.tankDrive(left, right);
   }
   public double getGyro(){
     return navxGyro.getAngle();
@@ -370,7 +377,7 @@ else{
   public double getPressure() { return compressor.getPressure();}
 
   public boolean getPressureStatus(){
-    if(compressor.getPressure() <= 100.0){
+    if(compressor.getPressure() <= 110.0){
       return true;
     }
     else{
@@ -472,6 +479,7 @@ else{
     public void resetGyroAngle() {
       navxGyro.reset();
     }
+    
 
 
 

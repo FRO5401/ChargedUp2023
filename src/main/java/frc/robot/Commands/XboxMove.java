@@ -67,7 +67,7 @@ public class XboxMove extends CommandBase {
     rotate = Controls.xbox_driver.getLeftStickButton();
     throttle = Controls.xbox_driver.getRightTriggerAxis();
     reverse = Controls.xbox_driver.getLeftTriggerAxis();
-    turn = Controls.xbox_driver.getLeftX();
+    turn = Controls.xbox_driver.getLeftX() * 0.8;
   
    
 
@@ -75,7 +75,12 @@ public class XboxMove extends CommandBase {
       //Braking
        /*** Precision ***/
       //Hold for Precision Speed
-
+      if(precision){
+        sensitivity = 0.7;
+      }
+      else{
+        sensitivity = 1.0;
+      }
     /*** Driving ***/
       //Braking
     if(brake){
@@ -122,6 +127,7 @@ public class XboxMove extends CommandBase {
       //System.out.println("Reverse: "+right );
       //After speed manipulation, send to drivebase. 
     drivebase.drive(left, right);
+    //drivebase.pidDrive(left, right);
   }
 
   @Override

@@ -8,15 +8,13 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Subsystems.Arm;
 import frc.robot.Subsystems.Claw;
 
-public class rotateArmPID extends CommandBase {
+public class ZeroTranslate extends CommandBase {
     Arm arm;
     double leftPosition, rightPosition;
     boolean endCommand = false;
 
-    public rotateArmPID(Arm m_arm, double m_leftPosition, double m_rightPosition){
+    public ZeroTranslate(Arm m_arm){
         arm = m_arm;
-        leftPosition = m_leftPosition;
-        rightPosition = m_rightPosition;
         addRequirements(arm);
     }
 
@@ -26,7 +24,7 @@ public class rotateArmPID extends CommandBase {
     
     @Override
     public void execute(){
-        if(arm.rotateLeftAtSetpoint(leftPosition) && arm.rotateLeftAtSetpoint(leftPosition)){
+        if(arm.transAtSetpoint(0)){
             endCommand = true;
 
 

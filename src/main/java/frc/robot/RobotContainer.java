@@ -24,41 +24,50 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Commands.AprilTagMode;
-import frc.robot.Commands.AutoAlign;
-import frc.robot.Commands.ConeClaw;
-import frc.robot.Commands.ConeMode;
-import frc.robot.Commands.CubeClaw;
-import frc.robot.Commands.DriverMode;
-import frc.robot.Commands.GroundPickup;
-import frc.robot.Commands.GroundPickup2;
-import frc.robot.Commands.LEDCommand;
-import frc.robot.Commands.OffClaw;
 import frc.robot.Commands.OperatorControl;
-import frc.robot.Commands.StationPickup1;
 import frc.robot.Commands.StationPickup2;
 import frc.robot.Commands.XboxMove;
 import frc.robot.Commands.ZeroGround;
-import frc.robot.Commands.gearShiftHigh;
-import frc.robot.Commands.gearShiftLow;
 import frc.robot.Commands.rotateArmPID;
-//import frc.robot.Commands.rotateArmUp;
-import frc.robot.Commands.translateIn;
-import frc.robot.Commands.translateOut;
-import frc.robot.Commands.groups.CenterSinglePieceAuto;
+import frc.robot.Commands.actions.AprilTagMode;
+import frc.robot.Commands.actions.AutoAlign;
+import frc.robot.Commands.actions.AutoDrive;
+import frc.robot.Commands.actions.AutoDriveFast;
+import frc.robot.Commands.actions.ConeClaw;
+import frc.robot.Commands.actions.ConeMode;
+import frc.robot.Commands.actions.CubeClaw;
+import frc.robot.Commands.actions.DriverMode;
+import frc.robot.Commands.actions.GroundPickup;
+import frc.robot.Commands.actions.GroundPickup2;
+import frc.robot.Commands.actions.LEDCommand;
+import frc.robot.Commands.actions.LidarClaw;
+import frc.robot.Commands.actions.OffClaw;
+import frc.robot.Commands.actions.gearShiftHigh;
+import frc.robot.Commands.actions.gearShiftLow;
+import frc.robot.Commands.actions.translateIn;
+import frc.robot.Commands.actions.translateOut;
 import frc.robot.Commands.groups.DoNothing;
+import frc.robot.Commands.groups.LowerNode;
 import frc.robot.Commands.groups.LowerNodePlace1;
 import frc.robot.Commands.groups.LowerNodePlaceA;
+import frc.robot.Commands.groups.SingleGroundPlacement;
+import frc.robot.Commands.groups.SinglePieceAutoBlueLeftSlow;
+import frc.robot.Commands.groups.SinglePieceAutoBlueRight;
+import frc.robot.Commands.groups.SinglePieceAutoRedLeft;
 //import frc.robot.Commands.groups.StationPickup2;
-
-import frc.robot.Commands.groups.TwoPieceAutoBlueLeft;
+import frc.robot.Commands.groups.TwoPieceAutoBlueLeftSlow;
 import frc.robot.Commands.groups.TwoPieceAutoBlueRight;
 import frc.robot.Commands.groups.TwoPieceAutoRedLeft;
 import frc.robot.Commands.groups.TwoPieceAutoRedRight;
+import frc.robot.Commands.groups.SinglePieceAutoRedRight;
+import frc.robot.Commands.groups.SinglePieceCenter;
+import frc.robot.Commands.groups.SinglePieceCenterMiddle;
+import frc.robot.Commands.groups.StationPickup1;
+import frc.robot.Commands.groups.TwoPieceAutoBlueLeftFast;
+import frc.robot.Commands.groups.TwoPieceAutoRedRightClawGround;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Subsystems.*;
-import frc.robot.Utilities.controllers.MultipleInputGroup;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -76,9 +85,9 @@ public class RobotContainer {
     
     private final NetworkTables networktables = new NetworkTables();
     private final Arm arm = new Arm();
-    private final Claw claw = new Claw();
     private final Lidar lidar;
     private final XboxMove xboxMove = new XboxMove(drivebase);
+    private final Claw claw;
 
     //private final OperatorControl operator = new OperatorControl(arm, claw);
 
@@ -94,21 +103,34 @@ public class RobotContainer {
         lidar = new Lidar(2);
         ledSubsystem = new LEDSubsystem(0);
         SolidLEDsCommand = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.SolidLEDs);
+        claw = new Claw(lidar);
         configureInputGroups();
         configureButtonBindings();
         drivebase.setDefaultCommand(xboxMove);
 
         
-        chooser.setDefaultOption("AutoTwoPieceRedRight", new TwoPieceAutoRedRight(0, 0.8, drivebase));
-        chooser.setDefaultOption("AutoTwoPieceRedLeft", new TwoPieceAutoRedLeft(0, 0.8, drivebase));
-        chooser.setDefaultOption("CenterSinglePiece", new CenterSinglePieceAuto(0, 0.8, drivebase));
-        chooser.setDefaultOption("AutoTwoPieceBlueRight", new TwoPieceAutoBlueRight(0, 0.8, drivebase));
-        chooser.setDefaultOption("AutoTwoPieceBlueLeft", new TwoPieceAutoBlueLeft(0, 0.8, drivebase));
-        chooser.setDefaultOption("DoNothing", new DoNothing());
+        chooser.setDefaultOption("SinglePieceAutoBlueLeft", new SinglePieceAutoBlueLeftSlow(0, 0.8, drivebase, claw, arm));
+        //chooser.setDefaultOption("TwoPieceAutoBlueLeft", new TwoPieceAutoBlueLeftSlow(0, 0.8, drivebase, claw, arm));
+        chooser.setDefaultOption("TwoPieceAutoBlueLeftFast", new TwoPieceAutoBlueLeftFast(0, 0.6, drivebase, claw, arm));
+        chooser.setDefaultOption("SinglePieceAutoBlueRight", new SinglePieceAutoBlueRight(0, 0.8, drivebase, claw, arm));
+        chooser.setDefaultOption("SinglePieceCenter", new SinglePieceCenter(0, 0.8, drivebase, claw, arm));
+        chooser.setDefaultOption("SinglePieceCenterMiddle", new SinglePieceCenterMiddle(0, 0.8, drivebase, claw, arm));
+        chooser.setDefaultOption("AutoDrive", new AutoDriveFast(200, 0.7, drivebase));
+
+        chooser.setDefaultOption("SinglePieceAutoRedLeft", new SinglePieceAutoRedLeft(0, 0.8, drivebase, claw, arm));
+        chooser.setDefaultOption("SinglePieceAutoRedRight", new SinglePieceAutoRedRight(0, 0.8, drivebase, claw, arm));
+
+        //chooser.setDefaultOption("AutoTwoPieceRedRightClawGround", new TwoPieceAutoRedRightClawGround(0, 0.8, drivebase, claw, arm));
+
+
+        chooser.setDefaultOption("LowerNodePlacementTest", new SingleGroundPlacement(0, 0.8, drivebase, claw, arm));
+
+
+        chooser.setDefaultOption("DoNothing", new DoNothing(drivebase));
 
 
 
-        //chooser.setDefaultOption("DoNothing", new DoNothing(drivebase));
+
         //chooser.addOption("Trajectory Test", new SetTrajectoryPath(drivebase, "paths/DriveStraight.wpilib.json")); //REPLACE LATER
         SmartDashboard.putData("Auto choices", chooser);
     
@@ -164,12 +186,18 @@ public class RobotContainer {
         driver_Controller.pov(180).whileTrue(new InstantCommand(()->arm.lowerNodePlace()));
         driver_Controller.pov(270).whileTrue(new InstantCommand(()->arm.upperNodePlace()));
         */
-        //Controls.operator.a().onTrue(Commands.parallel(new ZeroGround(arm, claw)));
+        
+        Controls.operator.povUp().whileTrue(Commands.parallel(new StationPickup2(arm, claw)));
+        Controls.operator.povRight().whileTrue(Commands.parallel(new ZeroGround(arm, claw)));//, new XboxMove(drivebase)));
         Controls.operator.povDown().whileTrue(Commands.parallel(new GroundPickup2(arm, claw)));//, new XboxMove(drivebase)));
-        Controls.operator.povUp().onTrue(Commands.parallel(new ZeroGround(arm, claw)));
-        Controls.operator.povLeft().onTrue(Commands.parallel(new LowerNodePlaceA(arm, claw)));
-        Controls.operator.povRight().onTrue(Commands.parallel(new StationPickup2(arm, claw)));
+        Controls.operator.povLeft().whileTrue(Commands.parallel(new LowerNode(arm, claw)));//, new XboxMove(drivebase)));
 
+        //Controls.operator.a().onTrue(new TwoPieceAutoRedRightClaw(0, 0.8, drivebase, claw, arm));
+
+        //Controls.operator.povUp().onTrue(Commands.parallel(new ZeroGround(arm, claw)));
+        //Controls.operator.povLeft().onTrue(Commands.parallel(new LowerNodePlaceA(arm, claw)));
+        //Controls.operator.povRight().onTrue(Commands.parallel(new StationPickup2(arm, claw)));
+        
 
         //Controls.operator.povLeft().whileTrue(Commands.parallel(new LowerNodePlaceA(arm, claw), new XboxMove(drivebase))).onFalse(Commands.parallel(new LowerNodePlaceB(arm, claw), new XboxMove(drivebase)));
         //Controls.operator.povLeft().whileTrue(new LowerNodePlace1(arm, claw).raceWith(new XboxMove(drivebase))).onFalse(new LowerNodePlace2(arm, claw));
@@ -182,6 +210,8 @@ public class RobotContainer {
         Controls.operator.y().onTrue(new OffClaw(claw));
         Controls.operator.rightTrigger().onTrue(new ConeClaw(claw));
         Controls.operator.leftTrigger().onTrue(new CubeClaw(claw));
+
+        Controls.operator.b().whileTrue(new LidarClaw(claw));
         
 
         //Controls.driver.a().onTrue(new TwoPieceAutoRed(0, 0.8, drivebase));
@@ -191,9 +221,10 @@ public class RobotContainer {
         Controls.driver.povLeft().onTrue(new ConeMode(drivebase));
         Controls.driver.povRight().onTrue(new AprilTagMode(drivebase));
         Controls.driver.povDown().onTrue(new DriverMode(drivebase));
-        Controls.driver.povUp().whileTrue(new AutoAlign(0.3, drivebase, networktables));
+        Controls.driver.povUp().whileTrue(new AutoAlign(0.2, drivebase, networktables));
 
-
+        Controls.driver.start().onTrue(new gearShiftLow(drivebase));
+        Controls.driver.back().onTrue(new gearShiftHigh(drivebase));
         // /Controls.driver.y().onTrue(new AutoAlign(left, drivebase, networkTables));
 
         //Controls.operator.rightBumper().onTrue(new rotateArmUp(arm));
@@ -205,6 +236,8 @@ public class RobotContainer {
 
         //Controls.driver.back().onTrue(new gearShiftLow(drivebase));
         //Controls.driver.start().onTrue(new gearShiftHigh(drivebase));
+        
+        
     }
 
     private void configureInputGroups(){
@@ -259,7 +292,7 @@ public class RobotContainer {
                     // Run path following command, then stop at the end.
                     return ramseteCommand.andThen(() -> drivebase.drive(0, 0));
                     */
-                    return null ;
+                    return chooser.getSelected();//new SinglePieceCenterMiddle(0, 0.8, drivebase, claw, arm);//chooser.getSelected();
     }
 
 }

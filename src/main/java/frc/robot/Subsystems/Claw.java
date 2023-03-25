@@ -16,14 +16,14 @@ public class Claw extends SubsystemBase {
     private Solenoid secondStage;
     private Lidar lidar;
 
+
     //DigitalInput source = new DigitalInput(2);
 
 
-    public Claw(){
+    public Claw(Lidar m_lidar){
         firstStage = new Solenoid(PneumaticsModuleType.CTREPCM, 1);
         secondStage = new Solenoid(PneumaticsModuleType.CTREPCM, 2);
-        //lidar = new Lidar(source);
-        
+        lidar = m_lidar;
     }
 
     public void toggleClaw(String mode){
@@ -60,7 +60,8 @@ public class Claw extends SubsystemBase {
 
     
     public boolean autoToggleClaw(){
-        if(lidar.getDistance() < 29){
+        double distance = lidar.getDistance();
+        if(distance <= 41 && distance > 10){
             toggleClaw("CONE");
             return true;
         }

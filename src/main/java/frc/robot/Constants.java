@@ -159,7 +159,9 @@ public class Constants {
     public static final int DIGITAL_INPUT_1 = 0;
     public static final int DIGITAL_INPUT_2 = 0;
     public static int ClimberStage = 0;
-     
+
+    
+    //public static final double[]  TARGET_HEIGHT_METERS = [0.8382, 0.92, 1.17];
     //29.5in 60in
     //climber angle calculations
 

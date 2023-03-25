@@ -33,5 +33,8 @@ public double getDistance() {
 	cm = (counter.getPeriod() * 1000000.0 / 10.0) + CALIBRATION_OFFSET;
 	return cm;
 }
+public int getDistanceIn(boolean b) {
+	return 0;
+}
 
 }

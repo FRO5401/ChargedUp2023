@@ -6,10 +6,10 @@ import java.lang.Thread;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Commands.ConeClaw;
-import frc.robot.Commands.OffClaw;
 import frc.robot.Commands.rotateArmPID;
-import frc.robot.Commands.translateArmPID;
+import frc.robot.Commands.actions.ConeClaw;
+import frc.robot.Commands.actions.OffClaw;
+import frc.robot.Commands.actions.translateArmPID;
 import frc.robot.Subsystems.Arm;
 import frc.robot.Subsystems.Claw;
 
@@ -22,8 +22,8 @@ public class StationPickup2 extends SequentialCommandGroup {
         arm = m_arm;
         claw = m_claw;
         addCommands(
-            new OffClaw(claw),
-            new rotateArmPID(arm, 19, 19)
+            //new OffClaw(claw),
+            new rotateArmPID(arm, 13, 13)
 
         
         

@@ -55,10 +55,6 @@ public class Claw extends SubsystemBase {
         }
     }
 
-
-
-
-    
     public boolean autoToggleClaw(){
         double distance = lidar.getDistance();
         if(distance <= 41 && distance > 10){
@@ -69,12 +65,5 @@ public class Claw extends SubsystemBase {
             return false;
         }
     }
-    
-       
-
-
-
-
-
 
 }

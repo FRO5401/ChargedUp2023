@@ -34,6 +34,7 @@ public class Arm extends SubsystemBase {
 
   DigitalInput minSwitch, maxSwitch;
 
+//setting the pid values again
   private double kFF = 1;
   private double kP = 23.183;
   private double kI = 0;//1;
@@ -45,6 +46,8 @@ public class Arm extends SubsystemBase {
   private double allowedErr = 0.125;
 
   public Arm() {
+
+    //creating the objects
     armMotorLeft = new CANSparkMax(Constants.DriveConstants.ARM_MOTOR_LEFT, MotorType.kBrushless);
     armMotorRight = new CANSparkMax(Constants.DriveConstants.ARM_MOTOR_RIGHT, MotorType.kBrushless);
     transMotor = new CANSparkMax(Constants.DriveConstants.TRANS_MOTOR, MotorType.kBrushless);
@@ -62,7 +65,7 @@ public class Arm extends SubsystemBase {
 
     trans_encoder = transMotor.getEncoder();
 
-    
+    // setting pid values
     pidRotateMotorLeft.setP(0.032642);
     pidRotateMotorLeft.setI(0);
     pidRotateMotorLeft.setD(0.12823);

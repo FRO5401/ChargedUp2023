@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Commands.OperatorControl;
 import frc.robot.Commands.StationPickup2;
 import frc.robot.Commands.XboxMove;
 import frc.robot.Commands.ZeroGround;
@@ -82,7 +81,6 @@ public class RobotContainer {
     private final SendableChooser<Command> chooser = new SendableChooser<Command>();
     // The robot's subsystems
     private final  DriveBase drivebase = new DriveBase();
-    
     private final NetworkTables networktables = new NetworkTables();
     private final Arm arm = new Arm();
     private final Lidar lidar;
@@ -108,7 +106,8 @@ public class RobotContainer {
         configureButtonBindings();
         drivebase.setDefaultCommand(xboxMove);
 
-        
+        //Chooser appears in shuffleboard all allows our driveteam to pick our auto live
+
         chooser.setDefaultOption("SinglePieceAutoBlueLeft", new SinglePieceAutoBlueLeftSlow(0, 0.8, drivebase, claw, arm));
         //chooser.setDefaultOption("TwoPieceAutoBlueLeft", new TwoPieceAutoBlueLeftSlow(0, 0.8, drivebase, claw, arm));
         chooser.setDefaultOption("TwoPieceAutoBlueLeftFast", new TwoPieceAutoBlueLeftFast(0, 0.6, drivebase, claw, arm));
@@ -166,6 +165,7 @@ public class RobotContainer {
         return claw;
     }
 
+    //Binds Xbox Buttons to Commands
     private void configureButtonBindings() {
         //Controls.driver.rightTrigger(0.05).onTrue(new XboxMove(drivebase));
         //Controls.driver.leftTrigger(0.05).onTrue(new XboxMove(drivebase));
@@ -292,6 +292,8 @@ public class RobotContainer {
                     // Run path following command, then stop at the end.
                     return ramseteCommand.andThen(() -> drivebase.drive(0, 0));
                     */
+
+                    //sets it so that the selected auto is the auto command
                     return chooser.getSelected();//new SinglePieceCenterMiddle(0, 0.8, drivebase, claw, arm);//chooser.getSelected();
     }
 

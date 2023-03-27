@@ -42,21 +42,11 @@ import frc.robot.Subsystems.NetworkTables;
 import frc.robot.Controls;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.I2C.Port;
-<<<<<<< Updated upstream
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Commands.AutoAlign;
-import frc.robot.Commands.ConeClaw;
-import frc.robot.Commands.CubeClaw;
-import frc.robot.Commands.GroundPickup;
-import frc.robot.Commands.OffClaw;
-import frc.robot.Commands.StationPickup1;
-=======
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
->>>>>>> Stashed changes
 import frc.robot.Commands.StationPickup2;
 //import frc.robot.Commands.OperatorControl;
 import frc.robot.Commands.XboxMove;
@@ -213,21 +203,17 @@ public void teleopInit() {
 @Override
 public void teleopPeriodic() {
   //System.out.println(lidar.getDistance());
-<<<<<<< Updated upstream
-=======
-  //distance = lidar.getDistance();
->>>>>>> Stashed changes
   feedWatchdogs();
   //lidar.reportLidarDistance();
   //lidar.update();
   //drivebase.updateOdometry();
-<<<<<<< Updated upstream
+  
   SmartDashboard.putNumber("Lidar Distance", lidar.getDistance());
-  SmartDashboard.putBoolean("GearShifter", drivebase.getGearShifterState());
+  SmartDashboard.putBoolean("GearShifter", drivebase.getGear());
   SmartDashboard.putNumber("Pressure level", drivebase.getPressure());
 
   
-=======
+
  
   /*
 >>>>>>> Stashed changes

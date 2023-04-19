@@ -41,7 +41,7 @@ public class GyroBalance extends CommandBase {
   @Override
   public void execute() {
     if(drivebase.getRoll() <= -10 || drivebase.getRoll() >= 10){
-        drivebase.drive(speed *0.65 * -1 * (drivebase.getRoll()/(Math.abs(drivebase.getRoll()))), speed * 0.65 * -1* (drivebase.getRoll()/(Math.abs(drivebase.getRoll()))));
+        drivebase.drive(speed *0.6 * -1 * (drivebase.getRoll()/(Math.abs(drivebase.getRoll()))), speed * 0.6 * -1* (drivebase.getRoll()/(Math.abs(drivebase.getRoll()))));
     }
     //System.out.println(drivebase.getPitch());
     addRequirements(drivebase);

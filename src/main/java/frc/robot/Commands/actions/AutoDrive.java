@@ -7,7 +7,7 @@ public class AutoDrive extends CommandBase {
 
     private DriveBase drivebase;
 	private double angle, desiredDistance, autoDriveSpeed, distanceTraveled; //Can declare variables next to each other
-	private boolean doneTraveling;
+	private boolean doneTraveling = false;
 
 	public AutoDrive(double DistanceInput, double SpeedInput, DriveBase passedDrivebase) {
 		// Use requires() here to declare subsystem dependencies
@@ -53,7 +53,7 @@ public class AutoDrive extends CommandBase {
             doneTraveling = false;
             */
         } else {
-            drivebase.drive(0,0);
+            //drivebase.drive(0,0);
             doneTraveling = true;
         }
     }

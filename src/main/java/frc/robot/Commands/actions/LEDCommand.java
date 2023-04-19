@@ -5,12 +5,13 @@ import frc.robot.Subsystems.LEDSubsystem;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 // TODO remove println's, format code, remove dead code, rewiew intake/shoot patterns, clean up warning
 public class LEDCommand extends CommandBase {
 
-      private static final int LIGHT_DELAY_NUM_OF_ITERATIONS = 32;
+      private static final int LIGHT_DELAY_NUM_OF_ITERATIONS = 20;
 
       // ----- CONSTANT(S) -----\\
       private int counter = 0;
@@ -21,6 +22,9 @@ public class LEDCommand extends CommandBase {
       private int yellowOnIndex = 49;
       private int blueIndex = 0;
       private int greenIndex = 19;
+      private int r_value;
+      private int g_value;
+      private int b_value;
       private Alliance allianceColor;
       // The LED Subsystem (strip) itself
       private final LEDSubsystem m_LEDSubsystem;
@@ -28,13 +32,19 @@ public class LEDCommand extends CommandBase {
       // ------CONSTUCTOR(S)--------\\
       private final AddressableLEDBuffer m_buffer;
 
-      public LEDCommand(LEDSubsystem subsystem, LEDPatterns pattern) {
+      public LEDCommand(LEDSubsystem subsystem, LEDPatterns pattern, int r, int g, int b) {
+            r_value = r;
+            g_value = g;
+            b_value = b;
+
             m_pattern = pattern;
             m_LEDSubsystem = subsystem;
             m_buffer = m_LEDSubsystem.getBuffer();
             allianceColor = DriverStation.getAlliance();
             addRequirements(m_LEDSubsystem);
       }
+
+      
 
       @Override
       public void initialize() {
@@ -66,7 +76,7 @@ public class LEDCommand extends CommandBase {
             } else if (m_pattern == LEDPatterns.EveryOther) {
                   everyOther();
             } else if (m_pattern == LEDPatterns.IdlePattern) {
-                  idlePattern();
+                  idlePattern(r_value, g_value, b_value);
             } else if (m_pattern == LEDPatterns.IntakePattern) {
                   intakePattern();
             } else if (m_pattern == LEDPatterns.ShooterPattern) {
@@ -271,41 +281,58 @@ public class LEDCommand extends CommandBase {
             //System.out.println("IdlePatternInit:" + counter);
       }
 
-      public void idlePattern() {
+      public void idlePattern(int r, int g, int b) {
             //System.out.println("IdlePattern:" + counter);
-
             counter++;
-
-            // If counter is equal or greater to LIGHT_DELAY_NUM_OF_ITERATIONS (basically
-            // acting as a delay)
             if (counter >= LIGHT_DELAY_NUM_OF_ITERATIONS) {
-                  animCheck = !animCheck;
-                  counter = 0;
-            }
             if (animCheck == true) {
+
                   /**
                    * sets the LED pattern to:
                    * 10101010101010......
                    * 
-                   * (0 being off, 1 being yellow)
+                   * (0 being off, 1 being blue)
                    */
-                  for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i += 2) {
-                        m_buffer.setRGB(i, 150, 150, 0); // Yellow
-                        m_buffer.setRGB(i + 1, 0, 0, 150); // Blue
+                  for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
+                        if (i % 2 == 0) { // Sets every other LED to bright blue
+                              m_buffer.setRGB(i, r, g, b);
+                        } else {
+                              m_buffer.setRGB(i, 0, 0, 0);
+                        }
                   }
+
+                  // Sets animCheck to false for pattern switch next time the delay is finished
+                  animCheck = false;
+
             } else {
+
                   /**
-                   * sets the LED pattern to:
+                   * Clears the LED strip and sets all LED's to off
+                   */
+                  for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
+                        m_buffer.setRGB(i, 0, 0, 0);
+                  }
+
+                  /**
+                   * Sets the LED pattern to:
                    * 01010101010101......
                    * 
-                   * (0 being off, 1 being yellow)
+                   * (0 being off, 1 being blue)
                    */
-                  for (int i = 1; i < m_LEDSubsystem.getBufferLength(); i += 2) {
-                        m_buffer.setRGB(i, 150, 150, 0); // Yellow
-                        m_buffer.setRGB(i - 1, 0, 0, 150); // Blue
+                  for (int i = 1; i < m_LEDSubsystem.getBufferLength(); i += 2) { // Sets every other LED to
+                                                                                  // bright blue
+                        m_buffer.setRGB(i, r, g, b);
                   }
+
+                  // Sets animCheck to true for pattern switch next time the delay is finished
+                  animCheck = true;
+
             }
             m_LEDSubsystem.setBuffer(m_buffer);
+                  // Resets the counter to 0 once the pattern is set
+            counter = 0;
+      }
+                  
       }
 
       public void intakePatternInit() {
@@ -325,6 +352,23 @@ public class LEDCommand extends CommandBase {
                         moveLEDs(); // Moves the LEDs
                         m_buffer.setRGB(blueOnIndex, 0, 0, 255); // Blue
                         m_buffer.setRGB(yellowOnIndex, 255, 255, 0); // Yellow
+                  }
+
+                  // Resets the counter to 0 once the pattern is set
+                  counter = 0;
+                  m_LEDSubsystem.setBuffer(m_buffer);
+            }
+      }
+
+      public void rainbowPattern(){
+            counter++;
+
+            // If counter is equal or greater to 2 (basically acting as a delay)
+            if (counter >= LIGHT_DELAY_NUM_OF_ITERATIONS) {
+                  for (int ii = 0; ii < m_LEDSubsystem.getBufferLength() + 3; ii++) {
+
+                        m_buffer.setRGB(blueOffIndex, ii, ii+1, ii+2);
+
                   }
 
                   // Resets the counter to 0 once the pattern is set

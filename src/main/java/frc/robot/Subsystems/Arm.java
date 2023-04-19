@@ -34,7 +34,6 @@ public class Arm extends SubsystemBase {
 
   DigitalInput minSwitch, maxSwitch;
 
-//setting the pid values again
   private double kFF = 1;
   private double kP = 23.183;
   private double kI = 0;//1;
@@ -45,9 +44,10 @@ public class Arm extends SubsystemBase {
   private double maxAcc;
   private double allowedErr = 0.125;
 
-  public Arm() {
+  private boolean armMode = true;
 
-    //creating the objects
+
+  public Arm() {
     armMotorLeft = new CANSparkMax(Constants.DriveConstants.ARM_MOTOR_LEFT, MotorType.kBrushless);
     armMotorRight = new CANSparkMax(Constants.DriveConstants.ARM_MOTOR_RIGHT, MotorType.kBrushless);
     transMotor = new CANSparkMax(Constants.DriveConstants.TRANS_MOTOR, MotorType.kBrushless);
@@ -65,7 +65,7 @@ public class Arm extends SubsystemBase {
 
     trans_encoder = transMotor.getEncoder();
 
-    // setting pid values
+    
     pidRotateMotorLeft.setP(0.032642);
     pidRotateMotorLeft.setI(0);
     pidRotateMotorLeft.setD(0.12823);
@@ -129,6 +129,14 @@ public class Arm extends SubsystemBase {
     //setPIDPosition(pidRotateMotor, rotate_encoder, ControlType.kPosition,  setpoint );
       
     
+  }
+
+  public boolean getArmMode(){
+    return armMode;
+  }
+  public boolean setArmMode(){
+    armMode = !armMode;
+    return armMode;
   }
 
   public boolean rotateLeftAtSetpoint(double setpoint){
@@ -297,9 +305,12 @@ public class Arm extends SubsystemBase {
   }
   public void printEncoderDistances(){
     //System.out.println("Rotational Encoder Left " + rotate_encoder_left.getPosition());
-    //System.out.println("Rotational Encoder Right " + rotate_encoder_right.getPosition());
+    System.out.println("Rotational Encoder Right " + rotate_encoder_right.getPosition());
 
     //System.out.println("Translational Encoder" + trans_encoder.getPosition());
+  }
+  public double reportRotationsalEncoder(){
+    return rotate_encoder_right.getPosition();
   }
   /*
   public void stationPickup(){

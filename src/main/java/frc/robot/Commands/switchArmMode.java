@@ -1,4 +1,4 @@
-package frc.robot.Commands.actions;
+package frc.robot.Commands;
 
 import javax.swing.GroupLayout.Group;
 import java.lang.Thread;
@@ -8,19 +8,14 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Subsystems.Arm;
 import frc.robot.Subsystems.Claw;
 
-import frc.robot.Subsystems.DriveBase;
-import frc.robot.Subsystems.Lidar;
-
-public class LidarClaw extends CommandBase {
-    Claw claw; 
-    String mode;
+public class switchArmMode extends CommandBase {
+    Arm arm;
     boolean endCommand = false;
 
-    public LidarClaw(Claw m_claw, String m_mode){
-        claw = m_claw;
-        mode = m_mode;
-        addRequirements(claw);
+    public switchArmMode(Arm m_arm){
+        arm = m_arm;
 
+        addRequirements(arm);
     }
 
     @Override
@@ -29,19 +24,16 @@ public class LidarClaw extends CommandBase {
     
     @Override
     public void execute(){
-        //shooter.runSmart("START")
-        claw.autoToggleClaw();
-
-
-        //arm.pidRotateArm(60, 3);
+        arm.setArmMode();
     }
     
     @Override
     public void end(boolean interrupted){
+        //arm.rotateArm(0, endCommand);
+
     }
     @Override
     public boolean isFinished() {
       return endCommand;
     }
 }
-

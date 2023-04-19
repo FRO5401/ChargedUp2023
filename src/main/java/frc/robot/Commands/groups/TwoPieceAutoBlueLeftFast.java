@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Commands.rotateArmPID;
 import frc.robot.Commands.actions.AutoDrive;
+import frc.robot.Commands.actions.AutoDriveFast;
 import frc.robot.Commands.actions.AutoTurn;
 import frc.robot.Commands.actions.ConeClaw;
 import frc.robot.Commands.actions.CubeClaw;
@@ -48,11 +49,40 @@ public class TwoPieceAutoBlueLeftFast extends SequentialCommandGroup {
     new WaitCommand(0.25),
     */
     //new AutoDrive(10, -SpeedInput, drivebase),
-    new gearShiftHigh(drivebase),
+    // new gearShiftHigh(drivebase),
     new ParallelRaceGroup(
-      new WaitCommand(1),
+      new WaitCommand(0.5),
       new translateArmPID(arm, 3.5)
     ),
+
+    new AutoDriveFast(410, SpeedInput, drivebase),
+    new ParallelRaceGroup(
+      new WaitCommand(0.5),
+      new OffClaw(claw)
+
+    ),
+    new ParallelRaceGroup(
+      new WaitCommand(0.5),
+      new rotateArmPID(arm, 5, 5)
+    ),
+
+
+    new ParallelRaceGroup(
+      new WaitCommand(1),
+      new translateArmPID(arm, -40)
+    ),
+
+    new ParallelCommandGroup(
+      new AutoDriveFast(20, SpeedInput*0.3, passedDrivebase),
+      new LidarClaw(passedClaw, null)
+    ),
+
+
+    //new WaitCommand(0.1),
+    
+
+    
+  
     /* 
     new ParallelRaceGroup(
       new WaitCommand(0.5),
@@ -65,13 +95,10 @@ public class TwoPieceAutoBlueLeftFast extends SequentialCommandGroup {
       new translateArmPID(arm, -5)
 
     ),
-    new ParallelRaceGroup(
-      new WaitCommand(0.5),
-      new OffClaw(claw)
-
-    ),
     */
-    /* 
+    
+    
+    
     new ParallelRaceGroup(
       new WaitCommand(0.5),
       new translateArmPID(arm, 0)
@@ -81,29 +108,19 @@ public class TwoPieceAutoBlueLeftFast extends SequentialCommandGroup {
       new WaitCommand(0.5),
       new rotateArmPID(arm, 0, 0)
     ),
-    */
-    new AutoDrive(1000, SpeedInput, drivebase),
+  /*
     new ParallelRaceGroup( 
       new OffClaw(claw),
       new WaitCommand(0.25)
     ),
+    */
   //new AutoTurn(SpeedInput, 172.5, drivebase),
-
-    new ParallelRaceGroup(
-      new WaitCommand(0.5),
-      new rotateArmPID(arm, 5, 5)
-    ),
-
-
-    new ParallelRaceGroup(
-      new WaitCommand(1),
-      new translateArmPID(arm, -40)
-    ),
-
-    new AutoDrive(100, SpeedInput*0.5, passedDrivebase),
-
+/* 
     
-    new WaitCommand(1),
+*/
+
+    /* 
+    new WaitCommand(0.1),
     new CubeClaw(passedClaw),
 
     new ParallelRaceGroup(
@@ -115,15 +132,15 @@ public class TwoPieceAutoBlueLeftFast extends SequentialCommandGroup {
       new WaitCommand(0.5),
       new rotateArmPID(arm, 0, 0)
     ),  
+    */
+    new AutoDriveFast(420, -SpeedInput, drivebase),
+    //new gearShiftLow(drivebase),
 
-    new AutoDrive(1000, -SpeedInput, drivebase),
-    new gearShiftLow(drivebase),
-
-    new AutoTurn(SpeedInput*0.8, 173, drivebase),
-    new AutoDrive(100, SpeedInput, drivebase),
+    new AutoTurn(SpeedInput*0.8, 185, drivebase),
+    new AutoDriveFast(30, SpeedInput*0.4, drivebase),
 
 
-
+    
     new ParallelRaceGroup(
       new WaitCommand(0.5),
       new rotateArmPID(arm, 16, 16)
@@ -132,14 +149,14 @@ public class TwoPieceAutoBlueLeftFast extends SequentialCommandGroup {
 
     new ParallelRaceGroup(
       new WaitCommand(0.75),
-      new translateArmPID(arm, -40)
+      new translateArmPID(arm, -50)
 
     ),
 
 
     
     new ParallelCommandGroup(
-      new WaitCommand(1),
+      new WaitCommand(0.1),
       new OffClaw(claw)
     ),
 
@@ -154,6 +171,7 @@ public class TwoPieceAutoBlueLeftFast extends SequentialCommandGroup {
       new rotateArmPID(arm, 0, 0)
     )
 
+  
 
     
     

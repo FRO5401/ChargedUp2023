@@ -22,19 +22,25 @@ public Lidar(int i) {
 }
 public double getDistance() {
 	double cm;
-
+	/* */
 	if (counter.get() < 1) {
 		if (printedWarningCount-- > 0) {
 			//System.out.println("Lidar: waiting for distance measurement");
 		}
-		return 0;
+		//return 0;
 	}
 
 	cm = (counter.getPeriod() * 1000000.0 / 10.0) + CALIBRATION_OFFSET;
 	return cm;
 }
-public int getDistanceIn(boolean b) {
-	return 0;
+public boolean getDistanceInRange() {
+	double distance = getDistance();
+    if(distance <= 35 && distance > 32){//38
+            return true;
+        }
+        else{
+            return false;
+        }
 }
 
 }

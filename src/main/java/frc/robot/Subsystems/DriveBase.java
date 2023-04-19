@@ -72,7 +72,6 @@ public class DriveBase extends SubsystemBase {
   private CANSparkMax rightDrive3;
 
 
-  //configuring your PID controllers
   private SparkMaxPIDController leftDrive1PidController;
   private SparkMaxPIDController leftDrive2PidController;
   private SparkMaxPIDController leftDrive3PidController;
@@ -88,16 +87,19 @@ public class DriveBase extends SubsystemBase {
 
   SparkMaxPIDController pidRotateMotor;
 
+  private RelativeEncoder rotate_encoder, trans_encoder;
 
   // Configuring Drives
   private MotorControllerGroup leftDrives;
   private MotorControllerGroup rightDrives;
   private DifferentialDrive ourDrive;
   private DifferentialDriveOdometry odometry;
+  private int motorCurrent = 24;
 
   private boolean compressorState = false;
 
-  //Setting PID gains based off of sysId values
+  //PID stuff
+  //private int loopIndex, slotIndex;
   private double kP = 1.92;
   private double kI = 0;//1;
   private double kD = 1;//1.5784;
@@ -107,26 +109,25 @@ public class DriveBase extends SubsystemBase {
   private double maxAcc;
   private double allowedErr = 0.125;
 
+  // varibles for speed adjustment
+  private double kEncoder = 0.01;//3;
+  double percentDifference;
+
   //private int iaccum = 0;
 
-  // Solenoid for gearshifting
+  // Solenoid
   private Solenoid gearShifter;
 
-  
-  public Compressor compressor;
-
-  // Array of encoders for the drivebase
+  // Sensors
   private RelativeEncoder leftEncoders[];
   private RelativeEncoder rightEncoders[];
-
-
-
-// special type of list, used because its eaiser to itterate through 
+  public Compressor compressor;
+  private PowerDistribution pdp;
+  private PowerManagement powerManagement;
   Collection<CANSparkMax> drivebaseMotors;
-
+  private double overCurrentTime;
+  private boolean overCurrentFlag;
   SparkMaxPIDController pidRotateMotorLeft;
-
-  //object that generates the corrdinate of our object in photon 
   PhotonTrackedTarget target;
   /**
    *
@@ -144,7 +145,7 @@ public class DriveBase extends SubsystemBase {
     camera = new PhotonCamera("camera");
     camera2 = new PhotonCamera("camera2");
 
-   
+    pdp = new PowerDistribution();
     navxGyro = new AHRS(SPI.Port.kMXP);
     //camera = new PhotonCamera("vision");
 
@@ -172,13 +173,12 @@ public class DriveBase extends SubsystemBase {
 
 
 
-    rightDrive1.setSmartCurrentLimit(35, 25);
-    rightDrive2.setSmartCurrentLimit(35, 25);
-    rightDrive3.setSmartCurrentLimit(35, 25);
-
-    leftDrive1.setSmartCurrentLimit(35, 25);
-    leftDrive2.setSmartCurrentLimit(35, 25);
-    leftDrive3.setSmartCurrentLimit(35, 25);
+    rightDrive1.setSmartCurrentLimit(motorCurrent, motorCurrent); //15, 10
+    rightDrive2.setSmartCurrentLimit(motorCurrent, motorCurrent);
+    rightDrive3.setSmartCurrentLimit(motorCurrent, motorCurrent);
+    leftDrive1.setSmartCurrentLimit(motorCurrent,motorCurrent);
+    leftDrive2.setSmartCurrentLimit(motorCurrent, motorCurrent);
+    leftDrive3.setSmartCurrentLimit(motorCurrent, motorCurrent);
 
     //minSwitch = new DigitalInput(0);
     //maxSwitch = new DigitalInput(1);
@@ -187,6 +187,7 @@ public class DriveBase extends SubsystemBase {
 
     gearShifter = new Solenoid(PneumaticsModuleType.CTREPCM, 0);
 
+    drivebaseShuffleboard();
 
 
     leftDrive1PidController = leftDrive1.getPIDController();
@@ -197,7 +198,7 @@ public class DriveBase extends SubsystemBase {
     rightDrive3PidController = rightDrive2.getPIDController();
 
 
-
+    powerManagement = new PowerManagement();
     leftDrives = new MotorControllerGroup( leftDrive1, leftDrive2, leftDrive3);
     rightDrives = new MotorControllerGroup(rightDrive1, rightDrive2, rightDrive3);
    // drivebaseMotors.add(leftDrive3);
@@ -243,6 +244,14 @@ public class DriveBase extends SubsystemBase {
    rightDrive3PidController.setP(kP);
    rightDrive3PidController.setI(kI);
    rightDrive3PidController.setD(kD);
+    
+  
+
+
+   
+
+
+
   }
 
 
@@ -273,16 +282,15 @@ public class DriveBase extends SubsystemBase {
 public void switchVisionMode(int i){
   camera.setPipelineIndex(i);
 } 
-
 public void activateDriverMode(){
 if(camera.getDriverMode() == true){
   camera.setDriverMode(false);
-  }
 
+}
 else{
   camera.setDriverMode(true);
-  }
 
+}
 }
 
 
@@ -296,7 +304,6 @@ else{
   public PhotonCamera getCamera(){
     return camera;
   }
-
   public PhotonCamera getCamera2(){
     return camera2;
   }
@@ -307,7 +314,9 @@ else{
   }
 
   public float getRoll(){
+    
     return navxGyro.getRoll();
+
   }
 
   public void setPIDVelocity(CANPIDController pidTransMotor2, RelativeEncoder m_encoder,  ControlType kposition, double setPoint){    
@@ -323,6 +332,10 @@ else{
   }
   public double getGyro(){
     return navxGyro.getAngle();
+  }
+
+  public PowerDistribution getPDP(){
+    return pdp;
   }
   public Pose2d getPose() {
     return odometry.getPoseMeters();
@@ -343,9 +356,9 @@ else{
 
   }
 
-  public boolean getGear(){
-    return gearShifter.get();
-  }
+    public boolean getGear(){
+      return gearShifter.get();
+    }
 
   /* 
   public CommandBase tankDriveCommand(double left, double right) {
@@ -371,7 +384,6 @@ else{
   */
   public double getPressure() { return compressor.getPressure();}
 
-  //see if the pressure is within usable PSI
   public boolean getPressureStatus(){
     if(compressor.getPressure() <= 110.0){
       return true;
@@ -379,68 +391,64 @@ else{
     else{
       return false;
     }
-
   }
 
-  //turns the compressor on or off based off of that previous method
-  public void compressorToggle(){
-    compressorState = !compressorState;
-    setCompressor(compressorState);
-  }
+    public void compressorToggle(){
+      compressorState = !compressorState;
+      setCompressor(compressorState);
+    }
   
     //Set the Compressor
-  public void setCompressor(boolean state){
-    if (state == false)
-      compressor.disable();
-    else
-      compressor.enableDigital();  
-  }
+    public void setCompressor(boolean state){
+      if (state == false)
+        compressor.disable();
+      else
+        compressor.enableDigital();  
+    }
 
-    //methods used in path planning to get wheel speed and velocity
   public double getAverageMotorVelocity(){ return (Math.abs(leftEncoders[0].getVelocity())+Math.abs(rightEncoders[0].getVelocity()))/2; }
-
   public double getLeftVelocity() { return leftEncoders[0].getVelocity(); }
-
   public double getRightVelocity() { return rightEncoders[0].getVelocity(); }
-
-  
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
     //return new DifferentialDriveWheelSpeeds(leftDrive2.getEncoder().getVelocity(), -rightDrive2.getEncoder().getVelocity());
     //return new DifferentialDriveWheelSpeeds(0,0);
     return new DifferentialDriveWheelSpeeds(getLeftVelocity(), -getRightVelocity());
-  }
 
-  public void drivebaseShuffleboard(){
-        //Testing Tab   
-    speedEntry = testingTab.add("Robot Speed",getAverageMotorVelocity()).getEntry();
-    leftSpeedEntry = testingTab.add("Left Motor Speed",getLeftVelocity()).getEntry();
-    rightSpeedEntry = testingTab.add("Right Motor Speed",getRightVelocity()).getEntry(); 
-    leftPositionEntry = testingTab.add("Left Motor Position",leftEncoders[0].getPosition()).getEntry();     
-    rightPositionEntry = testingTab.add("Right Motor Position",rightEncoders[0].getPosition()).getEntry();  
-    rotationsEntry = testingTab.add("Gyro Rotations", getGyro()/360).getEntry();
-    angleEntry = testingTab.add("Gyro Angle", getGyro()).getEntry();
-    shifterEntry = testingTab.add("Solenoid Gear", getGear()).getEntry();
-    pressureEntry = testingTab.add("Pressure ", getPressureStatus()).getEntry(); 
+  }
+    public void drivebaseShuffleboard(){
+      //Graph conf
+        
+        //Testing Tab
+        
+        speedEntry = testingTab.add("Robot Speed",getAverageMotorVelocity()).getEntry();
+        leftSpeedEntry = testingTab.add("Left Motor Speed",getLeftVelocity()).getEntry();
+        rightSpeedEntry = testingTab.add("Right Motor Speed",getRightVelocity()).getEntry(); 
+        leftPositionEntry = testingTab.add("Left Motor Position",leftEncoders[0].getPosition()).getEntry();     
+        rightPositionEntry = testingTab.add("Right Motor Position",rightEncoders[0].getPosition()).getEntry();  
+        rotationsEntry = testingTab.add("Gyro Rotations", getGyro()/360).getEntry();
+        angleEntry = testingTab.add("Gyro Angle", getGyro()).getEntry();
+        shifterEntry = testingTab.add("Solenoid Gear", getGear()).getEntry();
+        pressureEntry = testingTab.add("Pressure ", getPressureStatus()).getEntry();
+    
   }
 
   public double getPosition(){
-    return leftEncoders[0].getPosition();
+    return leftEncoders[2].getPosition();
   }
-
   public void updateOdometry(){
-    odometry.update(navxGyro.getRotation2d(), leftEncoders[0].getPosition(), rightEncoders[0].getPosition());
-  }
-
-  public void resetEncoders() {
+    odometry.update(navxGyro.getRotation2d(), leftEncoders[1].getPosition(), rightEncoders[1].getPosition());
+}
+    public void resetEncoders() {
         leftEncoders[0].setPosition(0);
         leftEncoders[1].setPosition(0);
         leftEncoders[2].setPosition(0);
         rightEncoders[0].setPosition(0);
         rightEncoders[1].setPosition(0);
-        rightEncoders[2].setPosition(0);  
-  }
+        rightEncoders[2].setPosition(0);
 
-    //method used in auto to turn the robot based off the speed and gyro angle. 
+      
+    }
+
     public void autoTurn(double speed, double angle) {
       double gyroAngle = getGyro();
       if (gyroAngle > (angle))
@@ -450,25 +458,27 @@ else{
       else 
         drive(0, 0);
     }
+// method used to fix the drift if the speed is wrong
+    public double getAdjustedSpeed(double num, double dom){
+      percentDifference = 1 - (kEncoder * (1 - (dom / num)));
+      return percentDifference; 
+    }
 
-    // method that used encoder values and the angle of the gyro
     public void autoDrive(double left, double right, double angle) {
      
       if (left > 0 && right > 0){ //driving forwards
         drive(
-          angle > 0 ? left : left * Constants.AutoConstants.AUTO_SPEED_ADJUSTMENT,
-          angle < 0 ? right : right * Constants.AutoConstants.AUTO_SPEED_ADJUSTMENT
+          angle > 0.1 ? left : left*1.01, //* getAdjustedSpeed(Math.abs(getRightEncoder()), Math.abs(getLeftEncoder())),
+          angle < -0.1 ? right : right*1.01 //* getAdjustedSpeed(Math.abs(getLeftEncoder()), Math.abs(getRightEncoder()))
         );
       }
       else if (left < 0 && right < 0){ //driving backwards
         drive(
-          angle < 0 ? left : left * Constants.AutoConstants.AUTO_SPEED_ADJUSTMENT,
-          angle > 0 ? right : right * Constants.AutoConstants.AUTO_SPEED_ADJUSTMENT
+          angle < -0.1 ? left : left*1.01, //* getAdjustedSpeed(Math.abs(getRightEncoder()), Math.abs(getLeftEncoder())),
+          angle > 0.1 ? right : right*1.01 //* getAdjustedSpeed(Math.abs(getLeftEncoder()), Math.abs(getRightEncoder()))
         );
       }
-      else{ //When leftDrive1 and rightDrive1 are zero
-        drive(0,0);      
-      }
+      
     }
 
 
@@ -480,16 +490,20 @@ else{
     public void resetGyroAngle() {
       navxGyro.reset();
     }
+    
+    public void smoothStop(){
+      for(int i = 0; i < 1000; i++){
+        leftDrives.set(-0.3);
+        rightDrives.set(-0.3);
 
-    @Override
-    public void periodic(){
-      drivebaseShuffleboard();
+      }
+      leftDrives.set(0);
+      rightDrives.set(0);
     }
-    
-
-
-
-
-    
-
+    public double getRightEncoder(){
+      return rightEncoders[0].getPosition();
+    }
+    public double getLeftEncoder(){
+      return leftEncoders[0].getPosition();
+    }
 }

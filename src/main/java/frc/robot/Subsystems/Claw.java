@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Claw extends SubsystemBase {
 
-    private static final String String = null;
+    //private static final String String = null;
 
     private Arm arm;
     private Solenoid firstStage;
@@ -55,9 +55,14 @@ public class Claw extends SubsystemBase {
         }
     }
 
+
+
+
+
+    
     public boolean autoToggleClaw(){
         double distance = lidar.getDistance();
-        if(distance <= 41 && distance > 10){
+        if(distance <= 43 && distance > 10){//38
             toggleClaw("CONE");
             return true;
         }
@@ -65,5 +70,13 @@ public class Claw extends SubsystemBase {
             return false;
         }
     }
+
+    
+       
+
+
+
+
+
 
 }

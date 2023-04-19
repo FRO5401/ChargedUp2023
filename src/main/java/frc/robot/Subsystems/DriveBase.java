@@ -1,131 +1,112 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.subsystems;
 
+//vender library
 import com.kauailabs.navx.frc.AHRS;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+//wpi/first imports
 import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import com.revrobotics.RelativeEncoder;
-import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Constants.ModuleConstants;
+import frc.robot.Constants.PortConstants;
 
 
 public class Drivebase extends SubsystemBase {
+
+  private final SwerveModule frontLeft;
+  private final SwerveModule frontRight;
+  private final SwerveModule backLeft;
+  private final SwerveModule backRight;
+  
+  static AHRS Gyro;
+
   /** Creates a new Drivebase. */
-  AHRS Gyro = new AHRS(I2C.Port.kMXP);
-  CANSparkMax leftDrive1; 
-  CANSparkMax leftDrive2;  
-  //CANSparkMax leftDrive3;
-  CANSparkMax rightDrive1; 
-  CANSparkMax rightDrive2;
-  //CANSparkMax rightDrive3;
-  MotorControllerGroup leftDrives;  
-  MotorControllerGroup rightDrives;
-  private static DifferentialDrive ourDrive;
-  Encoder rightEncoder;
-  Encoder leftEncoder;
-  private final DifferentialDriveOdometry m_odometry;
   public Drivebase() {
 
-    leftDrive1 = new CANSparkMax(Constants.motorConstants.MOTER1, MotorType.kBrushed);
-    leftDrive2 = new CANSparkMax(Constants.motorConstants.MOTER2, MotorType.kBrushed); 
-    //leftDrive3 = new CANSparkMax(Constants.motorConstants.MOTER3, MotorType.kBrushless);
-    rightDrive1 = new CANSparkMax(Constants.motorConstants.MOTER3, MotorType.kBrushed); 
-    rightDrive2 = new CANSparkMax(Constants.motorConstants.MOTER4, MotorType.kBrushed);
-    //rightDrive3 = new CANSparkMax(Constants.motorConstants.MOTER6, MotorType.kBrushless);\
-    leftEncoder = new Encoder(0, 1, true, Encoder.EncodingType.k1X);
-    rightEncoder = new Encoder(2, 3, false, Encoder.EncodingType.k1X);
-    m_odometry = new DifferentialDriveOdometry(Gyro.getRotation2d(), getLeftEncoder(), getRightEncoder());
-    leftDrives = new MotorControllerGroup(leftDrive1, leftDrive2);
-    rightDrives = new MotorControllerGroup(rightDrive1, rightDrive2);
-    ourDrive = new DifferentialDrive(leftDrives, rightDrives);
-    
-    rightDrives.setInverted(true);
+    frontLeft = new SwerveModule(
+      PortConstants.FRONT_LEFT_TURN,
+      PortConstants.FRONT_LEFT_THROTTLE,
+      true,
+      true,
+      PortConstants.FRONT_LEFT_ENCODER_PORT,
+      ModuleConstants.FRONT_LEFT_ENCODER_OFFSET,
+      ModuleConstants.FRONT_LEFT_ENCODER_REVERSED
+    );
 
-    leftEncoder.reset();
-    rightEncoder.reset();
-    leftEncoder.setMinRate(10);
-    leftEncoder.setDistancePerPulse(0.1);
-    rightEncoder.setDistancePerPulse(0.1);  
-  }
+    backLeft = new SwerveModule(
+      PortConstants.BACK_LEFT_TURN,
+      PortConstants.BACK_LEFT_THROTTLE,
+      true,
+      true,
+      PortConstants.BACK_LEFT_ENCODER_PORT,
+      ModuleConstants.BACK_LEFT_ENCODER_OFFSET,
+      ModuleConstants.BACK_LEFT_ENCODER_REVERSED
+    );
 
-  public double getLeftEncoder(){
-    double rate = leftEncoder.getRate();
-    return rate;
-  }
-  public double getRightEncoder(){
-    return rightEncoder.getRate();
-  }
+    backRight = new SwerveModule(
+      PortConstants.BACK_RIGHT_TURN,
+      PortConstants.BACK_RIGHT_THROTTLE,
+      false,
+      true,
+      PortConstants.BACK_RIGHT_ENCODER_PORT,
+      ModuleConstants.BACK_RIGHT_ENCODER_OFFSET,
+      ModuleConstants.BACK_RIGHT_ENCODER_REVERSED
+    );
 
-  public void drive(double left, double right){
-    ourDrive.tankDrive(left, right);
-  }
+    frontRight = new SwerveModule(
+      PortConstants.FRONT_RIGHT_TURN,
+      PortConstants.FRONT_RIGHT_THROTTLE,
+      false,
+      true,
+      PortConstants.FRONT_RIGHT_ENCODER_PORT,
+      ModuleConstants.FRONT_RIGHT_ENCODER_OFFSET,
+      ModuleConstants.FRONT_RIGHT_ENCODER_REVERSED
+    );
 
-  public void tankDriveVolts(double leftVolts, double rightVolts) {
-    leftDrives.setVoltage(leftVolts);
-    rightDrives.setVoltage(rightVolts);
-    ourDrive.feed();
+    Gyro = new AHRS(I2C.Port.kMXP);
+    resetGyro();
   }
+  //setting up the drive method
 
-  public double getAxis(){
-    return Gyro.getAngle();
-  }
+
+  //gyro methods
   public void resetGyro(){
     Gyro.reset();
   }
-  public double getHeading() {
-    return Gyro.getRotation2d().getDegrees();
+
+  public static double getAngle(){
+    return Gyro.getAngle();
   }
 
-  public double getTurnRate() {
-    return -Gyro.getRate();
+  public static double getHeading(){
+    return Math.IEEEremainder(getAngle(), 360);
   }
 
-  public void resetEncoders() {
-    leftEncoder.reset();
-    rightEncoder.reset();    
-  }
-  
-
-
-  public double getAverageEncoderDistance() {
-      return (leftEncoder.getDistance() + rightEncoder.getDistance()) / 2.0;
+  public AHRS getGyro(){
+    return Gyro;
   }
 
-  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return new DifferentialDriveWheelSpeeds(getLeftEncoder(), getRightEncoder());
+  public Rotation2d getRotation2d() {
+    return Rotation2d.fromDegrees(getHeading());
   }
 
-  public Pose2d getPose() {
-    return m_odometry.getPoseMeters();
+  public void setModuleStates(SwerveModuleState[] desiredStates){
+    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, 1);
+    frontLeft.setState(desiredStates[0]);
+    frontRight.setState(desiredStates[1]);
+    backLeft.setState(desiredStates[2]);
+    backRight.setState(desiredStates[3]);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Left1 Motor Output", leftDrive1.getOutputCurrent());
-    SmartDashboard.putNumber("Left2 Motor Output", leftDrive2.getOutputCurrent());
-    SmartDashboard.putNumber("Right1 Motor Output", rightDrive1.getOutputCurrent());
-    SmartDashboard.putNumber("Right2 Motor Output", rightDrive2.getOutputCurrent());
-    SmartDashboard.putNumber("Left1 Id", leftDrive1.getDeviceId());
-    SmartDashboard.putNumber("Left2 Id", leftDrive2.getDeviceId());
-    SmartDashboard.putNumber("Right1 Id", rightDrive1.getDeviceId());
-    SmartDashboard.putNumber("Right2 Id", rightDrive2.getDeviceId());
-    SmartDashboard.putNumber("Left Encoder", leftEncoder.getDistance());
-    SmartDashboard.putNumber("Right Encoder", rightEncoder.getDistance());
-    m_odometry.update(Gyro.getRotation2d(), getLeftEncoder(), getRightEncoder());
+    
   }
 }
-

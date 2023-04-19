@@ -1,16 +1,5 @@
 {
   "SysId": {
-    "Analysis Type": "General Mechanism",
-    "NetworkTables Settings": {
-      "serverTeam": "5401"
-    },
-    "Program Log": {
-      "window": {
-        "visible": false
-      }
-    },
-    "dsClient": false,
-    "mode": "Client (NT3)",
-    "serverTeam": "5401"
+    "Analysis Type": "General Mechanism"
   }
 }

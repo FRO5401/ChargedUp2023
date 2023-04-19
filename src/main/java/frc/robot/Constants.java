@@ -4,7 +4,8 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -15,77 +16,82 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public final class motorConstants{
-  public static final int MOTER1 = 2;
-  public final static int MOTER2 = 1;
-  public final static int MOTER3 = 3;
-  public final static int MOTER4 = 4;
-   public final static int MOTER5 = 5;
-  public final static int MOTER6 = 6;
-  public final static int MOTER7 = 7;
-  public static final int MOTER8 = 8;
-  public static final int MOTER9 = 9;
+  public static class OperatorConstants {
+    public static final int kDriverControllerPort = 0;
   }
 
-  public final class solenoidConstants{
-  public static final int BREAK_SOLENOID = 0;
-  public static final int LEFT_CLAW_SOLENOID = 1;
-  public static final int RIGHT_CLAW_SOLENOID = 2;
-  }
-  public final class xboxConstants{
-  public final static int DRIVER_PORT = 0;
-  public final static int OPERATOR_PORT = 1;
-  public static final double AXIS_THRESHOLD = 0.2;
-  public static final int XBOX_CONTROLLER_DRIVER = 0;
-  public static final int XBOX_CONTROLLER_OPERATOR = 1;
-  public static final double PERCISION = 0.33;
-  }
-  public final class Buttons{
-  public static final int XBOX_BUTTON_A = 1;
-  public static final int XBOX_BUTTON_B = 2;
-  public static final int XBOX_BUTTON_X = 3;
-  public static final int XBOX_BUTTON_Y = 4;
-  public static final int XBOX_BUTTON_LEFT_BUMPER = 5;
-  public static final int XBOX_BUTTON_RIGHT_BUMPER = 6;
-  public static final int XBOX_BUTTON_BACK = 7;
-  public static final int XBOX_BUTTON_START = 8;
-  public static final int XBOX_BUTTON_L3 = 9;
-  public static final int XBOX_BUTTON_R3 = 10;
+  public static class ControllerConstants{
+    public static final int DRIVER_PORT = 0;
+    public static final int OPERATOR_PORT = 1;
+    public static final double AXIS_THRESHOLD = 0.1;
+    public static final double NEGITIVE_AXIS_THRESHOLD = -0.1;
   }
 
-  public final class Axes{
-  public static final int XBOX_AXIS_LEFT_X = 0;
-  public static final int XBOX_AXIS_LEFT_Y = 1;
-  public static final int XBOX_AXIS_LEFT_TRIGGER = 2;
-  public static final int XBOX_AXIS_RIGHT_TRIGGER = 3;
-  public static final int XBOX_AXIS_RIGHT_X = 4;
-  public static final int XBOX_AXIS_RIGHT_Y = 5;
-  }
-  public final class Sensitivity{
-  public static final double DRIVE_SENSITIVITY_PRECISION = 0.5;
-  public static final double DRIVE_SENSITIVITY_DEFAULT = 1;
-  public static final double SPIN_SENSITIVITY = 0.8;
-  }
-  public final class speedConstants{
-  public static final double ARM_SPEED = 1;
-  public static final double BALANCE_SPEED = 1; 
+  public static class KinematicsConstants{
+
+    // TODO: get these values too
+    public static double TRACK_WIDTH = 0.57;
+    public static double WHEEL_BASE = 0.55;
+    
+    public static SwerveDriveKinematics SWERVE_KINEMATIC = new SwerveDriveKinematics(
+      new Translation2d(WHEEL_BASE / 2, -TRACK_WIDTH / 2),
+      new Translation2d(WHEEL_BASE / 2, TRACK_WIDTH / 2),
+      new Translation2d(-WHEEL_BASE / 2, -TRACK_WIDTH / 2),
+      new Translation2d(-WHEEL_BASE/ 2, TRACK_WIDTH / 2)
+    );
   }
 
-  //Balancing constants
-  public static final double ANGLE_THRESHOLD = 0;
+  public static class ModuleConstants{
 
-  //Auto Constants
-  public final static class pidConstants{
-    public static final double ksVolts = 0.92477;
-    public static final double kvVoltSecondsPerMeter = 2.6812;
-    public static final double kaVoltSecondsSquaredPerMeter = 0.92615;
-    public static final double kPDriveVel = 4.255;
-    public static final double kMaxSpeedMetersPerSecond = 3;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 1;
-    public static final double kRamseteB = 2;
-    public static final double kRamseteZeta = 0.7;
-    public static final double kTrackwidthMeters = 0.69;
-    public final static DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
+    // these values are in meters, 
+    /*
+     * TODO: Remember to get these mesurements
+     */
+    public static final double WHEEL_DIAMTER_METERS = 0.037;
+    public static final double DRIVE_GEAR_RATIO = 6.55;
+    public static final double TURNING_GEAR_RATIO = 15.33;
+    public static final double DRIVE_ENCODER_ROTATIONS = 0;
+    public static final double TURNING_ENCODER_ROTATIONS = 0;
+    public static final double DRIVE_ENCODER_SPEED = 0;
+    public static final double TURNING_ENCODER_SPEED = 0;
+    public static final double kP_TURNING_MOTOR = 0.5;
+
+    public static final double MAX_SPEED = 6;
+    public static final double MAX_TURNING_SPEED = 2 * 2 * Math.PI;
+    public static final double MAX_TELEOP_SPEED = MAX_SPEED / 2;
+
+    public static final double FRONT_LEFT_ENCODER_OFFSET = 0;
+    public static final double FRONT_RIGHT_ENCODER_OFFSET = 0;
+    public static final double BACK_LEFT_ENCODER_OFFSET = 0;
+    public static final double BACK_RIGHT_ENCODER_OFFSET = 0;
+    
+
+    public static final boolean FRONT_LEFT_ENCODER_REVERSED = false;
+    public static final boolean BACK_LEFT_ENCODER_REVERSED = false;
+    public static final boolean FRONT_RIGHT_ENCODER_REVERSED = false;
+    public static final boolean BACK_RIGHT_ENCODER_REVERSED = false;
+
   }
-  
+
+  public static class PortConstants{
+    public static final int FRONT_LEFT_THROTTLE = 7;
+    public static final int FRONT_RIGHT_THROTTLE = 4;
+    public static final int FRONT_LEFT_TURN = 2;
+    public static final int FRONT_RIGHT_TURN = 8;
+    public static final int BACK_LEFT_THROTTLE = 6;
+    public static final int BACK_RIGHT_THROTTLE = 3;
+    public static final int BACK_LEFT_TURN = 5;
+    public static final int BACK_RIGHT_TURN = 1;
+    
+    public static final int FRONT_LEFT_ENCODER_PORT = 0;
+    public static final int FRONT_RIGHT_ENCODER_PORT = 1;
+    public static final int BACK_LEFT_ENCODER_PORT = 2;
+    public static final int BACK_RIGHT_ENCODER_PORT = 3;
+
+  }
+
+  public static class PhysicalConstants{
+
+  }
+
 }

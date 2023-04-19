@@ -7,19 +7,21 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Commands.rotateArmPID;
 import frc.robot.Commands.actions.AutoDrive;
+import frc.robot.Commands.actions.AutoDriveFast;
 import frc.robot.Commands.actions.AutoTurn;
 import frc.robot.Commands.actions.ConeClaw;
 import frc.robot.Commands.actions.CubeClaw;
 import frc.robot.Commands.actions.GyroBalance;
 import frc.robot.Commands.actions.LidarClaw;
 import frc.robot.Commands.actions.OffClaw;
+import frc.robot.Commands.actions.gearShiftHigh;
 import frc.robot.Commands.actions.translateArmPID;
 import frc.robot.Subsystems.Arm;
 import frc.robot.Subsystems.Claw;
 import frc.robot.Subsystems.DriveBase;
 
 
-public class TwoPieceAutoBlueLeftSlow extends SequentialCommandGroup {
+public class TwoPieceAutoBlueLeftMedium extends SequentialCommandGroup {
   /**
    * Add your docs here.
    */
@@ -35,7 +37,7 @@ public class TwoPieceAutoBlueLeftSlow extends SequentialCommandGroup {
    * @param passedArm
    */
 
-  public TwoPieceAutoBlueLeftSlow(double DistanceInput, double SpeedInput, DriveBase passedDrivebase, Claw passedClaw, Arm passedArm) {
+  public TwoPieceAutoBlueLeftMedium(double DistanceInput, double SpeedInput, DriveBase passedDrivebase, Claw passedClaw, Arm passedArm) {
    drivebase = passedDrivebase;
     claw = passedClaw;
     arm = passedArm;
@@ -45,13 +47,15 @@ public class TwoPieceAutoBlueLeftSlow extends SequentialCommandGroup {
     new ConeClaw(claw), 
     new WaitCommand(0.25),
     */
-    //new AutoDrive(10, -SpeedInput, drivebase),
-    /*
+    new gearShiftHigh(passedDrivebase),
     new ParallelRaceGroup(
-      new WaitCommand(1),
-      new translateArmPID(arm, 3.5)
+      new BeginningTrans(passedArm),
+      new AutoDrive(2, -SpeedInput*0.4, drivebase),
+      new WaitCommand(0.2)
     ),
-    */
+    
+
+    
     /* 
     new ParallelRaceGroup(
       new WaitCommand(0.5),
@@ -82,63 +86,62 @@ public class TwoPieceAutoBlueLeftSlow extends SequentialCommandGroup {
     ),
     */
     //new AutoDrive(1000, SpeedInput, drivebase),
-    new AutoDrive(800, SpeedInput, drivebase),
     new ParallelRaceGroup( 
       new OffClaw(claw),
-      new WaitCommand(0.25)
+      new WaitCommand(0.1)
     ),
+    new AutoDriveFast(380, SpeedInput, drivebase),
+    
   //new AutoTurn(SpeedInput, 172.5, drivebase),
 
     new ParallelRaceGroup(
-      new WaitCommand(0.5),
-      new rotateArmPID(arm, 5, 5)
+      new WaitCommand(0.7),
+      new rotateArmPID(arm, 4, 4)
     ),
 
 
     new ParallelRaceGroup(
-      new WaitCommand(1),
-      new translateArmPID(arm, -40)
+      new WaitCommand(0.5),
+      new translateArmPID(arm, -48)
     ),
 
-    new AutoDrive(80, SpeedInput*0.5, passedDrivebase),
+    new AutoDrive(35, SpeedInput*0.4, passedDrivebase),
 
     
-    new WaitCommand(1),
-    new CubeClaw(passedClaw),
+   
+    new ParallelRaceGroup(
+      new WaitCommand(0.1),
+      new ConeClaw(passedClaw)
+    ),
 
     new ParallelRaceGroup(
-      new WaitCommand(0.5),
+      new WaitCommand(0.3),
       new translateArmPID(arm, 0)
     ),
 
     new ParallelRaceGroup(
-      new WaitCommand(0.5),
+      new WaitCommand(0.3),
       new rotateArmPID(arm, 0, 0)
     ),  
 
-    new AutoDrive(800, -SpeedInput, drivebase),
+    new AutoDriveFast(390, -SpeedInput, drivebase),
 
-    new AutoTurn(SpeedInput*0.8, 173, drivebase),
-    new AutoDrive(80, SpeedInput, drivebase),
-
-
-
+    new AutoTurn(SpeedInput*0.55, 168, drivebase),//-163
+    
     new ParallelRaceGroup(
       new WaitCommand(0.5),
-      new rotateArmPID(arm, 16, 16)
+      new rotateArmPID(arm, 17, 17)
     ),
-
-
     new ParallelRaceGroup(
-      new WaitCommand(0.75),
-      new translateArmPID(arm, -40)
+      new WaitCommand(0.5),
+      new translateArmPID(arm, -45)
 
     ),
-
+    new AutoDrive(30, SpeedInput*0.6, drivebase),
 
     
     new ParallelCommandGroup(
-      new WaitCommand(1),
+      new WaitCommand(0.5),
       new OffClaw(claw)
     ),
 

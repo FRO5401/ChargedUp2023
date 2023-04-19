@@ -44,6 +44,9 @@ public class Arm extends SubsystemBase {
   private double maxAcc;
   private double allowedErr = 0.125;
 
+  private boolean armMode = true;
+
+
   public Arm() {
     armMotorLeft = new CANSparkMax(Constants.DriveConstants.ARM_MOTOR_LEFT, MotorType.kBrushless);
     armMotorRight = new CANSparkMax(Constants.DriveConstants.ARM_MOTOR_RIGHT, MotorType.kBrushless);
@@ -126,6 +129,14 @@ public class Arm extends SubsystemBase {
     //setPIDPosition(pidRotateMotor, rotate_encoder, ControlType.kPosition,  setpoint );
       
     
+  }
+
+  public boolean getArmMode(){
+    return armMode;
+  }
+  public boolean setArmMode(){
+    armMode = !armMode;
+    return armMode;
   }
 
   public boolean rotateLeftAtSetpoint(double setpoint){
@@ -294,9 +305,12 @@ public class Arm extends SubsystemBase {
   }
   public void printEncoderDistances(){
     //System.out.println("Rotational Encoder Left " + rotate_encoder_left.getPosition());
-    //System.out.println("Rotational Encoder Right " + rotate_encoder_right.getPosition());
+    System.out.println("Rotational Encoder Right " + rotate_encoder_right.getPosition());
 
     //System.out.println("Translational Encoder" + trans_encoder.getPosition());
+  }
+  public double reportRotationsalEncoder(){
+    return rotate_encoder_right.getPosition();
   }
   /*
   public void stationPickup(){

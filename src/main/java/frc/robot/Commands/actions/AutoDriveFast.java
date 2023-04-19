@@ -1,5 +1,7 @@
 package frc.robot.Commands.actions;
 
+import javax.management.DescriptorRead;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Subsystems.DriveBase;
 
@@ -26,9 +28,8 @@ public class AutoDriveFast extends CommandBase {
     public void initialize() {
 
         drivebase.resetEncoders();
-        drivebase.gearShift("HIGH");
+        //drivebase.gearShift("HIGH");
         drivebase.resetGyroAngle();
-
         distanceTraveled = 0;
 
     } 
@@ -40,8 +41,27 @@ public class AutoDriveFast extends CommandBase {
         angle = drivebase.getGyro();
         distanceTraveled = Math.abs(drivebase.getPosition());
         if ((distanceTraveled < desiredDistance)) {
+           if(distanceTraveled < desiredDistance*0.2){
+            drivebase.autoDrive(autoDriveSpeed*0.6, autoDriveSpeed*0.6, angle);
+            doneTraveling = false;
+           }
+     
+            else if (distanceTraveled <  desiredDistance*0.8 && distanceTraveled > desiredDistance * 0.2){
             drivebase.autoDrive(autoDriveSpeed, autoDriveSpeed, angle);
             doneTraveling = false;
+            }
+            else if(distanceTraveled >  desiredDistance *0.7 && distanceTraveled < desiredDistance){
+                drivebase.autoDrive(autoDriveSpeed*0.6, autoDriveSpeed*0.6, angle);
+                doneTraveling = false;
+
+            }
+
+                //drivebase.smoothStop();            }
+        
+
+
+
+        }
             /* 
         } else if ((distanceTraveled > desiredDistance) && desiredDistance > 0) {
             drivebase.autoDrive(-autoDriveSpeed, -autoDriveSpeed, angle);
@@ -53,10 +73,10 @@ public class AutoDriveFast extends CommandBase {
             drivebase.autoDrive(-autoDriveSpeed, -autoDriveSpeed, angle);    
             doneTraveling = false;
             */
-        } else {
-            drivebase.drive(0,0);
-            doneTraveling = true;
-        }
+            else{ //When leftDrive1 and rightDrive1 are zero
+                //drivebase.smoothStop();
+                doneTraveling = true;   
+              }
     }
 
 
@@ -64,6 +84,7 @@ public class AutoDriveFast extends CommandBase {
 	// Make this return true when this Command no longer needs to run execute()
     @Override
     public boolean isFinished() {
+    
         return doneTraveling;
     }
 

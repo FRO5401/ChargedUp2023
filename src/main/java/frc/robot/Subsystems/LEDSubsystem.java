@@ -19,7 +19,7 @@ public class LEDSubsystem extends SubsystemBase {
        */
       public LEDSubsystem(int port) {
             // TODO maybe pass in buffer length
-            leds = new AddressableLED(port); // initialization of the AdressableLED
+            leds = new AddressableLED(0); // initialization of the AdressableLED
             leds.setLength(BUFFER_LENGTH); // Sets the LED Strip length once
             buffer = new AddressableLEDBuffer(BUFFER_LENGTH);
             // TODO we start a starting color

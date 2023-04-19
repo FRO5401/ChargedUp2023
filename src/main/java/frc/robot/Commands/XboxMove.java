@@ -76,7 +76,7 @@ public class XboxMove extends CommandBase {
        /*** Precision ***/
       //Hold for Precision Speed
       if(precision){
-        sensitivity = 0.7;
+        sensitivity = 0.4;
       }
       else{
         sensitivity = 1.0;

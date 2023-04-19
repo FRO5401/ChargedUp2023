@@ -41,7 +41,7 @@ public class TwoPieceAutoRedRight extends SequentialCommandGroup {
       new rotateArmPID(arm, 0, SpeedInput)
       */
       
-      new AutoDrive(500,-SpeedInput, passedDrivebase),
+      new AutoDrive(430,-SpeedInput, passedDrivebase),
 
       //new AutoTurn(SpeedInput, 180, passedDrivebase),
       //new AutoGrabGround(arm, claw),
@@ -49,10 +49,10 @@ public class TwoPieceAutoRedRight extends SequentialCommandGroup {
     
       //new AutoTurn(SpeedInput, -180, passedDrivebase),
 
-
+      new WaitCommand(0.5),
 
       //new AutoDrive(193, SpeedInput, passedDrivebase), 
-      new AutoDrive(450, SpeedInput, passedDrivebase), 
+      new AutoDrive(410, SpeedInput, passedDrivebase), 
       //new translateArmPID(arm, 20),
       //new OffClaw(claw),
 
@@ -60,15 +60,15 @@ public class TwoPieceAutoRedRight extends SequentialCommandGroup {
       //new rotateArmPID(arm, 0, 0),
 
 
-      new AutoDrive(80, -SpeedInput, passedDrivebase),
+      new AutoDrive(10, -SpeedInput, passedDrivebase),
 
-      new AutoTurn(SpeedInput, -90, passedDrivebase), 
+      new AutoTurn(SpeedInput, -85, passedDrivebase), 
 
       new AutoDrive(270, -SpeedInput, passedDrivebase), 
 
-      new AutoTurn(SpeedInput, 90, passedDrivebase), 
+      new AutoTurn(SpeedInput, 85, passedDrivebase), 
 
-      new AutoDrive( -SpeedInput, 510, passedDrivebase), 
+      new AutoDrive( -SpeedInput, 270, passedDrivebase), 
 
       new GyroBalance(passedDrivebase, -SpeedInput*0.8)
 

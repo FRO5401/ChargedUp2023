@@ -42,21 +42,7 @@ import frc.robot.Subsystems.NetworkTables;
 import frc.robot.Controls;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.I2C.Port;
-<<<<<<< Updated upstream
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Commands.AutoAlign;
-import frc.robot.Commands.ConeClaw;
-import frc.robot.Commands.CubeClaw;
-import frc.robot.Commands.GroundPickup;
-import frc.robot.Commands.OffClaw;
-import frc.robot.Commands.StationPickup1;
-=======
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
->>>>>>> Stashed changes
 import frc.robot.Commands.StationPickup2;
 //import frc.robot.Commands.OperatorControl;
 import frc.robot.Commands.XboxMove;
@@ -66,11 +52,13 @@ import frc.robot.Commands.actions.AutoAlign;
 import frc.robot.Commands.actions.ConeClaw;
 import frc.robot.Commands.actions.CubeClaw;
 import frc.robot.Commands.actions.GroundPickup;
+import frc.robot.Commands.actions.LEDCommand;
 import frc.robot.Commands.actions.OffClaw;
 import frc.robot.Commands.actions.gearShiftHigh;
 import frc.robot.Commands.actions.gearShiftLow;
 import frc.robot.Commands.actions.translateIn;
 import frc.robot.Commands.actions.translateOut;
+import frc.robot.Commands.actions.LEDCommand.LEDPatterns;
 import frc.robot.Commands.groups.LowerNodePlace1;
 import frc.robot.Commands.groups.StationPickup1;
 import frc.robot.Commands.groups.UpperNodePlace;
@@ -86,6 +74,7 @@ private NetworkTables networkTables;
 private Arm arm;
 private Claw claw;
 private Command xboxmove;
+private Command tempCommand;
 private Lidar lidar;
 //private Command operator;
 
@@ -107,7 +96,6 @@ private boolean rotate;
 private double sensitivity = 1.0;
 private double left = 0;
 private double right  = 0;
-
 private double distance = 0;
 
 double rotationLeft, rotationRight, tranLength;
@@ -173,6 +161,7 @@ public void autonomousInit() {
     //networkTables = robotContainer.getNetworkTables();
     drivebase.resetEncoders();
     drivebase.resetGyroAngle();
+   
 }
 
 /**
@@ -183,6 +172,8 @@ public void autonomousPeriodic() {
   feedWatchdogs();
   //drivebase.printDriveBaseEncoderDistances();
   drivebase.updateOdometry();
+  SmartDashboard.putNumber("Left Encoder", drivebase.getLeftEncoder());
+  SmartDashboard.putNumber("Right Encoder", drivebase.getRightEncoder());
 
 }
 
@@ -194,7 +185,8 @@ public void teleopInit() {
   if(autoSelected != null) {
     autoSelected.cancel();
   }
- 
+  ledSubsystem = robotContainer.getLedSubsystem();
+
   drivebase = robotContainer.getDriveBase();
   arm = robotContainer.getArm();
   claw = robotContainer.getClaw();
@@ -203,7 +195,8 @@ public void teleopInit() {
   drivebase.resetGyroAngle();
 
   lidar = robotContainer.getLidar();
-  ShuffleboardTab camera = Shuffleboard.getTab("Camera");
+  //tempCommand = new LEDCommand(ledSubsystem,  LEDCommand.LEDPatterns.EveryOther, 0, 0, 0);
+  tempCommand =  new LEDCommand(ledSubsystem,  LEDCommand.LEDPatterns.EveryOther, 255, 165, 0);
 
 }
 
@@ -212,25 +205,25 @@ public void teleopInit() {
  */
 @Override
 public void teleopPeriodic() {
+  lidar = robotContainer.getLidar();
+
+  SmartDashboard.putNumber("Left Encoder", drivebase.getLeftEncoder());
+  SmartDashboard.putNumber("Right Encoder", drivebase.getRightEncoder());
+  SmartDashboard.putNumber("Lidar Distance", lidar.getDistance());
+  SmartDashboard.putBoolean("Gear mode", drivebase.getGear());
+  SmartDashboard.putBoolean("Pressure Status", drivebase.getPressureStatus());
+
   //System.out.println(lidar.getDistance());
-<<<<<<< Updated upstream
-=======
   //distance = lidar.getDistance();
->>>>>>> Stashed changes
+  ledSubsystem = robotContainer.getLedSubsystem();
+
   feedWatchdogs();
+
   //lidar.reportLidarDistance();
   //lidar.update();
   //drivebase.updateOdometry();
-<<<<<<< Updated upstream
-  SmartDashboard.putNumber("Lidar Distance", lidar.getDistance());
-  SmartDashboard.putBoolean("GearShifter", drivebase.getGearShifterState());
-  SmartDashboard.putNumber("Pressure level", drivebase.getPressure());
-
-  
-=======
  
   /*
->>>>>>> Stashed changes
   throttle = Controls.driver.getRightTriggerAxis();
   reverse = Controls.driver.getLeftTriggerAxis();
   turn = Controls.driver.getLeftX();
@@ -395,13 +388,12 @@ else{
   arm.rotateArm(0, false);
 }
 */
-
-
-if(Controls.xbox_operator.getLeftY() > 0.05){
+if(arm.getArmMode()){
+if(Controls.xbox_operator.getLeftY() < 0.05){
   //arm.continuousPIDRotateArm("up");//arm.continuousPIDRotateArm("CW");//;translateArm(0.3*-1, Controls.operator.getXButton());
   arm.rotateArm(Controls.xbox_operator.getLeftY()*0.45, true);
 }
-else if(Controls.xbox_operator.getLeftY() < -0.05){
+else if(Controls.xbox_operator.getLeftY() > -0.05){
   //arm.continuousPIDRotateArm("down");
   arm.rotateArm(Controls.xbox_operator.getLeftY()*0.45, true);
 }
@@ -410,13 +402,29 @@ else{
 
 }
 
+}
+else{
+  if(Controls.xbox_operator.getLeftY() > 0.05){
+    //arm.continuousPIDRotateArm("up");//arm.continuousPIDRotateArm("CW");//;translateArm(0.3*-1, Controls.operator.getXButton());
+    arm.rotateArm(-Controls.xbox_operator.getLeftY()*0.45, true);
+  }
+  else if(Controls.xbox_operator.getLeftY() < -0.05){
+    //arm.continuousPIDRotateArm("down");
+    arm.rotateArm(-Controls.xbox_operator.getLeftY()*0.45, true);
+  }
+  else{
+    arm.rotateArm(0, false);
+  
+  }
+}
+
 
 
 if(Controls.xbox_operator.getRightX()*0.5 > 0.05){
-  arm.translateArm(0.4, true);// arm.continuousPIDRotateArm("CCW");//;translateArm(0.3*-1, Controls.operator.getXButton());
+  arm.translateArm(0.7, true);// arm.continuousPIDRotateArm("CCW");//;translateArm(0.3*-1, Controls.operator.getXButton());
 }
 else if(Controls.xbox_operator.getRightX()*0.5 < -0.05){
-  arm.translateArm(-0.4,true);
+  arm.translateArm(-0.6,true);
 }
 else{
   arm.translateArm(0, false);

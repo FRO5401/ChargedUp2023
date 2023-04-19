@@ -94,6 +94,7 @@ public class DriveBase extends SubsystemBase {
   private MotorControllerGroup rightDrives;
   private DifferentialDrive ourDrive;
   private DifferentialDriveOdometry odometry;
+  private int motorCurrent = 24;
 
   private boolean compressorState = false;
 
@@ -107,6 +108,10 @@ public class DriveBase extends SubsystemBase {
   private double minVel;
   private double maxAcc;
   private double allowedErr = 0.125;
+
+  // varibles for speed adjustment
+  private double kEncoder = 0.01;//3;
+  double percentDifference;
 
   //private int iaccum = 0;
 
@@ -168,13 +173,12 @@ public class DriveBase extends SubsystemBase {
 
 
 
-    rightDrive1.setSmartCurrentLimit(35, 25);
-    rightDrive2.setSmartCurrentLimit(35, 25);
-    rightDrive3.setSmartCurrentLimit(35, 25);
-
-    leftDrive1.setSmartCurrentLimit(35, 25);
-    leftDrive2.setSmartCurrentLimit(35, 25);
-    leftDrive3.setSmartCurrentLimit(35, 25);
+    rightDrive1.setSmartCurrentLimit(motorCurrent, motorCurrent); //15, 10
+    rightDrive2.setSmartCurrentLimit(motorCurrent, motorCurrent);
+    rightDrive3.setSmartCurrentLimit(motorCurrent, motorCurrent);
+    leftDrive1.setSmartCurrentLimit(motorCurrent,motorCurrent);
+    leftDrive2.setSmartCurrentLimit(motorCurrent, motorCurrent);
+    leftDrive3.setSmartCurrentLimit(motorCurrent, motorCurrent);
 
     //minSwitch = new DigitalInput(0);
     //maxSwitch = new DigitalInput(1);
@@ -329,6 +333,10 @@ else{
   public double getGyro(){
     return navxGyro.getAngle();
   }
+
+  public PowerDistribution getPDP(){
+    return pdp;
+  }
   public Pose2d getPose() {
     return odometry.getPoseMeters();
   }
@@ -425,10 +433,10 @@ else{
   }
 
   public double getPosition(){
-    return leftEncoders[0].getPosition();
+    return leftEncoders[2].getPosition();
   }
   public void updateOdometry(){
-    odometry.update(navxGyro.getRotation2d(), leftEncoders[0].getPosition(), rightEncoders[0].getPosition());
+    odometry.update(navxGyro.getRotation2d(), leftEncoders[1].getPosition(), rightEncoders[1].getPosition());
 }
     public void resetEncoders() {
         leftEncoders[0].setPosition(0);
@@ -450,24 +458,27 @@ else{
       else 
         drive(0, 0);
     }
+// method used to fix the drift if the speed is wrong
+    public double getAdjustedSpeed(double num, double dom){
+      percentDifference = 1 - (kEncoder * (1 - (dom / num)));
+      return percentDifference; 
+    }
 
     public void autoDrive(double left, double right, double angle) {
      
       if (left > 0 && right > 0){ //driving forwards
         drive(
-          angle > 0 ? left : left * Constants.AutoConstants.AUTO_SPEED_ADJUSTMENT,
-          angle < 0 ? right : right * Constants.AutoConstants.AUTO_SPEED_ADJUSTMENT
+          angle > 0.1 ? left : left*1.01, //* getAdjustedSpeed(Math.abs(getRightEncoder()), Math.abs(getLeftEncoder())),
+          angle < -0.1 ? right : right*1.01 //* getAdjustedSpeed(Math.abs(getLeftEncoder()), Math.abs(getRightEncoder()))
         );
       }
       else if (left < 0 && right < 0){ //driving backwards
         drive(
-          angle < 0 ? left : left * Constants.AutoConstants.AUTO_SPEED_ADJUSTMENT,
-          angle > 0 ? right : right * Constants.AutoConstants.AUTO_SPEED_ADJUSTMENT
+          angle < -0.1 ? left : left*1.01, //* getAdjustedSpeed(Math.abs(getRightEncoder()), Math.abs(getLeftEncoder())),
+          angle > 0.1 ? right : right*1.01 //* getAdjustedSpeed(Math.abs(getLeftEncoder()), Math.abs(getRightEncoder()))
         );
       }
-      else{ //When leftDrive1 and rightDrive1 are zero
-        drive(0,0);      
-      }
+      
     }
 
 
@@ -480,10 +491,19 @@ else{
       navxGyro.reset();
     }
     
+    public void smoothStop(){
+      for(int i = 0; i < 1000; i++){
+        leftDrives.set(-0.3);
+        rightDrives.set(-0.3);
 
-
-
-
-    
-
+      }
+      leftDrives.set(0);
+      rightDrives.set(0);
+    }
+    public double getRightEncoder(){
+      return rightEncoders[0].getPosition();
+    }
+    public double getLeftEncoder(){
+      return leftEncoders[0].getPosition();
+    }
 }

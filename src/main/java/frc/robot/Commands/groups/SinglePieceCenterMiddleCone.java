@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.Commands.rotateAndTranslate;
 import frc.robot.Commands.rotateArmPID;
 import frc.robot.Commands.actions.AutoDrive;
 import frc.robot.Commands.actions.AutoTurn;
@@ -21,7 +20,7 @@ import frc.robot.Subsystems.Claw;
 import frc.robot.Subsystems.DriveBase;
 
 
-public class SinglePieceCenterMiddle extends SequentialCommandGroup {
+public class SinglePieceCenterMiddleCone extends SequentialCommandGroup {
   /**
    * Add your docs here.
    */
@@ -30,7 +29,7 @@ public class SinglePieceCenterMiddle extends SequentialCommandGroup {
   private Claw claw;
 
 
-  public SinglePieceCenterMiddle(double DistanceInput, double SpeedInput, DriveBase passedDrivebase, Claw passedClaw, Arm passedArm) {
+  public SinglePieceCenterMiddleCone(double DistanceInput, double SpeedInput, DriveBase passedDrivebase, Claw passedClaw, Arm passedArm) {
     drivebase = passedDrivebase;
     claw = passedClaw;
     arm = passedArm;
@@ -44,17 +43,15 @@ public class SinglePieceCenterMiddle extends SequentialCommandGroup {
 
     new ParallelRaceGroup(
       new WaitCommand(0.5),
-      new translateArmPID(arm, -4.5)
+      new translateArmPID(arm, 3.5)
     ),
 
 
     
 
     new ParallelRaceGroup(
-      new WaitCommand(0.7),
-      //new rotateAndTranslate(arm, 18, 18, -4.5)
-      //new translateArmPID(passedArm, SpeedInput)
-      new rotateArmPID(arm, 18, 18)//20
+      new WaitCommand(0.6),
+      new rotateArmPID(arm, 18, 18)
     ),
 
     
@@ -65,26 +62,23 @@ public class SinglePieceCenterMiddle extends SequentialCommandGroup {
 
 
     ),
+
+    new WaitCommand(0.5),
+
+
     
     new ParallelRaceGroup(
-    new WaitCommand(0.5),
+      new WaitCommand(0.1),
       new OffClaw(claw)
 
     ),
 
-    new ParallelRaceGroup(
-      new WaitCommand(0.5),
-      new rotateArmPID(arm, 16.5, 16.5)
-
-    ),
-
-    new WaitCommand(0.5),
 
 
   
     new ParallelRaceGroup(
       new translateArmPID(arm, 0),
-      new WaitCommand(1)
+      new WaitCommand(0.75)
       
     ),
 

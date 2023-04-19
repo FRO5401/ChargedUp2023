@@ -28,7 +28,7 @@ public class AutoGrabGround extends SequentialCommandGroup {
             new rotateArmPID(arm, 5, 5),
             new ParallelRaceGroup(
                 new translateArmPID(m_arm, 15), 
-                new LidarClaw(claw)
+                new LidarClaw(claw, "")
             )            
         );
     };

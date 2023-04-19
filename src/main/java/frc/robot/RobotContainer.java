@@ -6,7 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.commands.Drive;
-import frc.robot.subsystems.Drivebase;
+import frc.robot.Subsystems.DriveBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -23,7 +23,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private static XboxController driverController = new XboxController(ControllerConstants.DRIVER_PORT);
   private static CommandXboxController operatorController = new CommandXboxController(ControllerConstants.OPERATOR_PORT);
-  private static Drivebase drivebase = new Drivebase();
+  private static DriveBase drivebase = new DriveBase();
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */

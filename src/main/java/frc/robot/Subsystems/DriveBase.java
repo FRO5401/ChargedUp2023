@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.Subsystems;
 
 //vender library
 import com.kauailabs.navx.frc.AHRS;
@@ -17,7 +17,7 @@ import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.PortConstants;
 
 
-public class Drivebase extends SubsystemBase {
+public class DriveBase extends SubsystemBase {
 
   private final SwerveModule frontLeft;
   private final SwerveModule frontRight;
@@ -27,7 +27,7 @@ public class Drivebase extends SubsystemBase {
   static AHRS Gyro;
 
   /** Creates a new Drivebase. */
-  public Drivebase() {
+  public DriveBase() {
 
     frontLeft = new SwerveModule(
       PortConstants.FRONT_LEFT_TURN,

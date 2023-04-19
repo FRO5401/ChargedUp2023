@@ -2,10 +2,12 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.Subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -34,7 +36,19 @@ public class SwerveModule {
     //PID controller used to control turning in auto, also used for setpoint 
     private final PIDController turningPIDControl;
 
-   int absouluteEncoderID;
+    int absouluteEncoderID;
+    boolean enable = true; 
+    double currentLimitDrive = 30; 
+    double triggerThresholdCurrentDrive = 10;
+    double triggerThresholdTimeDrive = 1.5; 
+
+    double currentLimitTurn = 10; 
+    double triggerThresholdCurrentTurn = 5;
+    double triggerThresholdTimeTurn = 1.5; 
+
+    SupplyCurrentLimitConfiguration configDrive = new SupplyCurrentLimitConfiguration(enable, currentLimitDrive, triggerThresholdCurrentDrive, triggerThresholdTimeDrive);
+    SupplyCurrentLimitConfiguration configTurn = new SupplyCurrentLimitConfiguration(enable, currentLimitTurn, triggerThresholdCurrentTurn, triggerThresholdTimeTurn);
+
 
    // private final AnalogInput absouluteEncoder;
      
@@ -53,6 +67,11 @@ public class SwerveModule {
         driverMotor = new TalonFX(driveId);
         turningMotor = new TalonFX(turningId);
 
+        driverMotor.configSupplyCurrentLimit(configDrive);
+        driverMotor.configSupplyCurrentLimit(configTurn);
+
+
+        
         driverMotor.setInverted(driveReversed);
         turningMotor.setInverted(turningReversed);
 

@@ -14,11 +14,11 @@ import frc.robot.RobotContainer;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.KinematicsConstants;
 import frc.robot.Constants.ModuleConstants;
-import frc.robot.subsystems.Drivebase;
+import frc.robot.Subsystems.DriveBase;
 
 public class Drive extends CommandBase {
 
-  Drivebase drivebase;
+  DriveBase drivebase;
 
   XboxController driver;
 
@@ -33,7 +33,7 @@ public class Drive extends CommandBase {
 
   private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
 
-  public Drive(Drivebase drivebase) {
+  public Drive(DriveBase drivebase) {
 
     this.drivebase = drivebase;
 

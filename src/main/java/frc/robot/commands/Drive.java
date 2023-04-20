@@ -61,9 +61,17 @@ public class Drive extends CommandBase {
     //get the axis values from the controller
     xSpeed = driver.getLeftX();
     ySpeed = driver.getLeftY();
+
     turningSpeed = driver.getRightX();
     FieldOriented = driver.getBButton();
     resetGyro = driver.getAButton();
+    
+    /**** CODE FOR JOYSTICK ****/
+        /* 
+    xSpeed = driver.getRawAxis(1);//driver.getLeftX();
+    ySpeed = driver.getRawAxis(2);
+    turningSpeed = driver.getRawAxis(3);
+    */
 
     if(resetGyro){
       drivebase.resetGyro();

@@ -131,7 +131,8 @@ public class SwerveModule {
         }
         state = SwerveModuleState.optimize(state, getState().angle);
         driverMotor.set(ControlMode.PercentOutput,  state.speedMetersPerSecond / ModuleConstants.MAX_SPEED );
-        turningMotor.set(ControlMode.PercentOutput, turningPIDControl.calculate(getTurningPosition(), state.angle.getRadians()) );
+        driverMotor.set(ControlMode.PercentOutput,  0.1);//state.speedMetersPerSecond );
+        turningMotor.set(ControlMode.PercentOutput, turningPIDControl.calculate(getTurningPosition(), state.angle.getRadians()) );//turningPIDControl.calculate(getTurningPosition(), state.angle.getRadians()) );
         SmartDashboard.putString("Swerve " + absouluteEncoderID + " state", state.toString());
     }
 

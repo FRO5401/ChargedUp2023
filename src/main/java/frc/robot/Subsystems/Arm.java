@@ -92,13 +92,13 @@ public class Arm extends SubsystemBase {
   }
   
   public void rotateArm(double armSpeed, boolean run){
-    if(run){
+    if(run){ //Rotates arm in the same direction
       armMotorRight.set(armSpeed);
       armMotorLeft.set(-armSpeed);
 
 
     }
-    else{
+    else{ //Sets both motors to 0 stopping arm movement
       armMotorRight.set(0);
       armMotorLeft.set(0);
     }
@@ -106,35 +106,28 @@ public class Arm extends SubsystemBase {
   }
 
   public void translateArm(double armSpeed, boolean run){
-    if(run){
+    if(run){ //Extends the arm's reach.
       transMotor.set(armSpeed);
-
-
     }
-    else{
+    else{ //Stops extension of the arm.
       transMotor.set(0);
     }
   }
 
-  public void pidRotateArm(double positionLeft, double positionRight){
-    //pidRotateMotorLeft.setReference(-43.99, ControlType.kPosition);
-    //pidRotateMotorRight.setReference(-43.99, ControlType.kPosition);
+  public void pidRotateArm(double positionLeft, double positionRight){ //Rotates arm to specific set point
+    
     
     setPIDPosition(pidRotateMotorLeft, rotate_encoder_left, ControlType.kPosition,  positionLeft );
     setPIDPosition(pidRotateMotorRight, rotate_encoder_right, ControlType.kPosition,  -positionRight);
 
-    //etPIDPosition(pidRotateMotorRight, rotate_encoder, ControlType.kPosition,  -43.99 );
-
-    //setPIDPosition(pidRotateMotor, rotate_encoder, ControlType.kPosition,  -40.99, armMotorLeft);
-    //setPIDPosition(pidRotateMotor, rotate_encoder, ControlType.kPosition,  setpoint );
       
     
   }
 
-  public boolean getArmMode(){
+  public boolean getArmMode(){ 
     return armMode;
   }
-  public boolean setArmMode(){
+  public boolean setArmMode(){ 
     armMode = !armMode;
     return armMode;
   }
@@ -165,11 +158,10 @@ public class Arm extends SubsystemBase {
   }
 
   public void continuousPIDRotateArm( String direction){
-    //pidRotateMotorLeft.setReference(-43.99, ControlType.kPosition);
-    //pidRotateMotorRight.setReference(-43.99, ControlType.kPosition);
+
     if(direction.equalsIgnoreCase("up")){
 
-    //setPIDPosition(pidRotateMotorLeft, rotate_encoder_left, ControlType.kPosition,  rotate_encoder_left.get );
+    
     setPIDPosition(pidRotateMotorRight, rotate_encoder_right, ControlType.kPosition,  rotate_encoder_right.getPosition() + 0.2);
     setPIDPosition(pidRotateMotorLeft, rotate_encoder_left, ControlType.kPosition,  rotate_encoder_left.getPosition() + 0.2);
 
@@ -180,64 +172,13 @@ public class Arm extends SubsystemBase {
 
     }
 
-    //etPIDPosition(pidRotateMotorRight, rotate_encoder, ControlType.kPosition,  -43.99 );
+  }
 
-    //setPIDPosition(pidRotateMotor, rotate_encoder, ControlType.kPosition,  -40.99, armMotorLeft);
-    //setPIDPosition(pidRotateMotor, rotate_encoder, ControlType.kPosition,  setpoint );
-      
-    
-  }
-/* 
-  boolean brake = false;
-  public void activateFrictionBrake(){
-    frictionBrake.set(!brake);
-  }
-  */
 
   
-/* 
-  public void setSlowPID(boolean mode){
-    if(mode==true){
-      /* 
-    pidRotateMotorLeft.setP(0.018642);
-    pidRotateMotorLeft.setI(0);
-    pidRotateMotorLeft.setD(0.12823);
-    
-    //pidTransMotor.setP(0.0151642);
-    pidRotateMotorRight.setP(0.008642);
-    pidRotateMotorRight.setI(0);
-    pidRotateMotorRight.setD(0.12823);
-    //pidTransMotor.setP(0.0151642);
-   
 
-    pidTransMotor.setP(0.0755);
-    pidTransMotor.setI(0);
-    pidTransMotor.setD(0.15823);
-    }
-    else{
-      
-      pidRotateMotorLeft.setP(0.022642);
-      pidRotateMotorLeft.setI(0);
-      pidRotateMotorLeft.setD(0.12823);
-      
-      //pidTransMotor.setP(0.0151642);
-      pidRotateMotorRight.setP(0.0642);
-      pidRotateMotorRight.setI(0);
-      pidRotateMotorRight.setD(0.12823);
-      //pidTransMotor.setP(0.0151642);
-     
-  
-      pidTransMotor.setP(0.0855);
-      pidTransMotor.setI(0);
-      pidTransMotor.setD(0.12823);
-    }
-  }*/
   
   public void pidTranslateArm(double position){
-    //setPIDPosition(pidTransMotor, trans_encoder, ControlType.kPosition, 67.01, armMotorLeft );
-    //setPIDPosition(pidTransMotor, trans_encoder, ControlType.kPosition,  167, transMotor );
-    //setPIDPosition(pidTransMotor, trans_encoder, ControlType.kPosition,  167 );
-
     setPIDPosition(pidTransMotor, trans_encoder, ControlType.kPosition, position );
   }
 
@@ -247,11 +188,8 @@ public class Arm extends SubsystemBase {
   }
 
 
-
   public void continuousPIDTranslateArm(String direction){
-    //setPIDPosition(pidTransMotor, trans_encoder, ControlType.kPosition, 67.01, armMotorLeft );
-    //setPIDPosition(pidTransMotor, trans_encoder, ControlType.kPosition,  167, transMotor );
-    //setPIDPosition(pidTransMotor, trans_encoder, ControlType.kPosition,  167 );
+
     if(direction.equalsIgnoreCase("extend")){
       setPIDPosition(pidTransMotor, trans_encoder, ControlType.kPosition, (trans_encoder.getPosition() + 0.1)  );
       
@@ -270,7 +208,6 @@ public class Arm extends SubsystemBase {
     trans_encoder.setPosition(0);
     rotate_encoder_left.setPosition(0);
     rotate_encoder_right.setPosition(0);
-    //System.out.println("I RUNNING");
   }
 
   public void getSwitches(){
@@ -304,7 +241,6 @@ public class Arm extends SubsystemBase {
     pidTransMotor2.setReference(setPoint, ControlType.kPosition);
   }
   public void printEncoderDistances(){
-    //System.out.println("Rotational Encoder Left " + rotate_encoder_left.getPosition());
     System.out.println("Rotational Encoder Right " + rotate_encoder_right.getPosition());
 
     //System.out.println("Translational Encoder" + trans_encoder.getPosition());
@@ -312,53 +248,7 @@ public class Arm extends SubsystemBase {
   public double reportRotationsalEncoder(){
     return rotate_encoder_right.getPosition();
   }
-  /*
-  public void stationPickup(){
-      pidRotateArm(15.5);
-      pidTranslateArm(20.5);
-
-
-
-  }
-  public void groundPickup(){
-      pidRotateArm(15.5);
-      pidTranslateArm(20.5);
-
-  }
-
-  public void lowerNodePlace(){
-      pidRotateArm(15.5);
-      pidTranslateArm(20.5);
-
-
-  }
   
-  public void upperNodePlace(){
-  
-      pidRotateArm(15.5);
-      pidTranslateArm(20.5);
-  }
-
-  public void cwRotate(){
-    rotateArm(0.25, true);
-  }
-  public void ccwRotate(){
-    rotateArm(-0.25, true);
-  }
-  public void extendOut(){
-    translateArm(0.25, true);
-  }
-  public void extendIn(){
-    translateArm(-0.25, true);
-  }
-
-public void resetArm(){
-      pidRotateArm(0);
-      pidTranslateArm(0);
-  
-  }
-  */
-
   public void armShuffleboard(){
     rotLeftSpeedEntry = testingTab.add("Left Motor Speed",armMotorLeft.get()).getEntry();
     rotRightSpeedEntry = testingTab.add("Right Motor Speed",armMotorRight.get()).getEntry(); 

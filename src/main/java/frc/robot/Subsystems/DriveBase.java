@@ -101,8 +101,8 @@ public class DriveBase extends SubsystemBase {
   //PID stuff
   //private int loopIndex, slotIndex;
   private double kP = 1.92;
-  private double kI = 0;//1;
-  private double kD = 1;//1.5784;
+  private double kI = 0;
+  private double kD = 1;
   private double kMinOutput;
   private double maxVel = 3; 
   private double minVel;
@@ -110,10 +110,9 @@ public class DriveBase extends SubsystemBase {
   private double allowedErr = 0.125;
 
   // varibles for speed adjustment
-  private double kEncoder = 0.01;//3;
+  private double kEncoder = 0.01;
   double percentDifference;
 
-  //private int iaccum = 0;
 
   // Solenoid
   private Solenoid gearShifter;
@@ -139,15 +138,14 @@ public class DriveBase extends SubsystemBase {
 
     //Instantating the physical parts on the drivebase
     compressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
-    //compressor.disable();
+    
     compressor.enableDigital();
-    //camera = new PhotonCamera("vision");
     camera = new PhotonCamera("camera");
     camera2 = new PhotonCamera("camera2");
 
     pdp = new PowerDistribution();
     navxGyro = new AHRS(SPI.Port.kMXP);
-    //camera = new PhotonCamera("vision");
+
 
   
     leftDrive1 = new CANSparkMax(Constants.DriveConstants.DRIVE_MOTOR_LEFT_1, MotorType.kBrushless);
@@ -156,9 +154,6 @@ public class DriveBase extends SubsystemBase {
     rightDrive1 = new CANSparkMax(Constants.DriveConstants.DRIVE_MOTOR_RIGHT_1, MotorType.kBrushless);
     rightDrive2 = new CANSparkMax(Constants.DriveConstants.DRIVE_MOTOR_RIGHT_2, MotorType.kBrushless);
    rightDrive3 = new CANSparkMax(Constants.DriveConstants.DRIVE_MOTOR_RIGHT_3, MotorType.kBrushless);
-
-    //armMotorLeft = new CANSparkMax(Constants.DriveConstants.ARM_MOTOR_LEFT, MotorType.kBrushless);
-    //armMotorRight = new CANSparkMax(Constants.DriveConstants.ARM_MOTOR_RIGHT, MotorType.kBrushless);
 
     leftEncoders = new RelativeEncoder[3];
     rightEncoders = new RelativeEncoder[3];
@@ -180,8 +175,6 @@ public class DriveBase extends SubsystemBase {
     leftDrive2.setSmartCurrentLimit(motorCurrent, motorCurrent);
     leftDrive3.setSmartCurrentLimit(motorCurrent, motorCurrent);
 
-    //minSwitch = new DigitalInput(0);
-    //maxSwitch = new DigitalInput(1);
    
 
 
@@ -201,10 +194,7 @@ public class DriveBase extends SubsystemBase {
     powerManagement = new PowerManagement();
     leftDrives = new MotorControllerGroup( leftDrive1, leftDrive2, leftDrive3);
     rightDrives = new MotorControllerGroup(rightDrive1, rightDrive2, rightDrive3);
-   // drivebaseMotors.add(leftDrive3);
-   // drivebaseMotors.add(rightDrive3);
-    //leftDrives.setInverted(true);
-    // rightDrives.setInverted(true);
+
    odometry = new DifferentialDriveOdometry(navxGyro.getRotation2d(), leftEncoders[0].getPosition(), -rightEncoders[0].getPosition());
 
    ourDrive = new DifferentialDrive(leftDrives, rightDrives);
@@ -214,16 +204,6 @@ public class DriveBase extends SubsystemBase {
    ourDrive.setExpiration(0.1);
    ourDrive.setMaxOutput(1.0);
 
-   /* 
-   leftEncoders[0].setPositionConversionFactor(100/21);
-   leftEncoders[1].setPositionConversionFactor(100/21);
-   leftEncoders[2].setPositionConversionFactor(100/21);
-
-   
-   rightEncoders[0].setPositionConversionFactor(100/21);
-   rightEncoders[1].setPositionConversionFactor(100/21);
-   rightEncoders[2].setPositionConversionFactor(100/21);
-   */
 
    leftDrive1PidController.setP(kP);
    leftDrive1PidController.setI(kI);
@@ -294,13 +274,6 @@ else{
 }
 
 
-/* 
-  public void getSwitches(){
-    System.out.println("Min switch value: " + minSwitch.get());
-    System.out.println("Max switch value: " + maxSwitch.get());
-
-  }
-  */
   public PhotonCamera getCamera(){
     return camera;
   }
@@ -321,9 +294,6 @@ else{
 
   public void setPIDVelocity(CANPIDController pidTransMotor2, RelativeEncoder m_encoder,  ControlType kposition, double setPoint){    
 
-      //motor.set(pidRotateMotor2.calculate(setPoint));
-    
-    //pidTransMotor2.setReference(setPoint, ControlType.kPosition);
     pidTransMotor2.setReference(setPoint, ControlType.kVelocity);
   }
   
@@ -360,28 +330,6 @@ else{
       return gearShifter.get();
     }
 
-  /* 
-  public CommandBase tankDriveCommand(double left, double right) {
-
-    return run(() -> drive(left, right))
-        .withName("tankDrive");
-  }
-
-  public CommandBase driveDistanceCommand(double distanceMeters, double speed) {
-    return runOnce(
-            () -> {
-              leftEncoders[0].setPosition(0);
-              rightEncoders[0].setPosition(0);
-              
-            })
-        .andThen(run(() -> tankDriveCommand(speed, speed)))
-        .until(
-            () ->
-                Math.max(leftEncoders[0].getPosition(), rightEncoders[0].getPosition())
-                    >= distanceMeters)
-        .finallyDo(interrupted -> stopMotors());
-  }
-  */
   public double getPressure() { return compressor.getPressure();}
 
   public boolean getPressureStatus(){
@@ -410,8 +358,7 @@ else{
   public double getLeftVelocity() { return leftEncoders[0].getVelocity(); }
   public double getRightVelocity() { return rightEncoders[0].getVelocity(); }
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    //return new DifferentialDriveWheelSpeeds(leftDrive2.getEncoder().getVelocity(), -rightDrive2.getEncoder().getVelocity());
-    //return new DifferentialDriveWheelSpeeds(0,0);
+
     return new DifferentialDriveWheelSpeeds(getLeftVelocity(), -getRightVelocity());
 
   }
@@ -468,25 +415,19 @@ else{
      
       if (left > 0 && right > 0){ //driving forwards
         drive(
-          angle > 0.1 ? left : left*1.01, //* getAdjustedSpeed(Math.abs(getRightEncoder()), Math.abs(getLeftEncoder())),
-          angle < -0.1 ? right : right*1.01 //* getAdjustedSpeed(Math.abs(getLeftEncoder()), Math.abs(getRightEncoder()))
+          angle > 0.1 ? left : left*1.01, 
+          angle < -0.1 ? right : right*1.01 
         );
       }
       else if (left < 0 && right < 0){ //driving backwards
         drive(
-          angle < -0.1 ? left : left*1.01, //* getAdjustedSpeed(Math.abs(getRightEncoder()), Math.abs(getLeftEncoder())),
-          angle > 0.1 ? right : right*1.01 //* getAdjustedSpeed(Math.abs(getLeftEncoder()), Math.abs(getRightEncoder()))
+          angle < -0.1 ? left : left*1.01,
+          angle > 0.1 ? right : right*1.01 
         );
       }
       
     }
 
-
-    public void printDriveBaseEncoderDistances(){
-      //System.out.println("Left Position: " + leftEncoders[0].getPosition());
-      //System.out.println("Right Position: " + rightEncoders[0].getPosition());
-
-    }
     public void resetGyroAngle() {
       navxGyro.reset();
     }

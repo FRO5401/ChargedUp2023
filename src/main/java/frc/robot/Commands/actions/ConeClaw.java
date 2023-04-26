@@ -23,7 +23,6 @@ public class ConeClaw extends CommandBase {
     
     @Override
     public void execute(){
-        //shooter.runSmart("START")
 
         claw.toggleClaw("CONE");
        

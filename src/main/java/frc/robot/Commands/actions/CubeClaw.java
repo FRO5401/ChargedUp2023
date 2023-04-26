@@ -23,11 +23,9 @@ public class CubeClaw extends CommandBase {
     
     @Override
     public void execute(){
-        //shooter.runSmart("START")
 
         claw.toggleClaw("CUBE");
        
-        //arm.pidRotateArm(60, 3);
         endCommand = true;
     }
     

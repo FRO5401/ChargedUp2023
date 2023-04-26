@@ -26,7 +26,6 @@ public class ConeClaw extends CommandBase {
 
         claw.toggleClaw("CONE");
        
-        //arm.pidRotateArm(60, 3);
         endCommand = true;
     }
     

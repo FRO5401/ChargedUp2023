@@ -21,10 +21,7 @@ public class ZeroGround extends SequentialCommandGroup {
         arm = m_arm;
         claw = m_claw;
         addCommands(
-        //shooter.runSmart("START");
 
-        //new OffClaw(claw),
-        //new translateArmPID(m_arm, 0), 
         new ParallelRaceGroup(
             new WaitCommand(0.35),
             new translateArmPID(m_arm, 0)

@@ -21,7 +21,6 @@ public class GroundPickup2 extends SequentialCommandGroup {
         arm = m_arm;
         claw = m_claw;
         addCommands(
-        //shooter.runSmart("START");
 
         new OffClaw(claw),
         //new translateArmPID(m_arm, 0), 
@@ -34,8 +33,7 @@ public class GroundPickup2 extends SequentialCommandGroup {
             new WaitCommand(0.2),
             new translateArmPID(arm, -5)
         )
-        //new translateArmPID(m_arm, 10)
-        //new rotateArmPID(m_arm, 3, 3)
+
 
 
 

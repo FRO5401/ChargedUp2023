@@ -54,14 +54,6 @@ public class XboxMove extends CommandBase {
   @Override
   public void execute() {
     
-    /* 
-    throttle = Controls.xboxAxis(driver, "RT").getAxis();
-    reverse = Controls.xboxAxis(driver, "LT").getAxis();
-    turn = Controls.xboxAxis(driver, "LS-X").getAxis();
-    precision = Controls.xboxButton(driver, "RB").getAsBoolean();
-    brake = Controls.xboxButton(driver, "LB").getAsBoolean();
-    rotate = Controls.xboxButton(driver, "LS").getAsBoolean();
-    */
     precision = Controls.xbox_driver.getRightBumper();
     brake = Controls.xbox_driver.getLeftBumper();
     rotate = Controls.xbox_driver.getLeftStickButton();

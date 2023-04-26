@@ -23,8 +23,6 @@ public class translateIn extends CommandBase {
     
     @Override
     public void execute(){
-        //shooter.runSmart("START")
-        //arm.continuousPIDRotateArm("contract");
         arm.translateArm(-0.2, endCommand);
         
         endCommand = true;

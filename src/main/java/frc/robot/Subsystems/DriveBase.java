@@ -262,7 +262,7 @@ public class DriveBase extends SubsystemBase {
 public void switchVisionMode(int i){
   camera.setPipelineIndex(i);
 } 
-public void activateDriverMode(){
+public void activateDriverMode(){ //Sets camera on or off
 if(camera.getDriverMode() == true){
   camera.setDriverMode(false);
 

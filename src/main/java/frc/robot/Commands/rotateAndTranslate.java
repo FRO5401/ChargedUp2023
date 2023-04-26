@@ -43,7 +43,7 @@ public class rotateAndTranslate extends CommandBase {
     
     @Override
     public void end(boolean interrupted){
-        //arm.rotateArm(0, endCommand);
+
 
     }
     @Override

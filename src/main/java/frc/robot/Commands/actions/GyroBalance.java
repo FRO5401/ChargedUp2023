@@ -35,7 +35,6 @@ public class GyroBalance extends CommandBase {
     drivebase.resetEncoders();
     drivebase.resetGyroAngle();
 
-    //Printer.print("XboxMove");
   }
 
   @Override

@@ -27,7 +27,6 @@ public class GroundPickup extends CommandBase {
     
     @Override
     public void execute(){
-        //shooter.runSmart("START");
         arm.pidRotateArm(60, 8);
         Timer.delay(1);
         arm.pidTranslateArm(-43);

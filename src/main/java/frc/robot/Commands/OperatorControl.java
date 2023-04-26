@@ -35,27 +35,7 @@ public class OperatorControl extends CommandBase {
   // Called just before this Command runs the first time
   @Override
   public void initialize() {
-    /* 
-    operator.y().whileTrue(new InstantCommand(() -> arm.resetArm()));
 
-    operator.x().whileTrue(new InstantCommand(() -> arm.ccwRotate()));
-    operator.b().whileTrue(new InstantCommand(() -> arm.cwRotate()));
-
-    operator.leftBumper().whileTrue(new InstantCommand(() -> arm.extendIn()));
-    operator.rightBumper().whileTrue(new InstantCommand(() -> arm.extendOut()));
-
-    operator.pov(0).whileTrue(new InstantCommand(() -> arm.stationPickup()));
-    operator.pov(90).whileTrue(new InstantCommand(() -> arm.groundPickup()));
-    operator.pov(180).whileTrue(new InstantCommand(() -> arm.lowerNodePlace()));
-    operator.pov(270).whileTrue(new InstantCommand(() -> arm.upperNodePlace()));
-
-    operator.rightBumper().whileTrue(new InstantCommand(() -> claw.toggleClaw("cone")));
-    operator.leftBumper().whileTrue(new InstantCommand(() -> claw.toggleClaw("cube")));
-    operator.a().whileTrue(new InstantCommand(() -> claw.toggleClaw("cube")));
-    operator.a().whileTrue(new InstantCommand(() -> claw.toggleClaw("cube")));
-
-
-*/
   }
 
   // Called repeatedly when this Command is scheduled to run

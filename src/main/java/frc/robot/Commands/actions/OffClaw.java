@@ -23,7 +23,7 @@ public class OffClaw extends CommandBase {
     
     @Override
     public void execute(){
-        //shooter.runSmart("START")
+
 
         claw.toggleClaw("OFF");
 

@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.util.Units;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -30,8 +31,8 @@ public final class Constants {
   public static class KinematicsConstants{
 
     // TODO: get these values too
-    public static double TRACK_WIDTH = 0.57;
-    public static double WHEEL_BASE = 0.55;
+    public static double TRACK_WIDTH = Units.inchesToMeters(21);
+    public static double WHEEL_BASE = Units.inchesToMeters(25.5);
     
     public static SwerveDriveKinematics SWERVE_KINEMATIC = new SwerveDriveKinematics(
       new Translation2d(WHEEL_BASE / 2, -TRACK_WIDTH / 2),

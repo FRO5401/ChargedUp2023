@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.Subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -135,8 +135,8 @@ public class SwerveModule {
             return;
         }
         state = SwerveModuleState.optimize(state, getState().angle);
-        driverMotor.set(ControlMode.PercentOutput,  state.speedMetersPerSecond *.5 );
-        turningMotor.set(ControlMode.PercentOutput, turningPIDControl.calculate(0, state.angle.getRadians()) );
+        driverMotor.set(ControlMode.PercentOutput,  state.speedMetersPerSecond * .5 );
+        turningMotor.set(ControlMode.PercentOutput, turningPIDControl.calculate(getTurningPosition(), state.angle.getRadians()) );
         SmartDashboard.putString("Swerve " + absouluteEncoderID + " state", state.toString());
         SmartDashboard.putNumber(" calculation", turningPIDControl.calculate(getTurningPosition(), state.angle.getRadians()) );
         SmartDashboard.putNumber(" Encoder" + absouluteEncoderID, getTurningVelocity());

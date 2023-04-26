@@ -54,7 +54,11 @@ public final class Constants {
     public static final double TURNING_ENCODER_ROTATIONS = 0;
     public static final double DRIVE_ENCODER_SPEED = 0;
     public static final double TURNING_ENCODER_SPEED = 0;
-    public static final double kP_TURNING_MOTOR = 0.5;
+    public static final double kP_TURNING_MOTOR = 0.1;
+    public static final double kI_TURNING_MOTOR = 0.00;
+    public static final double kD_TURNING_MOTOR = 0.000;
+
+
 
     public static final double MAX_SPEED = 6;
     public static final double MAX_TURNING_SPEED = 2 * 2 * Math.PI;

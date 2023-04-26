@@ -2,9 +2,10 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.Subsystems;
+package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
@@ -70,17 +71,21 @@ public class SwerveModule {
         driverMotor.configSupplyCurrentLimit(configDrive);
         driverMotor.configSupplyCurrentLimit(configTurn);
 
+        driverMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+        turningMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
-        
+
+
         driverMotor.setInverted(driveReversed);
         turningMotor.setInverted(turningReversed);
 
         this.absouluteEncoderID = absouluteEncoderID;
-        
+
         resetEncoders();
         
-        turningPIDControl = new PIDController(ModuleConstants.kP_TURNING_MOTOR, 0 ,0 );
-
+        
+        turningPIDControl = new PIDController(ModuleConstants.kP_TURNING_MOTOR, ModuleConstants.kI_TURNING_MOTOR, ModuleConstants.kD_TURNING_MOTOR );
+    
         turningPIDControl.enableContinuousInput(-Math.PI, Math.PI);
 
     }
@@ -106,7 +111,7 @@ public class SwerveModule {
     
     public double getAbsoluteEncoderRad() {
         //using the average volatage draw of the encoder dividing it by the total voltage to get the position of thhe wheel based off the encoder
-        double angle = turningMotor.getSelectedSensorPosition();
+        double angle = Math.sin(getTurningPosition());
         angle *= 2 * Math.PI;
  
         return angle * (absouluteEncoderReversed ? -1.0 : 1);
@@ -116,7 +121,7 @@ public class SwerveModule {
 
     public void resetEncoders() {
         driverMotor.setSelectedSensorPosition(0);
-        turningMotor.setSelectedSensorPosition(0);
+
     }
 
     public SwerveModuleState getState(){
@@ -130,10 +135,12 @@ public class SwerveModule {
             return;
         }
         state = SwerveModuleState.optimize(state, getState().angle);
-        driverMotor.set(ControlMode.PercentOutput,  state.speedMetersPerSecond / ModuleConstants.MAX_SPEED );
-        driverMotor.set(ControlMode.PercentOutput,  0.1);//state.speedMetersPerSecond );
-        turningMotor.set(ControlMode.PercentOutput, turningPIDControl.calculate(getTurningPosition(), state.angle.getRadians()) );//turningPIDControl.calculate(getTurningPosition(), state.angle.getRadians()) );
+        driverMotor.set(ControlMode.PercentOutput,  state.speedMetersPerSecond *.5 );
+        turningMotor.set(ControlMode.PercentOutput, turningPIDControl.calculate(0, state.angle.getRadians()) );
         SmartDashboard.putString("Swerve " + absouluteEncoderID + " state", state.toString());
+        SmartDashboard.putNumber(" calculation", turningPIDControl.calculate(getTurningPosition(), state.angle.getRadians()) );
+        SmartDashboard.putNumber(" Encoder" + absouluteEncoderID, getTurningVelocity());
+
     }
 
     public void stop(){

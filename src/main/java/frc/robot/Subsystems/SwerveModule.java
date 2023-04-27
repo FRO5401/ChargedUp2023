@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.Subsystems;
+package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -93,15 +93,15 @@ public class SwerveModule {
     //methods for auto and path planning
 
     public double getDrivePosition(){
-        return driverMotor.getSelectedSensorPosition();
+        return driverMotor.getSelectedSensorPosition() /2048;
     }
 
     public double getTurningPosition(){
-        return turningMotor.getSelectedSensorPosition();
+        return turningMotor.getSelectedSensorPosition() /2048;
     }
 
     public double getDriveVelocity(){
-        return driverMotor.getSelectedSensorVelocity();
+        return driverMotor.getSelectedSensorVelocity() / (10/ 2048) * ModuleConstants.WHEEL_DIAMTER_METERS;
     }
 
     public double getTurningVelocity(){
@@ -139,7 +139,7 @@ public class SwerveModule {
         turningMotor.set(ControlMode.PercentOutput, turningPIDControl.calculate(getTurningPosition(), state.angle.getRadians()) );
         SmartDashboard.putString("Swerve " + absouluteEncoderID + " state", state.toString());
         SmartDashboard.putNumber(" calculation", turningPIDControl.calculate(getTurningPosition(), state.angle.getRadians()) );
-        SmartDashboard.putNumber(" Encoder" + absouluteEncoderID, getTurningVelocity());
+        SmartDashboard.putNumber(" Encoder" + absouluteEncoderID, getTurningPosition());
 
     }
 

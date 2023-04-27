@@ -31,8 +31,8 @@ public final class Constants {
   public static class KinematicsConstants{
 
     // TODO: get these values too
-    public static double TRACK_WIDTH = Units.inchesToMeters(21);
-    public static double WHEEL_BASE = Units.inchesToMeters(25.5);
+    public static double TRACK_WIDTH = Units.inchesToMeters(24.75);
+    public static double WHEEL_BASE = Units.inchesToMeters(24);
     
     public static SwerveDriveKinematics SWERVE_KINEMATIC = new SwerveDriveKinematics(
       new Translation2d(WHEEL_BASE / 2, -TRACK_WIDTH / 2),
@@ -61,7 +61,7 @@ public final class Constants {
 
 
 
-    public static final double MAX_SPEED = 6;
+    public static final double MAX_SPEED = 5;
     public static final double MAX_TURNING_SPEED = 2 * 2 * Math.PI;
     public static final double MAX_TELEOP_SPEED = MAX_SPEED / 2;
 

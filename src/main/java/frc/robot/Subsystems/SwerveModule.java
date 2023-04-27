@@ -101,7 +101,7 @@ public class SwerveModule {
     }
 
     public double getDriveVelocity(){
-        return driverMotor.getSelectedSensorVelocity() / (10/ 2048) * ModuleConstants.WHEEL_DIAMTER_METERS;
+        return driverMotor.getSelectedSensorVelocity() / (10.0/ 2048) * ModuleConstants.WHEEL_DIAMTER_METERS;
     }
 
     public double getTurningVelocity(){

@@ -1,0 +1,7 @@
+## General Check List
+
+- [ ] **Abided by S.O.L.I.D. principles where appropriate
+- [ ] **Unit tests were included/updated if there were changes to business logic
+- [ ] **If visible changes result from the code change, included images in PR description to prove layout
+- [ ] **The code change is designed to address one and only one Monday/GitHub issue. If other issues are inadvertently fixed by the change, they are also included in the PR description.
+- [ ] **This code change was deployed to and tested on the robot

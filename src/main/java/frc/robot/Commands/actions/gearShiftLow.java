@@ -23,10 +23,9 @@ public class gearShiftLow extends CommandBase {
     
     @Override
     public void execute(){
-        //shooter.runSmart("START")
 
         drivebase.gearShift("LOW");
-        //arm.pidRotateArm(60, 3);
+
         endCommand = true;
     }
     

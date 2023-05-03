@@ -23,11 +23,9 @@ public class ConeClaw extends CommandBase {
     
     @Override
     public void execute(){
-        //shooter.runSmart("START")
 
         claw.toggleClaw("CONE");
        
-        //arm.pidRotateArm(60, 3);
         endCommand = true;
     }
     

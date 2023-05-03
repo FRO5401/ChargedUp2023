@@ -1,5 +1,4 @@
 package frc.robot.Subsystems;
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -8,16 +7,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Claw extends SubsystemBase {
-
-    //private static final String String = null;
-
     private Arm arm;
     private Solenoid firstStage;
     private Solenoid secondStage;
     private Lidar lidar;
-
-
-    //DigitalInput source = new DigitalInput(2);
 
 
     public Claw(Lidar m_lidar){
@@ -29,7 +22,7 @@ public class Claw extends SubsystemBase {
     public void toggleClaw(String mode){
         switch(mode){
             case "CUBE":
-                firstStage.set(true);
+                firstStage.set(true); //Activates one piston, creating a gap large enough for a cube to fit.
                 firstStage.set(false);
 
             break;
@@ -47,7 +40,7 @@ public class Claw extends SubsystemBase {
     }
 
     public boolean offMode(){
-        if(firstStage.get() == true && secondStage.get() == true){
+        if(firstStage.get() == true && secondStage.get() == true){ //If both cylinders are activated, the claw is deactivated.
             return true;
         }
         else{
@@ -59,7 +52,7 @@ public class Claw extends SubsystemBase {
 
 
 
-    
+    // Toggles claw based off of distance
     public boolean autoToggleClaw(){
         double distance = lidar.getDistance();
         if(distance <= 43 && distance > 10){//38

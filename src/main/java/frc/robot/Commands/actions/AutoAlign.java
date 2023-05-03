@@ -34,13 +34,6 @@ public class AutoAlign extends CommandBase {
 		// eg. requires(chassis);
 		// requires(drivebase);
 
-		/*try {
-			desiredDistance = networktables.getBallDistance();
-		}
-		catch (NullPointerException e)
-		{
-			desiredDistance = 0;
-		}	*/
 
 		autoDriveSpeed = SpeedInput;
 		distanceTraveled = 0;
@@ -86,21 +79,20 @@ public class AutoAlign extends CommandBase {
 		 if(resultYaw > 1){
 		   left = 0.4;
 		   right = -0.4;
-		   //System.out.println("Turning right");
+
    
 		 }
 		   //Turning left
 		 else if(resultYaw < (-1)){
 		   left = -0.4;
 		   right = 0.4;
-		   //System.out.println("Turning left");
+
 		 }
 		   //Driving straight 
 		 else{
 			 //No joystick manipulation. 
 		   left = 0.4;
 		   right = 0.4;
-		   //System.out.println("Moving straight");
    
 		 }
    

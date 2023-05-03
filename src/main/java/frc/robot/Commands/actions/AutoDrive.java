@@ -41,19 +41,8 @@ public class AutoDrive extends CommandBase {
         if ((distanceTraveled < desiredDistance)) {
             drivebase.autoDrive(autoDriveSpeed, autoDriveSpeed, angle);
             doneTraveling = false;
-            /* 
-        } else if ((distanceTraveled > desiredDistance) && desiredDistance > 0) {
-            drivebase.autoDrive(-autoDriveSpeed, -autoDriveSpeed, angle);
-            doneTraveling = false;
-        } else if ((distanceTraveled > desiredDistance) && desiredDistance < 0) {
-            drivebase.autoDrive(autoDriveSpeed, autoDriveSpeed, angle);
-            doneTraveling = false;
-        } else if ((distanceTraveled < desiredDistance) && desiredDistance < 0) {
-            drivebase.autoDrive(-autoDriveSpeed, -autoDriveSpeed, angle);    
-            doneTraveling = false;
-            */
         } else {
-            //drivebase.drive(0,0);
+  
             doneTraveling = true;
         }
     }

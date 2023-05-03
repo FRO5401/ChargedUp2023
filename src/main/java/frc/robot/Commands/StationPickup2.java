@@ -19,11 +19,7 @@ import frc.robot.Subsystems.Claw;
             claw = m_claw;
     
             addCommands(
-                //new ConeClaw(m_claw),
                 new rotateArmPID(arm, 13, 13)
-                //new translateArmPID(arm, 0),
-                //new rotateArmPID(m_arm, 0, 0)
-                //Timer.delay(0.75);
             );
         }
 

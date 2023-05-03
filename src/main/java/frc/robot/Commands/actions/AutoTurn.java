@@ -43,27 +43,11 @@ public class AutoTurn extends CommandBase {
 
         if(drivebase.getGyro() < desiredAngle+Constants.AutoConstants.ANGULAR_THRESHOLD && drivebase.getGyro() > desiredAngle-Constants.AutoConstants.ANGULAR_THRESHOLD)
             doneTraveling = true;
-/** 
-        if(drivebase.getGyroAngle() < desiredAngle && drivebase.getGyroAngle() > desiredAngle){
-            if(count == 0){
-                turnStartTime  = Timer.getFPGATimestamp();
-                count++;
-            }
-            
-            
-            if(Timer.getFPGATimestamp() - turnStartTime >  0.05)
-                doneTraveling =true;
-        }
-        else{
-            count = 0;
-        }
-*/
     }
 
     // Called once after isFinished returns true
 	@Override
 	public void end(boolean interrupted) {
-		//drivebase.drive(0,0);
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

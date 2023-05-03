@@ -56,25 +56,14 @@ public class AutoDriveFast extends CommandBase {
 
             }
 
-                //drivebase.smoothStop();            }
         
 
 
 
         }
-            /* 
-        } else if ((distanceTraveled > desiredDistance) && desiredDistance > 0) {
-            drivebase.autoDrive(-autoDriveSpeed, -autoDriveSpeed, angle);
-            doneTraveling = false;
-        } else if ((distanceTraveled > desiredDistance) && desiredDistance < 0) {
-            drivebase.autoDrive(autoDriveSpeed, autoDriveSpeed, angle);
-            doneTraveling = false;
-        } else if ((distanceTraveled < desiredDistance) && desiredDistance < 0) {
-            drivebase.autoDrive(-autoDriveSpeed, -autoDriveSpeed, angle);    
-            doneTraveling = false;
-            */
+
             else{ //When leftDrive1 and rightDrive1 are zero
-                //drivebase.smoothStop();
+ 
                 doneTraveling = true;   
               }
     }

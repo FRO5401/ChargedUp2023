@@ -26,7 +26,6 @@ public class PowerZero extends CommandBase {
     
     @Override
     public void execute(){
-        //shooter.runSmart("START")
 
         drivebase.gearShift("HIGH");
        

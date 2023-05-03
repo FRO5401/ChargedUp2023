@@ -35,7 +35,6 @@ public class GyroBalance extends CommandBase {
     drivebase.resetEncoders();
     drivebase.resetGyroAngle();
 
-    //Printer.print("XboxMove");
   }
 
   @Override
@@ -43,7 +42,6 @@ public class GyroBalance extends CommandBase {
     if(drivebase.getRoll() <= -10 || drivebase.getRoll() >= 10){
         drivebase.drive(speed *0.6 * -1 * (drivebase.getRoll()/(Math.abs(drivebase.getRoll()))), speed * 0.6 * -1* (drivebase.getRoll()/(Math.abs(drivebase.getRoll()))));
     }
-    //System.out.println(drivebase.getPitch());
     addRequirements(drivebase);
   }
 

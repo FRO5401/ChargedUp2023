@@ -38,23 +38,6 @@ public class AutoDriveVision extends CommandBase {
     } 
 
 	// Called repeatedly when this Command is scheduled to run
-    /*
-    @Override
-    public void execute() {
-        var result = drivebase.getCamera().getLatestResult();
-
-            if (result.hasTargets()) {
-                // First calculate range
-                double range =
-                        PhotonUtils.calculateDistanceToTargetMeters(
-                                0.8382,
-                                //Constants.SubsystemConstants.TARGET_HEIGHT_METERS[0],
-                                0,
-                                Units.degreesToRadians(result.getBestTarget().getPitch()));
-                            }
-    }
-
-    */
 
 
 	// Make this return true when this Command no longer needs to run execute()

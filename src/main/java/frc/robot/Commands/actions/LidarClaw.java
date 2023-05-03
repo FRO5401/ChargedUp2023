@@ -29,7 +29,6 @@ public class LidarClaw extends CommandBase {
     
     @Override
     public void execute(){
-        //shooter.runSmart("START")
         claw.autoToggleClaw();
 
 

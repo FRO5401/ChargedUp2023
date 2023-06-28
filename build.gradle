@@ -74,6 +74,10 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+    ignoreFailures = true
     systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
 }
 

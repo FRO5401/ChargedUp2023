@@ -46,7 +46,7 @@
 ```
     1. Power on the robot that you want to deploy the robot code to.
     2. Connect your computer's wifi to the robot's radio.
-    3. Open up the main branch in WPI version of VS Code.
+    3. Open up the main branch in the WPI version of VS Code.
     4. Use 'Control + Shift + P' inside VScode, and search for Deploy Robot Code.
     5. Click Deploy Robot Code
 ```

@@ -107,12 +107,7 @@ Trajectory trajectory = new Trajectory();
 
 
 
-  /**
-   * A Rev Color Sensor V3 object is constructed with an I2C port as a 
-   * parameter. The device will be automatically initialized with default 
-   * parameters.
-   */
-  //private ColorSensorV3 m_colorSensor;
+  
 
 PhotonPipelineResult result;
 Robot() {

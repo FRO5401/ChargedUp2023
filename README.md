@@ -1,5 +1,7 @@
 # Welcome to Charged Up 2023!
 
+Jimmy was here
+
 ## This is Team 5401's repository for the 2023 FRC Charged Up Season!
 
   These are all the programming installs needed to start your journey in Robot Code Realm of FRC! 

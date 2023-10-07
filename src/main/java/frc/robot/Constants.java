@@ -31,8 +31,8 @@ public final class Constants {
   public static class KinematicsConstants{
 
     // TODO: get these values too
-    public static double TRACK_WIDTH = Units.inchesToMeters(24.75);
-    public static double WHEEL_BASE = Units.inchesToMeters(24);
+    public static double TRACK_WIDTH = Units.inchesToMeters(27.75);
+    public static double WHEEL_BASE = Units.inchesToMeters(27.75);
     
     public static SwerveDriveKinematics SWERVE_KINEMATIC = new SwerveDriveKinematics(
       new Translation2d(WHEEL_BASE / 2, -TRACK_WIDTH / 2),
@@ -88,10 +88,10 @@ public final class Constants {
     public static final int BACK_LEFT_TURN = 5;
     public static final int BACK_RIGHT_TURN = 1;
     
-    public static final int FRONT_LEFT_ENCODER_PORT = 0;
-    public static final int FRONT_RIGHT_ENCODER_PORT = 1;
-    public static final int BACK_LEFT_ENCODER_PORT = 2;
-    public static final int BACK_RIGHT_ENCODER_PORT = 3;
+    public static final int FRONT_LEFT_ENCODER_PORT = 12;
+    public static final int FRONT_RIGHT_ENCODER_PORT = 10;
+    public static final int BACK_LEFT_ENCODER_PORT = 9;
+    public static final int BACK_RIGHT_ENCODER_PORT = 11;
 
   }
 

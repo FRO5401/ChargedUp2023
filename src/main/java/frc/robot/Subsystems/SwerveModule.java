@@ -2,14 +2,17 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.Subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
+import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -71,9 +74,12 @@ public class SwerveModule {
         driverMotor.configSupplyCurrentLimit(configDrive);
         driverMotor.configSupplyCurrentLimit(configTurn);
 
-        driverMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-        turningMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-
+        driverMotor.configIntegratedSensorInitializationStrategy(SensorInitializationStrategy.BootToZero);
+        turningMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 20);
+        turningMotor.configIntegratedSensorInitializationStrategy(SensorInitializationStrategy.BootToZero);
+        TalonFXSensorCollection sensorCollection = turningMotor.getSensorCollection();
+        double absoluteValue = sensorCollection.getIntegratedSensorAbsolutePosition();
+        
 
 
         driverMotor.setInverted(driveReversed);

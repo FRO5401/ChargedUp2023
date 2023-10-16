@@ -1,60 +1,36 @@
 package frc.robot.Commands.actions;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Controls;
-import frc.robot.Subsystems.Arm;
 import frc.robot.Subsystems.DriveBase;
-import frc.robot.Subsystems.NetworkTables;
 
 public class AutoAlign extends CommandBase {
 
-	
-    private double desiredDistance;
-    private double currentAngle;
-	private double autoDriveSpeed;
+
 	private boolean doneTraveling;
-	private double distanceTraveled;
-	private double objectX;
-    private double objectY;
-    private String objectType;
-    private double objectistance;
 	private DriveBase drivebase;
-	private NetworkTables networktables;
-    private Arm arm;
-    
-    private double startTime;
-    private double currentTime;
-    
-    private boolean isCentered;
 	private double left, right;
 	private double resultYaw;
 
-	public AutoAlign(double SpeedInput, DriveBase passedDrivebase, NetworkTables passedNetworkTables) {
+	public AutoAlign(DriveBase passedDrivebase) {
 		// Use requires() here to declare subsystem dependencies
 		// eg. requires(chassis);
 		// requires(drivebase);
 
-
-		autoDriveSpeed = SpeedInput;
-		distanceTraveled = 0;
 		drivebase = passedDrivebase;
-		networktables = passedNetworkTables;
 	}
 
 	// Called just before this Command runs the first time
 	@Override
 	public void initialize() {
-		
+
 		doneTraveling = false;
-		isCentered = false;
-		distanceTraveled = 0;
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	public void execute() {
 		//After speed manipulation, send to drivebase
-	
+
 		 var result = drivebase.getCamera().getLatestResult();
 		 if(result.getBestTarget() == null){
 			result = drivebase.getCamera2().getLatestResult();
@@ -66,7 +42,7 @@ public class AutoAlign extends CommandBase {
 		 else{
 		 resultYaw = result.getBestTarget().getYaw();
 		 }
-   
+
 		if (result.hasTargets()) {
 			if(resultYaw > 0 && drivebase.getCamera().getLatestResult() == null){
 				resultYaw -= 14.0;
@@ -75,12 +51,12 @@ public class AutoAlign extends CommandBase {
 				resultYaw -= 14.0;
 			}
 
-	 
+
 		 if(resultYaw > 1){
 		   left = 0.4;
 		   right = -0.4;
 
-   
+
 		 }
 		   //Turning left
 		 else if(resultYaw < (-1)){
@@ -88,18 +64,18 @@ public class AutoAlign extends CommandBase {
 		   right = 0.4;
 
 		 }
-		   //Driving straight 
+		   //Driving straight
 		 else{
-			 //No joystick manipulation. 
+			 //No joystick manipulation.
 		   left = 0.4;
 		   right = 0.4;
-   
+
 		 }
-   
+
 	   }
 
 
-   
+
 	 drivebase.drive(left,right);
 	}
 	// Make this return true when this Command no longer needs to run execute()

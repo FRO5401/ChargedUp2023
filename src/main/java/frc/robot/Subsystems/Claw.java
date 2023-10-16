@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Claw extends SubsystemBase {
-    private Arm arm;
     private Solenoid firstStage;
     private Solenoid secondStage;
     private Lidar lidar;
@@ -36,7 +35,7 @@ public class Claw extends SubsystemBase {
             break;
 
         }
-        
+
     }
 
     public boolean offMode(){
@@ -47,10 +46,6 @@ public class Claw extends SubsystemBase {
             return false;
         }
     }
-
-
-
-
 
     // Toggles claw based off of distance
     public boolean autoToggleClaw(){
@@ -63,13 +58,5 @@ public class Claw extends SubsystemBase {
             return false;
         }
     }
-
-    
-       
-
-
-
-
-
 
 }

@@ -56,7 +56,6 @@ import frc.robot.Commands.groups.SingleGroundPlacement;
 import frc.robot.Commands.groups.SinglePieceAutoBlueLeftSlow;
 import frc.robot.Commands.groups.SinglePieceAutoBlueRight;
 import frc.robot.Commands.groups.SinglePieceAutoRedLeft;
-//import frc.robot.Commands.groups.StationPickup2;
 import frc.robot.Commands.groups.TwoPieceAutoBlueLeftSlow;
 import frc.robot.Commands.groups.TwoPieceAutoBlueRight;
 import frc.robot.Commands.groups.TwoPieceAutoRedLeft;
@@ -81,12 +80,11 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 
 public class RobotContainer {
-    
+
     private final SendableChooser<Command> chooser = new SendableChooser<Command>();
     // The robot's subsystems
     private final  DriveBase drivebase = new DriveBase();
-    
-    private final NetworkTables networktables = new NetworkTables();
+
     private final Arm arm = new Arm();
     private final Lidar lidar;
     private final XboxMove xboxMove = new XboxMove(drivebase);
@@ -119,15 +117,15 @@ public class RobotContainer {
         offLight = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.IdlePattern, 0, 0, 0);
         greenLight = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.IdlePattern, 0, 255, 0);
 
-        
-        
+
+
         claw = new Claw(lidar);
         configureInputGroups();
         configureButtonBindings();
         drivebase.setDefaultCommand(xboxMove);
         ledSubsystem.setDefaultCommand(EveryOther);
 
-        
+
         //chooser.setDefaultOption("SinglePieceAutoBlueLeft", new SinglePieceAutoBlueLeftSlow(0, 0.8, drivebase, claw, arm));
         //chooser.setDefaultOption("TwoPieceAutoBlueLeft", new TwoPieceAutoBlueLeftSlow(0, 0.8, drivebase, claw, arm));
         //chooser.setDefaultOption("TwoPieceAutoRedRight", new TwoPieceAutoRedRight(0, 0.6, drivebase, claw, arm));
@@ -157,7 +155,7 @@ public class RobotContainer {
 
         //chooser.addOption("Trajectory Test", new SetTrajectoryPath(drivebase, "paths/DriveStraight.wpilib.json")); //REPLACE LATER
         SmartDashboard.putData("Auto choices", chooser);
-    
+
         drivebase.resetEncoders();
         drivebase.resetGyroAngle();
     }
@@ -168,12 +166,12 @@ public class RobotContainer {
     public DriveBase getDriveBase(){
         return drivebase;
     }
-    /* 
+    /*
     public OperatorControl getOperator(){
         return operator;
     }
     */
-    
+
     public Arm getArm(){
         return arm;
     }
@@ -185,10 +183,6 @@ public class RobotContainer {
         return ledSubsystem;
     }
 
-    public NetworkTables getNetworkTables(){
-        return networktables;
-    }
-    
     public Claw getClaw(){
         return claw;
     }
@@ -212,7 +206,7 @@ public class RobotContainer {
         driver_Controller.pov(180).whileTrue(new InstantCommand(()->arm.lowerNodePlace()));
         driver_Controller.pov(270).whileTrue(new InstantCommand(()->arm.upperNodePlace()));
         */
-        
+
         //Controls.operator.povUp().whileTrue(Commands.parallel(new StationPickup2(arm, claw)));
         //Controls.operator.povRight().whileTrue(Commands.parallel(new ZeroGround(arm, claw)));//, new XboxMove(drivebase)));
         //Controls.operator.povDown().whileTrue(Commands.parallel(new GroundPickup2(arm, claw)));//, new XboxMove(drivebase)));
@@ -225,7 +219,7 @@ public class RobotContainer {
         //Controls.operator.povUp().onTrue(Commands.parallel(new ZeroGround(arm, claw)));
         //Controls.operator.povLeft().onTrue(Commands.parallel(new LowerNodePlaceA(arm, claw)));
         //Controls.operator.povRight().onTrue(Commands.parallel(new StationPickup2(arm, claw)));
-        
+
 
         //Controls.operator.povLeft().whileTrue(Commands.parallel(new LowerNodePlaceA(arm, claw), new XboxMove(drivebase))).onFalse(Commands.parallel(new LowerNodePlaceB(arm, claw), new XboxMove(drivebase)));
         //Controls.operator.povLeft().whileTrue(new LowerNodePlace1(arm, claw).raceWith(new XboxMove(drivebase))).onFalse(new LowerNodePlace2(arm, claw));
@@ -240,9 +234,9 @@ public class RobotContainer {
         Controls.operator.leftTrigger().onTrue(new CubeClaw(claw));
 
         Controls.operator.b().whileTrue(new LidarClaw(claw, ""));
-        Controls.operator.povUp().toggleOnTrue(new InstantCommand(()->arm.setArmMode())); 
+        Controls.operator.povUp().toggleOnTrue(new InstantCommand(()->arm.setArmMode()));
 
-        
+
 
         //Controls.driver.a().onTrue(new TwoPieceAutoRed(0, 0.8, drivebase));
         //Controls.driver.a().onTrue(new CenterSinglePieceAuto(0, 0.8, drivebase));
@@ -251,7 +245,6 @@ public class RobotContainer {
         Controls.driver.povLeft().onTrue(new ConeMode(drivebase));
         Controls.driver.povRight().onTrue(new AprilTagMode(drivebase));
         Controls.driver.povDown().onTrue(new DriverMode(drivebase));
-        Controls.driver.povUp().whileTrue(new AutoAlign(0.2, drivebase, networktables));
 
         Controls.driver.start().onTrue(new gearShiftLow(drivebase));
         Controls.driver.back().onTrue(new gearShiftHigh(drivebase));
@@ -272,20 +265,20 @@ public class RobotContainer {
 
         //Controls.driver.back().onTrue(new gearShiftLow(drivebase));
         //Controls.driver.start().onTrue(new gearShiftHigh(drivebase));
-        
-        
+
+
     }
 
     private void configureInputGroups(){
     }
-    /* 
+    /*
     String trajectoryJSON = "New Path.wpilib.json";
     Trajectory trajectory = new Trajectory();
     Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
     PathPlannerTrajectory examplePath = PathPlanner.loadPath("New Path", new PathConstraints(4, 3));
     */
     public Command getAutonomousCommand(){
-        /* 
+        /*
         try {
             Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
             trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
@@ -299,7 +292,7 @@ public class RobotContainer {
                   Constants.DriveConstants.kaVoltSecondsSquaredPerMeter),
               Constants.DriveConstants.kDriveKinematics,
               10);
-      
+
               TrajectoryConfig config = new TrajectoryConfig(
                       Constants.DriveConstants.kMaxSpeedMetersPerSecond,
                       Constants.DriveConstants.kMaxAccelerationMetersPerSecondSquared)
@@ -324,7 +317,7 @@ public class RobotContainer {
                     drivebase::drive,
                     drivebase);
                 drivebase.resetGyroAngle();
-      
+
                     // Run path following command, then stop at the end.
                     return ramseteCommand.andThen(() -> drivebase.drive(0, 0));
                     */

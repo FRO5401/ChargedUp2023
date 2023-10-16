@@ -23,14 +23,13 @@ public class DriverMode extends CommandBase {
     @Override
     public void initialize(){
     }
-    
+
     @Override
     public void execute(){
-
-        drivebase.activateDriverMode();
+        drivebase.toggleDriverMode();
         endCommand = true;
     }
-    
+
     @Override
     public void end(boolean interrupted){
     }

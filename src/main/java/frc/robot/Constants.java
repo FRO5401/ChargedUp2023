@@ -4,7 +4,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.geometry.Translation2d;
 public class Constants {
-    
+
 
   public static class DriveConstants {
     //True Constants
@@ -34,7 +34,7 @@ public class Constants {
     public static final double KD = 0;
 
 
-    
+
     public static final int ARM_MOTOR_LEFT = 8;
     public static final int ARM_MOTOR_RIGHT = 9;
 
@@ -49,7 +49,7 @@ public class Constants {
     public static final double kPDriveVel = 1;
     public static final double kRamseteB = 1;
     public static final double kRamseteZeta = 0.7;
-    
+
   }
 
   public class ControlConstants {
@@ -103,7 +103,7 @@ public class Constants {
         public final static double MAX_ARM_LENGTH = Units.inchesToMeters(54);
 
         public final Translation2d ARM_PIVOT_TRANSLATION = new Translation2d(0, Units.inchesToMeters(25));
-        
+
         public final static double EXTEND_DRUM_RADIUS = Units.inchesToMeters(1);
         public static final double EXTEND_DRUM_ROTATIONS_PER_MOTOR_ROTATION = 1.0/14.667;
         public final static double EXTEND_METERS_PER_DRUM_ROTATION = Math.PI * 2 * EXTEND_DRUM_RADIUS;
@@ -115,7 +115,7 @@ public class Constants {
         public static final double ARM_ROTATIONS_PER_MOTOR_ROTATION = 1.0/400.0;
 
         public static final double ARM_MASS_KG = 20;
-        
+
 
         public static final int PIVOT_MOTOR_ID = 21;
         public final static double ARM_PIVOT_KG_MIN_EXTEND = 1.414 / 2 / Math.cos(Units.degreesToRadians(10.5));
@@ -160,13 +160,11 @@ public class Constants {
     public static final int DIGITAL_INPUT_2 = 0;
     public static int ClimberStage = 0;
 
-    
+
     //public static final double[]  TARGET_HEIGHT_METERS = [0.8382, 0.92, 1.17];
     //29.5in 60in
     //climber angle calculations
 
-
-    
   }
-     
+
 }

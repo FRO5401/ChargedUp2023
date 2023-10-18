@@ -29,17 +29,12 @@ public class Arm extends SubsystemBase {
   private SparkMaxPIDController pidRotateMotorRight;
   private SparkMaxPIDController pidTransMotor;
 
-  private Solenoid frictionBrake;
-
 
   DigitalInput minSwitch, maxSwitch;
 
   private double kFF = 1;
-  private double kP = 23.183;
-  private double kI = 0;//1;
-  private double kD = 0.69334;//1.5784;
   private double kMinOutput;
-  private double maxVel = 36.211; 
+  private double maxVel = 36.211;
   private double minVel;
   private double maxAcc;
   private double allowedErr = 0.125;
@@ -52,10 +47,6 @@ public class Arm extends SubsystemBase {
     armMotorRight = new CANSparkMax(Constants.DriveConstants.ARM_MOTOR_RIGHT, MotorType.kBrushless);
     transMotor = new CANSparkMax(Constants.DriveConstants.TRANS_MOTOR, MotorType.kBrushless);
 
-    frictionBrake = new Solenoid(PneumaticsModuleType.CTREPCM, 6);
-
-
-
     pidRotateMotorLeft = armMotorLeft.getPIDController();
     pidRotateMotorRight = armMotorRight.getPIDController();
     pidTransMotor = transMotor.getPIDController();
@@ -65,24 +56,24 @@ public class Arm extends SubsystemBase {
 
     trans_encoder = transMotor.getEncoder();
 
-    
+
     pidRotateMotorLeft.setP(0.032642);
     pidRotateMotorLeft.setI(0);
     pidRotateMotorLeft.setD(0.12823);
-    
-  
+
+
     //pidTransMotor.setP(0.0151642);
     pidRotateMotorRight.setP(0.032823);
     pidRotateMotorRight.setI(0);
     pidRotateMotorRight.setD(0.12823);
     //pidTransMotor.setP(0.0151642);
-   
+
 
     pidTransMotor.setP(0.042);
     pidTransMotor.setI(0);
     pidTransMotor.setD(0.12823);
-    
-    
+
+
     armMotorLeft.setIdleMode(IdleMode.kBrake);
     armMotorRight.setIdleMode(IdleMode.kBrake);
     transMotor.setIdleMode(IdleMode.kBrake);
@@ -90,7 +81,7 @@ public class Arm extends SubsystemBase {
 
 
   }
-  
+
   public void rotateArm(double armSpeed, boolean run){
     if(run){ //Rotates arm in the same direction
       armMotorRight.set(armSpeed);
@@ -115,19 +106,19 @@ public class Arm extends SubsystemBase {
   }
 
   public void pidRotateArm(double positionLeft, double positionRight){ //Rotates arm to specific set point
-    
-    
+
+
     setPIDPosition(pidRotateMotorLeft, rotate_encoder_left, ControlType.kPosition,  positionLeft );
     setPIDPosition(pidRotateMotorRight, rotate_encoder_right, ControlType.kPosition,  -positionRight);
 
-      
-    
+
+
   }
 
-  public boolean getArmMode(){ 
+  public boolean getArmMode(){
     return armMode;
   }
-  public boolean setArmMode(){ 
+  public boolean setArmMode(){
     armMode = !armMode;
     return armMode;
   }
@@ -161,7 +152,7 @@ public class Arm extends SubsystemBase {
 
     if(direction.equalsIgnoreCase("up")){
 
-    
+
     setPIDPosition(pidRotateMotorRight, rotate_encoder_right, ControlType.kPosition,  rotate_encoder_right.getPosition() + 0.2);
     setPIDPosition(pidRotateMotorLeft, rotate_encoder_left, ControlType.kPosition,  rotate_encoder_left.getPosition() + 0.2);
 
@@ -175,9 +166,9 @@ public class Arm extends SubsystemBase {
   }
 
 
-  
 
-  
+
+
   public void pidTranslateArm(double position){
     setPIDPosition(pidTransMotor, trans_encoder, ControlType.kPosition, position );
   }
@@ -192,7 +183,7 @@ public class Arm extends SubsystemBase {
 
     if(direction.equalsIgnoreCase("extend")){
       setPIDPosition(pidTransMotor, trans_encoder, ControlType.kPosition, (trans_encoder.getPosition() + 0.1)  );
-      
+
     }
     else if(direction.equalsIgnoreCase("contract")){
       setPIDPosition(pidTransMotor, trans_encoder, ControlType.kPosition, (trans_encoder.getPosition() - 0.1)  );
@@ -203,7 +194,7 @@ public class Arm extends SubsystemBase {
     }
   }
 
-  
+
   public void resetArmEncoderDistance(){
     trans_encoder.setPosition(0);
     rotate_encoder_left.setPosition(0);
@@ -215,7 +206,7 @@ public class Arm extends SubsystemBase {
     //System.out.println("Max switch value: " + maxSwitch.get());
 
   }
-  
+
   public void initPIDController(CANPIDController m_pidController, double kP, double kI, double kD, double kIz, double kMaxOutput){
     double p = 0, i = 0, d = 0, iz = 0, ff = 0, max = 0, min = 0, maxV = 0 , minV = 0, maxA = 0, allE = 0;
     if((p != kP)) { m_pidController.setP(p); kP = p; }
@@ -223,9 +214,9 @@ public class Arm extends SubsystemBase {
     if((d != kD)) { m_pidController.setD(d); kD = d; }
     if((iz != kIz)) { m_pidController.setIZone(iz); kIz = iz; }
     if((ff != kFF)) { m_pidController.setFF(ff); kFF = ff; }
-    if((max != kMaxOutput) || (min != kMinOutput)) { 
-      m_pidController.setOutputRange(min, max); 
-      kMinOutput = min; kMaxOutput = max; 
+    if((max != kMaxOutput) || (min != kMinOutput)) {
+      m_pidController.setOutputRange(min, max);
+      kMinOutput = min; kMaxOutput = max;
     }
     if((maxV != maxVel)) { m_pidController.setSmartMotionMaxVelocity(maxV,0); maxVel = maxV; }
     if((minV != minVel)) { m_pidController.setSmartMotionMinOutputVelocity(minV,0); minVel = minV; }
@@ -233,10 +224,10 @@ public class Arm extends SubsystemBase {
     if((allE != allowedErr)) { m_pidController.setSmartMotionAllowedClosedLoopError(allE,0); allowedErr = allE; }
   }
 
-  public void setPIDPosition(CANPIDController pidTransMotor2, RelativeEncoder m_encoder,  ControlType kposition, double setPoint){    
+  public void setPIDPosition(CANPIDController pidTransMotor2, RelativeEncoder m_encoder,  ControlType kposition, double setPoint){
 
       //motor.set(pidRotateMotor2.calculate(setPoint));
-    
+
     //pidTransMotor2.setReference(setPoint, ControlType.kPosition);
     pidTransMotor2.setReference(setPoint, ControlType.kPosition);
   }
@@ -248,15 +239,15 @@ public class Arm extends SubsystemBase {
   public double reportRotationsalEncoder(){
     return rotate_encoder_right.getPosition();
   }
-  
+
   public void armShuffleboard(){
     rotLeftSpeedEntry = testingTab.add("Left Motor Speed",armMotorLeft.get()).getEntry();
-    rotRightSpeedEntry = testingTab.add("Right Motor Speed",armMotorRight.get()).getEntry(); 
-    rotLeftPositionEntry = testingTab.add("Left Motor Position",armMotorLeft.getEncoder().getPosition()).getEntry();     
-    rotRightPositionEntry = testingTab.add("Right Motor Position",armMotorRight.getEncoder().getPosition()).getEntry();  
+    rotRightSpeedEntry = testingTab.add("Right Motor Speed",armMotorRight.get()).getEntry();
+    rotLeftPositionEntry = testingTab.add("Left Motor Position",armMotorLeft.getEncoder().getPosition()).getEntry();
+    rotRightPositionEntry = testingTab.add("Right Motor Position",armMotorRight.getEncoder().getPosition()).getEntry();
     transSpeedEntry = testingTab.add("Trans Motor Speed",transMotor.get()).getEntry();
-    transPositionEntry = testingTab.add("Trans Motor Position",transMotor.getEncoder().getPosition()).getEntry();  
+    transPositionEntry = testingTab.add("Trans Motor Position",transMotor.getEncoder().getPosition()).getEntry();
 
   }
- 
+
 }

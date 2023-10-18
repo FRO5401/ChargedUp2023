@@ -38,7 +38,6 @@ import frc.robot.Subsystems.Claw;
 import frc.robot.Subsystems.DriveBase;
 import frc.robot.Subsystems.LEDSubsystem;
 import frc.robot.Subsystems.Lidar;
-import frc.robot.Subsystems.NetworkTables;
 import frc.robot.Controls;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.I2C.Port;
@@ -70,22 +69,12 @@ private Command autoSelected;
 private RobotContainer robotContainer;
 private DriveBase drivebase;
 private LEDSubsystem ledSubsystem;
-private NetworkTables networkTables;
 private Arm arm;
 private Claw claw;
 private Command xboxmove;
 private Command tempCommand;
 private Lidar lidar;
 //private Command operator;
-
-
-
-
-
-
-
-
-
 
 private boolean precision;
 private double throttle = 0;
@@ -109,8 +98,8 @@ Trajectory trajectory = new Trajectory();
 
 
   /**
-   * A Rev Color Sensor V3 object is constructed with an I2C port as a 
-   * parameter. The device will be automatically initialized with default 
+   * A Rev Color Sensor V3 object is constructed with an I2C port as a
+   * parameter. The device will be automatically initialized with default
    * parameters.
    */
   //private ColorSensorV3 m_colorSensor;
@@ -126,7 +115,7 @@ Robot() {
  */
 @Override
 public void robotInit() {
-  
+
   robotContainer = new RobotContainer();
   //xboxmove = robotContainer.getXboxMove();
   //operator = robotContainer.getOperator();
@@ -161,7 +150,7 @@ public void autonomousInit() {
     //networkTables = robotContainer.getNetworkTables();
     drivebase.resetEncoders();
     drivebase.resetGyroAngle();
-   
+
 }
 
 /**
@@ -222,7 +211,7 @@ public void teleopPeriodic() {
   //lidar.reportLidarDistance();
   //lidar.update();
   //drivebase.updateOdometry();
- 
+
   /*
   throttle = Controls.driver.getRightTriggerAxis();
   reverse = Controls.driver.getLeftTriggerAxis();
@@ -232,7 +221,7 @@ public void teleopPeriodic() {
   rotate = Controls.xbox_driver.getLeftStickButton();
 
 
- 
+
 
   //result = drivebase.getCamera().getLatestResult();
 
@@ -255,22 +244,22 @@ public void teleopPeriodic() {
 
    /*** Driving ***/
      //Braking
-     /* 
+     /*
      if(precision){
       sensitivity = 0.7;
     }
     else{
       sensitivity = 1.0;
     }
-  
+
    if(brake){
      //robotContainer.drivebase.stopMotors();
      left = 0;
      right = 0;
-   }   
-       //Pirouetting (Turn in place). 
+   }
+       //Pirouetting (Turn in place).
      if(rotate){
-         //If the joystick is pushed passed the threshold. 
+         //If the joystick is pushed passed the threshold.
        if(Math.abs(turn) > Constants.ControlConstants.AXIS_THRESHOLD){
            //Sets it to spin the desired direction.
          left = Constants.ControlConstants.SPIN_SENSITIVITY;
@@ -286,31 +275,31 @@ public void teleopPeriodic() {
      else{
          //Turning right
        if(turn > Constants.ControlConstants.AXIS_THRESHOLD){
-           //Makes left slow down by a factor of how far the axis is pushed. 
+           //Makes left slow down by a factor of how far the axis is pushed.
          left = (throttle - reverse) * sensitivity;
          right = (throttle - reverse) * sensitivity * (1 - turn);
        }
          //Turning left
        else if(turn < (-1 * Constants.ControlConstants.AXIS_THRESHOLD)){
-           //Makes right speed up by a factor of how far the axis is pushed. 
+           //Makes right speed up by a factor of how far the axis is pushed.
          left = (throttle - reverse) * sensitivity  * (1 + turn);
          right = (throttle - reverse) * sensitivity;
        }
-         //Driving straight 
+         //Driving straight
        else{
-           //No joystick manipulation. 
+           //No joystick manipulation.
          left = (throttle - reverse) * sensitivity;
          right = (throttle - reverse) * sensitivity;
        }
      }
      //drivebase.drive(left, right);
-   /* 
+   /*
     if(Controls.xbox_driver.getAButton()){
       var result = drivebase.getCamera().getLatestResult();
 
             if (result.hasTargets()) {
 
-  
+
       if(result.getBestTarget().getYaw() > 4){
         left = 0.6;
         right = -0.6;
@@ -323,9 +312,9 @@ public void teleopPeriodic() {
         right = 0.6;
         System.out.println("Turning left");
       }
-        //Driving straight 
+        //Driving straight
       else{
-          //No joystick manipulation. 
+          //No joystick manipulation.
         left = 0.6;
         right = 0.6;
         System.out.println("Moving straight");
@@ -375,8 +364,8 @@ public void teleopPeriodic() {
      //Braking
       /*** Precision ***/
      //Hold for Precision Speed
-/* 
-  
+/*
+
 if(Controls.operator.getRightTriggerAxis() > 0.1){
   arm.rotateArm(0.4*-1, Controls.operator.getXButton());
 }
@@ -414,7 +403,7 @@ else{
   }
   else{
     arm.rotateArm(0, false);
-  
+
   }
 }
 
@@ -444,7 +433,7 @@ if (Controls.xbox_operator.getStartButton()){
 //arm.updatePID();
 
 
-/* 
+/*
 if (Controls.xbox_driver.getBackButton()){
   drivebase.gearShift("LOW");
   //System.out.println("Reset");
@@ -464,7 +453,7 @@ if(Controls.xbox_operator.getBButton()){
 }
 */
 //SmartDashboard.putNumber("Lidar Distance", lidar.getDistance());
-/* 
+/*
 if(Controls.driver.getAButton()){
   System.out.println("Gyro Angle: " + drivebase.getGyro());
   if(drivebase.getGyro() <= -10 || drivebase.getGyro() >= 10){
@@ -473,11 +462,11 @@ if(Controls.driver.getAButton()){
 }
 
 */
-/* 
+/*
 dpad = Controls.xbox_driver.getPOV();
 switch (dpad){
       //pickup charge station
-    
+
   case 270:
   //arm.pidRotateArm(60, 18);
   //arm.pidTranslateArm(10);
@@ -486,9 +475,9 @@ switch (dpad){
     arm.pidRotateArm(rotationLeft, rotationRight);
     break;
 
-  
+
   case 90:
-  
+
     //arm.pidRotateArm(0, 0);
     //arm.pidTranslateArm(0);
     rotationLeft = 0;
@@ -498,16 +487,16 @@ switch (dpad){
     break;
   case 180:
   //ground pickup
-    
+
       //arm.pidRotateArm(60, 6);
-      //arm.pidTranslateArm(10); 
+      //arm.pidTranslateArm(10);
     rotationLeft = 5;
     rotationRight = 5;
     arm.pidRotateArm(rotationLeft, rotationRight);
     //tranLength = 10;
     break;
   //place lower node
-  
+
   case 0:
     //arm.pidRotateArm(60, 20);
     //arm.pidTranslateArm(40);
@@ -516,14 +505,14 @@ switch (dpad){
     arm.pidRotateArm(rotationLeft, rotationRight);
     //tranLength  = 40;
     break;
-    
-  
+
+
 }
 */
 
 //arm.pidRotateArm(rotationLeft, rotationRight);
 
-//arm.pidTranslateArm(tranLength); 
+//arm.pidTranslateArm(tranLength);
 
 
 //Autonomous setpoints
@@ -539,7 +528,7 @@ switch (dpad){
 
 
 //Controls.operator.a().onTrue();
-  
+
   //two motors placement
   //robotContainer.drivebase.pidRotateArm(35.99);
   //robotContainer.drivebase.pidTranslateArm(64.01);
@@ -574,7 +563,7 @@ public void testPeriodic() {
 }
 
 private void feedWatchdogs(){
-CANSparkMaxJNI.c_SparkMax_SetEnable(true); 
+CANSparkMaxJNI.c_SparkMax_SetEnable(true);
 }
 
 }

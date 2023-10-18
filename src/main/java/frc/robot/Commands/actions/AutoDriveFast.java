@@ -1,7 +1,5 @@
 package frc.robot.Commands.actions;
 
-import javax.management.DescriptorRead;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Subsystems.DriveBase;
 
@@ -32,12 +30,12 @@ public class AutoDriveFast extends CommandBase {
         drivebase.resetGyroAngle();
         distanceTraveled = 0;
 
-    } 
+    }
 
 	// Called repeatedly when this Command is scheduled to run
     @Override
     public void execute() {
-        
+
         angle = drivebase.getGyro();
         distanceTraveled = Math.abs(drivebase.getPosition());
         if ((distanceTraveled < desiredDistance)) {
@@ -45,7 +43,7 @@ public class AutoDriveFast extends CommandBase {
             drivebase.autoDrive(autoDriveSpeed*0.6, autoDriveSpeed*0.6, angle);
             doneTraveling = false;
            }
-     
+
             else if (distanceTraveled <  desiredDistance*0.8 && distanceTraveled > desiredDistance * 0.2){
             drivebase.autoDrive(autoDriveSpeed, autoDriveSpeed, angle);
             doneTraveling = false;
@@ -56,15 +54,15 @@ public class AutoDriveFast extends CommandBase {
 
             }
 
-        
+
 
 
 
         }
 
             else{ //When leftDrive1 and rightDrive1 are zero
- 
-                doneTraveling = true;   
+
+                doneTraveling = true;
               }
     }
 
@@ -73,7 +71,7 @@ public class AutoDriveFast extends CommandBase {
 	// Make this return true when this Command no longer needs to run execute()
     @Override
     public boolean isFinished() {
-    
+
         return doneTraveling;
     }
 

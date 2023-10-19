@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class RobotTest {
 
-        
     @Test
     public void mathBrokeTest() {
        assertEquals(1, 2);
@@ -27,4 +26,3 @@ public class RobotTest {
         assertEquals(driveBase.getAdjustedSpeed(-0.5, 0.5), 0.01);
     }
 }
-    

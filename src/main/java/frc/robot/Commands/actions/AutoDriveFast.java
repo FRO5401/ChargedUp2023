@@ -26,7 +26,6 @@ public class AutoDriveFast extends CommandBase {
     public void initialize() {
 
         drivebase.resetEncoders();
-        //drivebase.gearShift("HIGH");
         drivebase.resetGyroAngle();
         distanceTraveled = 0;
 
@@ -71,7 +70,6 @@ public class AutoDriveFast extends CommandBase {
 	// Make this return true when this Command no longer needs to run execute()
     @Override
     public boolean isFinished() {
-
         return doneTraveling;
     }
 

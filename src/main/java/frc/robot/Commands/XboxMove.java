@@ -1,6 +1,5 @@
 package frc.robot.Commands;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Subsystems.DriveBase;
@@ -10,29 +9,23 @@ import frc.robot.Controls;
 public class XboxMove extends CommandBase {
   /*** Variables ***/
     //Input Axes
-    
-  
   double turn;
   double throttle;
   double reverse;
 
     //Input Buttons
-  boolean rotate; 
+  boolean rotate;
   boolean brake;
   boolean precision;
   boolean gearShiftHigh;
   boolean gearShiftLow;
 
-     //Testing Buttons 
+     //Testing Buttons
   boolean resetSensors;
-  /*
-  boolean speedConstant1;
-  boolean speedConstant2;
-  boolean speedConstant3;
- */
+
     //Instance Vars
   double left;
-  double right; 
+  double right;
   double sensitivity = 0.8;
 
   DriveBase drivebase;
@@ -41,28 +34,24 @@ public class XboxMove extends CommandBase {
     drivebase = m_drivebase;
     addRequirements(drivebase);
   }
-  
+
 
   // Called just before this Command runs the first time
   @Override
   public void initialize() {
-   
-    //Printer.print("XboxMove");
+
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   public void execute() {
-    
+
     precision = Controls.xbox_driver.getRightBumper();
     brake = Controls.xbox_driver.getLeftBumper();
     rotate = Controls.xbox_driver.getLeftStickButton();
     throttle = Controls.xbox_driver.getRightTriggerAxis();
     reverse = Controls.xbox_driver.getLeftTriggerAxis();
     turn = Controls.xbox_driver.getLeftX() * 0.8;
-  
-   
-
 
       //Braking
        /*** Precision ***/
@@ -79,10 +68,10 @@ public class XboxMove extends CommandBase {
       //Robot.drivebase.stopMotors();
       left = 0;
       right = 0;
-    }   
-        //Pirouetting (Turn in place). 
+    }
+        //Pirouetting (Turn in place).
       if(rotate){
-          //If the joystick is pushed passed the threshold. 
+          //If the joystick is pushed passed the threshold.
         if(Math.abs(turn) > Constants.ControlConstants.AXIS_THRESHOLD){
             //Sets it to spin the desired direction.
           left = Constants.ControlConstants.SPIN_SENSITIVITY * turn;
@@ -98,26 +87,25 @@ public class XboxMove extends CommandBase {
       else{
           //Turning right
         if(turn > Constants.ControlConstants.AXIS_THRESHOLD){
-            //Makes left slow down by a factor of how far the axis is pushed. 
+            //Makes left slow down by a factor of how far the axis is pushed.
           left = (throttle - reverse) * sensitivity;
           right = (throttle - reverse) * sensitivity * (1 - turn);
         }
           //Turning left
         else if(turn < (-1 * Constants.ControlConstants.AXIS_THRESHOLD)){
-            //Makes right speed up by a factor of how far the axis is pushed. 
+            //Makes right speed up by a factor of how far the axis is pushed.
           left = (throttle - reverse) * sensitivity  * (1 + turn);
           right = (throttle - reverse) * sensitivity;
         }
-          //Driving straight 
+          //Driving straight
         else{
-            //No joystick manipulation. 
+            //No joystick manipulation.
           left = (throttle - reverse) * sensitivity;
           right = (throttle - reverse) * sensitivity;
         }
       }
-      //System.out.println("Throttle: " + left);
-      //System.out.println("Reverse: "+right );
-      //After speed manipulation, send to drivebase. 
+
+      //After speed manipulation, send to drivebase.
     drivebase.drive(left, right);
     //drivebase.pidDrive(left, right);
   }

@@ -1,9 +1,7 @@
 package frc.robot.Subsystems;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.I2C;
+
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Claw extends SubsystemBase {
@@ -33,9 +31,7 @@ public class Claw extends SubsystemBase {
                 firstStage.set(true); //TRUE MEANS OPEN CLAW
                 secondStage.set(true);
             break;
-
         }
-
     }
 
     public boolean offMode(){

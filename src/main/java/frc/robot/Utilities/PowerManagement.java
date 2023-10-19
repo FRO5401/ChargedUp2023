@@ -21,7 +21,7 @@ public class PowerManagement {
     public double getPDPTemperature() { return pdp.getTemperature(); }
 
     public void staticOverCurrentLimit(Collection<CANSparkMax> drivebaseMotors, double defaultCurrentLimit, double newCurrentLimit){
-        
+
         if (getPDPCurrent() > maxCurrent && Timer.getFPGATimestamp() - overCurrentTime > .1) {
             overCurrentFlag = true;
             overCurrentTime = Timer.getFPGATimestamp();
@@ -30,7 +30,7 @@ public class PowerManagement {
             newlimit = defaultCurrentLimit - newlimit;
             for(CANSparkMax motor : drivebaseMotors){
                 motor.setSmartCurrentLimit((int)newlimit);
-            
+
             }
           }
           else if (Timer.getFPGATimestamp() - overCurrentTime > 1 && overCurrentFlag){
@@ -38,13 +38,11 @@ public class PowerManagement {
 
             for(CANSparkMax motor : drivebaseMotors){
                 motor.setSmartCurrentLimit((int)defaultCurrentLimit);
-            
+
             }
           }
         }
     public void dynamicOverCurrentLimit(){
 
     }
-
-
 }

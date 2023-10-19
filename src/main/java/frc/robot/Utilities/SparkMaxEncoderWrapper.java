@@ -1,25 +1,16 @@
 package frc.robot.Utilities;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxRelativeEncoder;
-import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 
-import edu.wpi.first.hal.CANData;
-import edu.wpi.first.math.filter.LinearFilter;
-import edu.wpi.first.wpilibj.CAN;
-import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotBase;
 
 public class SparkMaxEncoderWrapper {
- 
+
     private final RelativeEncoder sparkMaxEncoder;
     private double simPosition = 0.0;
     private double simVelocity = 0.0;
-  
+
     /**
      * Creates a new SparkMaxDerivedVelocityController using a default set of parameters.
      */
@@ -27,7 +18,7 @@ public class SparkMaxEncoderWrapper {
       this.sparkMaxEncoder = sparkMax.getEncoder();
     }
 
-  
+
     /**
      * Returns the current position in rotations.
      */
@@ -38,9 +29,8 @@ public class SparkMaxEncoderWrapper {
         else {
             return simPosition;
         }
-      
     }
-  
+
     /**
      * Returns the current velocity in rotations/minute.
      */
@@ -66,5 +56,4 @@ public class SparkMaxEncoderWrapper {
         simVelocity = velocity;
     }
 
-    
   }

@@ -23,9 +23,6 @@ public class Tabs {
 
     public static GenericEntry rotLeftSpeedEntry, rotRightSpeedEntry, transSpeedEntry, rotLeftPositionEntry, rotRightPositionEntry, transPositionEntry;
 
-
-
-
     //INFEED
     public static NetworkTableEntry gateEntry, gateComp;
     public static NetworkTableEntry infeedLeftSpeedEntry, infeedRightSpeedEntry, infeedLeftSpeedGraph, infeedRightSpeedGraph;

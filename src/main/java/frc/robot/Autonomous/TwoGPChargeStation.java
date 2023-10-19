@@ -1,8 +1,6 @@
 package frc.robot.Autonomous;
 
 import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Commands.*;
 import frc.robot.Subsystems.Arm;
@@ -18,8 +16,8 @@ public class TwoGPChargeStation extends SequentialCommandGroup {
 
     public TwoGPChargeStation(double DistanceInput, double speedInput, DriveBase passedDrivebase, Arm passedArm, Claw passedClaw, NetworkTable passedNetworkTable){
         addCommands(
-            
+
         );
     }
-    
+
 }

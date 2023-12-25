@@ -1,15 +1,7 @@
 package frc.robot.Commands;
 
-import javax.swing.GroupLayout.Group;
-
-import org.ejml.dense.row.misc.TransposeAlgs_CDRM;
-
-import java.lang.Thread;
-
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Subsystems.Arm;
-import frc.robot.Subsystems.Claw;
 
 public class rotateAndTranslate extends CommandBase {
     Arm arm;
@@ -27,20 +19,18 @@ public class rotateAndTranslate extends CommandBase {
     @Override
     public void initialize(){
     }
-    
+
     @Override
     public void execute(){
         if(arm.rotateLeftAtSetpoint(leftPosition) && arm.rotateLeftAtSetpoint(leftPosition)  && arm.transAtSetpoint(transPosition)){
             endCommand = true;
-
-
         }
         else{
             arm.pidRotateArm(leftPosition, rightPosition);
             arm.pidTranslateArm(transPosition);
         }
     }
-    
+
     @Override
     public void end(boolean interrupted){
 

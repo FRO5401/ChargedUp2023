@@ -11,10 +11,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import frc.robot.Constants;
 import static frc.robot.Utilities.Tabs.*;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -151,23 +147,14 @@ public class Arm extends SubsystemBase {
   public void continuousPIDRotateArm( String direction){
 
     if(direction.equalsIgnoreCase("up")){
-
-
-    setPIDPosition(pidRotateMotorRight, rotate_encoder_right, ControlType.kPosition,  rotate_encoder_right.getPosition() + 0.2);
-    setPIDPosition(pidRotateMotorLeft, rotate_encoder_left, ControlType.kPosition,  rotate_encoder_left.getPosition() + 0.2);
-
+      setPIDPosition(pidRotateMotorRight, rotate_encoder_right, ControlType.kPosition,  rotate_encoder_right.getPosition() + 0.2);
+      setPIDPosition(pidRotateMotorLeft, rotate_encoder_left, ControlType.kPosition,  rotate_encoder_left.getPosition() + 0.2);
     }
     else if (direction.equalsIgnoreCase("down")){
       setPIDPosition(pidRotateMotorRight, rotate_encoder_right, ControlType.kPosition,  rotate_encoder_right.getPosition() - 0.2);
       setPIDPosition(pidRotateMotorLeft, rotate_encoder_left, ControlType.kPosition,  rotate_encoder_left.getPosition() - 0.2);
-
     }
-
   }
-
-
-
-
 
   public void pidTranslateArm(double position){
     setPIDPosition(pidTransMotor, trans_encoder, ControlType.kPosition, position );
@@ -202,8 +189,6 @@ public class Arm extends SubsystemBase {
   }
 
   public void getSwitches(){
-    //System.out.println("Min switch value: " + minSwitch.get());
-    //System.out.println("Max switch value: " + maxSwitch.get());
 
   }
 
@@ -225,16 +210,10 @@ public class Arm extends SubsystemBase {
   }
 
   public void setPIDPosition(CANPIDController pidTransMotor2, RelativeEncoder m_encoder,  ControlType kposition, double setPoint){
-
-      //motor.set(pidRotateMotor2.calculate(setPoint));
-
-    //pidTransMotor2.setReference(setPoint, ControlType.kPosition);
     pidTransMotor2.setReference(setPoint, ControlType.kPosition);
   }
   public void printEncoderDistances(){
     System.out.println("Rotational Encoder Right " + rotate_encoder_right.getPosition());
-
-    //System.out.println("Translational Encoder" + trans_encoder.getPosition());
   }
   public double reportRotationsalEncoder(){
     return rotate_encoder_right.getPosition();
